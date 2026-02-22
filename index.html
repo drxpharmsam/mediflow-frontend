@@ -11,11 +11,11 @@
     <style>
         :root {
             /* Premium Medical Color Palette */
-            --c1: #E0F7F6; /* Softest teal for backgrounds */
-            --c2: #A5E6E2; /* Light teal */
-            --c3: #36B8B7; /* Vibrant primary brand color */
-            --c4: #0A858C; /* Deep teal for icons */
-            --c5: #055C61; /* Darkest teal for text/headers */
+            --c1: #E0F7F6; 
+            --c2: #A5E6E2; 
+            --c3: #36B8B7; 
+            --c4: #0A858C; 
+            --c5: #055C61; 
             --error: #FF5E5E; 
             --error-bg: #FFF0F0;
             --success: #00D09C; 
@@ -31,7 +31,6 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         
-        /* HIDE SCROLLBARS FOR NATIVE APP FEEL */
         ::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
         
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color: #E5E7EB; overflow: hidden; display: flex; justify-content: center; align-items: center; }
@@ -92,7 +91,6 @@
         .wide { grid-column: span 2; min-height: 105px; flex-direction: row; align-items: center; margin-bottom: 8px; }
         .icon-orb { width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; margin-bottom: 15px; box-shadow: 0 8px 15px rgba(0,0,0,0.04); }
         
-        /* Vibrant Orb Colors */
         .orb-1 { background: linear-gradient(135deg, #E0F7F6, #C1F0ED); color: var(--c5); }
         .orb-2 { background: linear-gradient(135deg, #FFF0E0, #FFE0C2); color: #D97706; }
         .orb-3 { background: linear-gradient(135deg, #E0EBFF, #C2D6FF); color: #2563EB; }
@@ -104,7 +102,7 @@
         .add-btn { width: 100%; background: var(--c1); color: var(--c5); border: 1px solid var(--c2); padding: 12px; border-radius: 14px; font-weight: 800; margin-top: 15px; cursor: pointer; transition: all 0.2s; font-size: 13px; }
         .add-btn:active { background: var(--c3); color: white; transform: scale(0.95); }
         
-        .pay-btn { width: 100%; height: 62px; background: linear-gradient(135deg, var(--c5), var(--c4)); color: white; border: none; border-radius: 20px; font-size: 17px; font-weight: 800; box-shadow: 0 15px 30px rgba(5, 92, 97, 0.3); margin-top: 20px; transition: 0.2s; letter-spacing: 0.5px; }
+        .pay-btn { width: 100%; height: 62px; background: linear-gradient(135deg, var(--c5), var(--c4)); color: white; border: none; border-radius: 20px; font-size: 17px; font-weight: 800; box-shadow: 0 15px 30px rgba(5, 92, 97, 0.3); margin-top: 20px; transition: 0.2s; letter-spacing: 0.5px; cursor: pointer; }
         .pay-btn:active { transform: scale(0.96); box-shadow: 0 8px 15px rgba(5, 92, 97, 0.2); }
 
         /* --- CART & ADDRESS --- */
@@ -185,13 +183,15 @@
     <div id="screen-login" class="screen auth-bg">
         <h1 style="color: var(--c5); font-size: 42px; margin: 0; letter-spacing: -1.5px; font-weight: 800;">MediFlow</h1>
         <p style="color: var(--c5); font-weight: 600; opacity: 0.8; margin-top: 5px;">Your digital pharmacy.</p>
+        
         <div class="glass-sheet">
             <h2 style="font-size: 28px; color: #111827; margin-top: 0;">Welcome</h2>
             <div class="input-group">
-                <label>Mobile Number</label>
-                <input type="tel" id="login-phone" placeholder="0000-000-000" maxlength="12" oninput="autoPhone(this)">
-                <div id="phone-err" class="error-hint">Incorrect mobile format</div>
+                <label>Email Address</label>
+                <input type="email" id="login-email" placeholder="you@example.com" oninput="clearErr('email-err')">
+                <div id="email-err" class="error-hint">Please enter a valid email format</div>
             </div>
+            <button class="pay-btn" style="margin-top: 10px; height: 55px;" onclick="sendEmailOtp()">SEND OTP</button>
         </div>
     </div>
 
@@ -199,7 +199,7 @@
         <h1 style="color: var(--c5); font-size: 42px; margin: 0; font-weight: 800;">Verify</h1>
         <div class="glass-sheet">
             <h2 style="font-size: 28px; color: #111827; margin-top: 0;">Enter Code</h2>
-            <p style="color: var(--gray-text); font-size: 13px; font-weight: 500;">We've sent an SMS to your number.</p>
+            <p style="color: var(--gray-text); font-size: 13px; font-weight: 500;">We've sent an email to your inbox.</p>
             <div style="display:flex; justify-content:space-between; margin: 30px 0;">
                 <input type="tel" class="otp-box" id="otp-1" maxlength="1" oninput="m(this)" style="width:48px; height:60px; border:1.5px solid #E5E7EB; border-radius:16px; text-align:center; font-size:24px; font-weight:800; background:white; color:#111827; outline:none; transition:0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" inputmode="numeric">
                 <input type="tel" class="otp-box" maxlength="1" oninput="m(this)" style="width:48px; height:60px; border:1.5px solid #E5E7EB; border-radius:16px; text-align:center; font-size:24px; font-weight:800; background:white; color:#111827; outline:none; transition:0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" inputmode="numeric">
@@ -251,7 +251,6 @@
         </div>
 
         <div id="main-scroll">
-            
             <div id="tab-home" class="content-view active-view">
                 <div id="home-normal-content">
                     <div style="margin-bottom:20px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Quick Services</h3></div>
@@ -323,17 +322,49 @@
 
             <div id="tab-profile" class="content-view">
                 <div style="margin-bottom:20px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">My Account</h3></div>
+                
                 <div class="glass-card wide" style="cursor:default;">
                      <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
                      <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
                 </div>
+                
                 <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #FEE2E2; background:#FEF2F2;">
                     <div class="icon-orb" style="background:#FCA5A5; color:#991B1B;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                     <div style="margin-left:5px;"><h3 style="color:#991B1B; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#B91C1C; font-weight:500;">Securely end session</p></div>
                 </div>
             </div>
         </div>
+<div id="tab-profile" class="content-view">
+                <div style="margin-bottom:20px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">My Account</h3></div>
+                
+                <div class="glass-card wide" style="cursor:default; margin-bottom: 12px;">
+                     <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
+                     <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
+                </div>
+                
+                <div class="glass-card wide" onclick="openOrderHistory()" style="cursor:pointer; margin-bottom: 12px;">
+                     <div class="icon-orb orb-3"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                     <div style="margin-left:5px; flex:1;"><h3 style="margin:0; font-size:16px;">Order History</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">View past purchases</p></div>
+                     <i class="fa-solid fa-chevron-right" style="color:#9CA3AF;"></i>
+                </div>
+                
+                <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #FEE2E2; background:#FEF2F2;">
+                    ```
 
+**2. Add the Order History Screen:**
+Scroll down past all the other screens (like `<div id="screen-consult"...>`) and add this brand new screen right above the `<div id="payment-overlay"...>`:
+
+```html
+    <div id="screen-orders" class="screen hidden">
+        <div class="header-aura" style="height:140px; padding-top:30px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div onclick="closeOrderHistory()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
+                <h2 style="margin:0; color:white; font-size:22px; font-weight:800;">Past Orders</h2>
+            </div>
+        </div>
+        <div style="margin-top:150px; padding:20px; flex:1; overflow-y:auto; padding-bottom:50px;" id="order-history-list">
+            </div>
+    </div>
         <div id="sticky-checkout" class="sticky-checkout">
             <div>
                 <span style="font-size:12px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:1px;">To Pay</span><br>
@@ -477,10 +508,10 @@
 
 <script>
     // --- API CONFIG ---
-    // Change this to your IP if using on mobile! e.g., 'http://192.168.1.X:3000/api'
-    const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
+    // 🚨 IMPORTANT: Replace with your actual Render API Link before uploading to GitHub!
+    const API_BASE = 'http://localhost:3000/api'; 
+    // Example: const API_BASE = 'https://mediflow-api-xyz.onrender.com/api';
     
-    // Changed to 'let' so it can be updated via API, but provided a fallback
     let MEDICINE_DB = [
         { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false },
         { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false },
@@ -511,8 +542,7 @@
         { name: "Allegra 120", price: 195, category: "Allergy", type: "Tab", icon: "fa-wind", isRx: false }
     ];
 
-    let currentPhoneRaw = "";
-    let currentPhoneClean = "";
+    let currentEmailClean = ""; // Changed from phone variables
     let gender = "";
     let cart = [];
     let selectedAddress = null;
@@ -543,14 +573,11 @@
         } else { loading(false); }
     };
 
-    // --- MAP LOGIC ---
+    // --- MAP & ADDRESS LOGIC (Remains exactly the same) ---
     function initMap() {
         if(map) return; 
         map = L.map('map').setView([28.6139, 77.2090], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
         map.on('moveend', function() {
             const center = map.getCenter();
             document.getElementById('addr-line2').value = `Lat: ${center.lat.toFixed(4)}, Lng: ${center.lng.toFixed(4)}`;
@@ -566,362 +593,148 @@
                 map.setView([lat, lng], 15);
                 loading(false);
                 document.getElementById('addr-line2').value = "Current GPS Location Detected";
-            }, () => {
-                loading(false);
-                alert("Location Access Denied");
-            });
+            }, () => { loading(false); alert("Location Access Denied"); });
         }
     }
 
-    // --- ADDRESS LOGIC ---
-    function openAddressManager() {
-        document.getElementById('screen-dash').classList.add('hidden');
-        document.getElementById('screen-address').classList.remove('hidden');
-        renderAddressList();
-        setTimeout(() => {
-            initMap();
-            map.invalidateSize();
-        }, 300);
-    }
-
-    function closeAddressManager() {
-        document.getElementById('screen-address').classList.add('hidden');
-        document.getElementById('screen-dash').classList.remove('hidden');
-    }
+    function openAddressManager() { document.getElementById('screen-dash').classList.add('hidden'); document.getElementById('screen-address').classList.remove('hidden'); renderAddressList(); setTimeout(() => { initMap(); map.invalidateSize(); }, 300); }
+    function closeAddressManager() { document.getElementById('screen-address').classList.add('hidden'); document.getElementById('screen-dash').classList.remove('hidden'); }
 
     async function loadAddresses(userId) {
-        if (!userId) {
-            const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
-            if(session) userId = session.id;
-        }
+        if (!userId) { const session = JSON.parse(localStorage.getItem('mediflow_current_session')); if(session) userId = session.id; }
         if (!userId) return;
-
-        try {
-            const res = await fetch(`${API_BASE}/addresses/${userId}`);
-            const data = await res.json();
-            if (data.success) {
-                window.currentAddresses = data.data;
-                if(window.currentAddresses.length > 0) {
-                    selectAddress(window.currentAddresses[0]);
-                }
-            }
-        } catch(e) {
-            console.error("Could not fetch addresses", e);
-            window.currentAddresses = [];
-        }
+        try { const res = await fetch(`${API_BASE}/addresses/${userId}`); const data = await res.json(); if (data.success) { window.currentAddresses = data.data; if(window.currentAddresses.length > 0) { selectAddress(window.currentAddresses[0]); } } } catch(e) { console.error("Could not fetch addresses", e); window.currentAddresses = []; }
     }
 
     async function saveNewAddress() {
-        const line1 = document.getElementById('addr-line1').value;
-        const line2 = document.getElementById('addr-line2').value;
-        const tag = document.querySelector('#screen-address .select-chip.active').innerText;
-        const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
-        
-        if(!line1 || !line2) return alert("Fill Address Details");
-        if(!session) return alert("Please log in first");
-        
+        const line1 = document.getElementById('addr-line1').value; const line2 = document.getElementById('addr-line2').value; const tag = document.querySelector('#screen-address .select-chip.active').innerText; const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
+        if(!line1 || !line2) return alert("Fill Address Details"); if(!session) return alert("Please log in first");
         loading(true, "SAVING ADDRESS...");
-        try {
-            const res = await fetch(`${API_BASE}/addresses`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: session.id, line1, line2, tag })
-            });
-            const data = await res.json();
-            
+        try { const res = await fetch(`${API_BASE}/addresses`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: session.id, line1, line2, tag }) }); const data = await res.json();
             loading(false);
-            if (data.success) {
-                document.getElementById('addr-line1').value = "";
-                document.getElementById('addr-line2').value = "";
-                
-                window.currentAddresses.push(data.data);
-                selectAddress(data.data);
-                closeAddressManager();
-            } else { alert("Failed to save address"); }
-        } catch(e) {
-            loading(false);
-            alert("API connection failed.");
-        }
+            if (data.success) { document.getElementById('addr-line1').value = ""; document.getElementById('addr-line2').value = ""; window.currentAddresses.push(data.data); selectAddress(data.data); closeAddressManager(); } else { alert("Failed to save address"); }
+        } catch(e) { loading(false); alert("API connection failed."); }
     }
 
     function renderAddressList() {
-        const list = window.currentAddresses || [];
-        const container = document.getElementById('address-list');
-        container.innerHTML = "";
-        
-        if(list.length === 0) {
-            container.innerHTML = "<p style='text-align:center; color:#9CA3AF; font-weight:600;'>No saved addresses yet</p>";
-            return;
-        }
-
+        const list = window.currentAddresses || []; const container = document.getElementById('address-list'); container.innerHTML = "";
+        if(list.length === 0) { container.innerHTML = "<p style='text-align:center; color:#9CA3AF; font-weight:600;'>No saved addresses yet</p>"; return; }
         list.forEach(addr => {
             const isSelected = selectedAddress && selectedAddress.id === addr.id;
             container.innerHTML += `
                 <div class="addr-card ${isSelected ? 'selected' : ''}" onclick='selectAddress(${JSON.stringify(addr)})'>
                     <div style="flex:1;">
-                        <div style="display:flex; align-items:center;">
-                            <b style="font-size:15px; color:#111827;">${addr.line1}</b>
-                            <span class="tag-chip">${addr.tag}</span>
-                        </div>
+                        <div style="display:flex; align-items:center;"><b style="font-size:15px; color:#111827;">${addr.line1}</b><span class="tag-chip">${addr.tag}</span></div>
                         <p style="margin:4px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">${addr.line2}</p>
                     </div>
                     ${isSelected ? '<i class="fa-solid fa-circle-check" style="color:var(--c4); font-size:20px;"></i>' : ''}
-                </div>
-            `;
+                </div>`;
         });
     }
 
-    function selectAddress(addr) {
-        selectedAddress = addr;
-        document.getElementById('curr-addr-tag').innerText = "Delivery to " + addr.tag;
-        document.getElementById('curr-addr-text').innerText = addr.line1 + ", " + addr.line2;
-        if(!document.getElementById('screen-address').classList.contains('hidden')) {
-            renderAddressList();
-            setTimeout(() => closeAddressManager(), 300);
-        }
-    }
+    function selectAddress(addr) { selectedAddress = addr; document.getElementById('curr-addr-tag').innerText = "Delivery to " + addr.tag; document.getElementById('curr-addr-text').innerText = addr.line1 + ", " + addr.line2; if(!document.getElementById('screen-address').classList.contains('hidden')) { renderAddressList(); setTimeout(() => closeAddressManager(), 300); } }
+    function selAddrTag(el) { el.parentNode.querySelectorAll('.select-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
 
-    function selAddrTag(el) {
-        el.parentNode.querySelectorAll('.select-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    // --- CART SYSTEM ---
-    function addToCart(itemName) {
-        const item = MEDICINE_DB.find(i => i.name === itemName);
-        cart.push(item);
-        showToast(`Added ${item.name} to Cart`);
-        updateCartUI();
-    }
-
-    function removeFromCart(index) {
-        cart.splice(index, 1);
-        updateCartUI();
-    }
+    // --- CART SYSTEM (Remains exactly the same) ---
+    function addToCart(itemName) { const item = MEDICINE_DB.find(i => i.name === itemName); cart.push(item); showToast(`Added ${item.name} to Cart`); updateCartUI(); }
+    function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
 
     function updateCartUI() {
-        const container = document.getElementById('cart-container');
-        const stickyBar = document.getElementById('sticky-checkout');
+        const container = document.getElementById('cart-container'); const stickyBar = document.getElementById('sticky-checkout');
+        if(cart.length === 0) { container.innerHTML = `<div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;"><div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div><h3 style="font-size:18px;">Your Cart is Empty</h3><p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p></div>`; stickyBar.classList.remove('show'); return; }
         
-        if(cart.length === 0) {
-            container.innerHTML = `
-                <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
-                    <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <h3 style="font-size:18px;">Your Cart is Empty</h3>
-                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p>
-                </div>`;
-            stickyBar.classList.remove('show');
-            return;
-        }
-
-        let itemsHtml = "";
-        let itemTotal = 0;
-        let hasRx = false;
-
+        let itemsHtml = ""; let itemTotal = 0; let hasRx = false;
         cart.forEach((item, index) => {
-            itemTotal += item.price;
-            if(item.isRx) hasRx = true;
-            itemsHtml += `
-                <div class="cart-item">
-                    <div style="display:flex; align-items:center;">
-                        <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0;"><i class="fa-solid ${item.icon}"></i></div>
-                        <div>
-                            <b style="font-size:15px; color:#111827;">${item.name}</b>
-                            ${item.isRx ? '<span class="rx-badge" style="position:static; margin-left:8px; display:inline-block;">Rx Required</span>' : ''}
-                            <div style="font-size:14px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price}</div>
-                        </div>
-                    </div>
-                    <div onclick="removeFromCart(${index})" style="width:35px; height:35px; background:var(--error-bg); color:var(--error); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
-                </div>
-            `;
+            itemTotal += item.price; if(item.isRx) hasRx = true;
+            itemsHtml += `<div class="cart-item"><div style="display:flex; align-items:center;"><div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0;"><i class="fa-solid ${item.icon}"></i></div><div><b style="font-size:15px; color:#111827;">${item.name}</b>${item.isRx ? '<span class="rx-badge" style="position:static; margin-left:8px; display:inline-block;">Rx Required</span>' : ''}<div style="font-size:14px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price}</div></div></div><div onclick="removeFromCart(${index})" style="width:35px; height:35px; background:var(--error-bg); color:var(--error); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div></div>`;
         });
 
-        let delivery = (itemTotal < 199) ? 39 : 0;
-        let handling = (itemTotal < 199) ? 9 : 0;
-        let grandTotal = itemTotal + delivery + handling;
-
-        let billHtml = `
-            <div style="margin-bottom:15px;"><h3 class="cart-section-title">Order Items</h3></div>
-            ${itemsHtml}
-            
-            <div style="margin-bottom:15px; margin-top:30px;"><h3 class="cart-section-title">Bill Summary</h3></div>
-            <div class="bill-details-card">
-                <div class="bill-row"><span>Item Total</span><span style="font-weight:700;">₹${itemTotal}</span></div>
-                <div class="bill-row">
-                    <span>Delivery Fee</span>
-                    <span class="${delivery === 0 ? 'text-success' : ''}" style="font-weight:700;">${delivery === 0 ? 'FREE' : '₹'+delivery}</span>
-                </div>
-                <div class="bill-row">
-                    <span>Handling Fee</span>
-                    <span class="${handling === 0 ? 'text-success' : ''}" style="font-weight:700;">${handling === 0 ? 'FREE' : '₹'+handling}</span>
-                </div>
-                <div class="bill-row total"><span>Amount to Pay</span><span>₹${grandTotal}</span></div>
-            </div>
-        `;
-
-        if (hasRx && !window.rxVerified) {
-            billHtml += `<div style="background:var(--error-bg); border:1.5px solid #FECACA; color:var(--error); padding:16px; border-radius:18px; font-size:13px; font-weight:600; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(255,94,94,0.1);"><i class="fa-solid fa-file-prescription" style="font-size:20px; margin-right:12px;"></i> Upload prescription to proceed</div>`;
-        } else if (hasRx && window.rxVerified) {
-            billHtml += `<div style="background:var(--success-bg); border:1.5px solid #A7F3D0; color:var(--success); padding:16px; border-radius:18px; font-size:13px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(0,208,156,0.1);"><i class="fa-solid fa-circle-check" style="font-size:20px; margin-right:12px;"></i> Prescription verified by AI</div>`;
-        }
-
-        container.innerHTML = billHtml;
+        let delivery = (itemTotal < 199) ? 39 : 0; let handling = (itemTotal < 199) ? 9 : 0; let grandTotal = itemTotal + delivery + handling;
+        let billHtml = `<div style="margin-bottom:15px;"><h3 class="cart-section-title">Order Items</h3></div>${itemsHtml}<div style="margin-bottom:15px; margin-top:30px;"><h3 class="cart-section-title">Bill Summary</h3></div><div class="bill-details-card"><div class="bill-row"><span>Item Total</span><span style="font-weight:700;">₹${itemTotal}</span></div><div class="bill-row"><span>Delivery Fee</span><span class="${delivery === 0 ? 'text-success' : ''}" style="font-weight:700;">${delivery === 0 ? 'FREE' : '₹'+delivery}</span></div><div class="bill-row"><span>Handling Fee</span><span class="${handling === 0 ? 'text-success' : ''}" style="font-weight:700;">${handling === 0 ? 'FREE' : '₹'+handling}</span></div><div class="bill-row total"><span>Amount to Pay</span><span>₹${grandTotal}</span></div></div>`;
         
-        document.getElementById('sticky-total').innerText = "₹" + grandTotal;
-        document.getElementById('nav-btn-cart').style.color = 'var(--c4)';
-        stickyBar.classList.add('show');
-        
-        window.currentCartTotal = grandTotal;
-        window.currentCartRx = hasRx;
+        if (hasRx && !window.rxVerified) { billHtml += `<div style="background:var(--error-bg); border:1.5px solid #FECACA; color:var(--error); padding:16px; border-radius:18px; font-size:13px; font-weight:600; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(255,94,94,0.1);"><i class="fa-solid fa-file-prescription" style="font-size:20px; margin-right:12px;"></i> Upload prescription to proceed</div>`; } 
+        else if (hasRx && window.rxVerified) { billHtml += `<div style="background:var(--success-bg); border:1.5px solid #A7F3D0; color:var(--success); padding:16px; border-radius:18px; font-size:13px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(0,208,156,0.1);"><i class="fa-solid fa-circle-check" style="font-size:20px; margin-right:12px;"></i> Prescription verified by AI</div>`; }
+
+        container.innerHTML = billHtml; document.getElementById('sticky-total').innerText = "₹" + grandTotal; document.getElementById('nav-btn-cart').style.color = 'var(--c4)'; stickyBar.classList.add('show'); window.currentCartTotal = grandTotal; window.currentCartRx = hasRx;
     }
 
     function processCartPay() {
-        if(!selectedAddress) {
-            alert("Please Select Delivery Address");
-            openAddressManager();
-            return;
-        }
-        if (window.currentCartRx && !window.rxVerified) {
-            alert("Please upload a prescription for the Rx items in your cart first.");
-            openRxUpload();
-            return;
-        }
+        if(!selectedAddress) { alert("Please Select Delivery Address"); openAddressManager(); return; }
+        if (window.currentCartRx && !window.rxVerified) { alert("Please upload a prescription for the Rx items in your cart first."); openRxUpload(); return; }
         openPayment(window.currentCartTotal, window.currentCartRx, 'cart');
     }
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2500);
-    }
+    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
     function handleGlobalSearch(el) {
-        const query = el.value.toLowerCase();
-        const homeNormal = document.getElementById('home-normal-content');
-        const homeSearch = document.getElementById('home-search-content');
-        const resultsGrid = document.getElementById('search-results-grid');
-
+        const query = el.value.toLowerCase(); const homeNormal = document.getElementById('home-normal-content'); const homeSearch = document.getElementById('home-search-content'); const resultsGrid = document.getElementById('search-results-grid');
         switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
-
-        if(query.length === 0) {
-            homeNormal.style.display = 'block';
-            homeSearch.style.display = 'none';
-            return;
-        }
-
-        homeNormal.style.display = 'none';
-        homeSearch.style.display = 'block';
-        resultsGrid.innerHTML = "";
-
-        const matches = MEDICINE_DB.filter(item => 
-            item.name.toLowerCase().includes(query) || 
-            item.category.toLowerCase().includes(query)
-        );
-
-        if(matches.length === 0) {
-            resultsGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px 20px; color:var(--gray-text); font-weight:600; background:white; border-radius:20px; border:1px dashed #E5E7EB;">No products found for "${query}"</div>`;
-        } else {
-            matches.forEach(item => { resultsGrid.innerHTML += renderItemCard(item); });
-        }
+        if(query.length === 0) { homeNormal.style.display = 'block'; homeSearch.style.display = 'none'; return; }
+        homeNormal.style.display = 'none'; homeSearch.style.display = 'block'; resultsGrid.innerHTML = "";
+        const matches = MEDICINE_DB.filter(item => item.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+        if(matches.length === 0) { resultsGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px 20px; color:var(--gray-text); font-weight:600; background:white; border-radius:20px; border:1px dashed #E5E7EB;">No products found for "${query}"</div>`; } 
+        else { matches.forEach(item => { resultsGrid.innerHTML += renderItemCard(item); }); }
     }
 
     function renderItemCard(item) {
-        return `
-            <div class="glass-card">
-                ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
-                <div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>
-                <div>
-                    <h3 style="margin:0; font-size:15px;">${item.name}</h3>
-                    <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p>
-                    <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                </div>
-                <button class="add-btn" onclick="addToCart('${item.name}')">ADD +</button>
-            </div>
-        `;
+        return `<div class="glass-card">${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}<div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div><div><h3 style="margin:0; font-size:15px;">${item.name}</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p><p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p></div><button class="add-btn" onclick="addToCart('${item.name}')">ADD +</button></div>`;
     }
 
-    function clearSearch() {
-        document.getElementById('global-search').value = "";
-        document.getElementById('home-normal-content').style.display = 'block';
-        document.getElementById('home-search-content').style.display = 'none';
-    }
+    function clearSearch() { document.getElementById('global-search').value = ""; document.getElementById('home-normal-content').style.display = 'block'; document.getElementById('home-search-content').style.display = 'none'; }
 
     function renderCategoriesTab() {
-        const grid = document.getElementById('all-cats-grid');
-        grid.innerHTML = "";
-        const categories = [...new Set(MEDICINE_DB.map(item => item.category))];
-        
-        const colors = ['orb-1', 'orb-2', 'orb-3'];
-        
+        const grid = document.getElementById('all-cats-grid'); grid.innerHTML = ""; const categories = [...new Set(MEDICINE_DB.map(item => item.category))]; const colors = ['orb-1', 'orb-2', 'orb-3'];
         categories.forEach((cat, idx) => {
-            const example = MEDICINE_DB.find(m => m.category === cat);
-            const colorClass = colors[idx % colors.length];
-            
-            grid.innerHTML += `
-                <div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick="openCategoryView('${cat}')">
-                    <div class="icon-orb ${colorClass}" style="margin:0 0 15px; width:55px; height:55px; font-size:24px;"><i class="fa-solid ${example.icon}"></i></div>
-                    <h3 style="margin:0; font-size:15px;">${cat}</h3>
-                </div>
-            `;
+            const example = MEDICINE_DB.find(m => m.category === cat); const colorClass = colors[idx % colors.length];
+            grid.innerHTML += `<div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick="openCategoryView('${cat}')"><div class="icon-orb ${colorClass}" style="margin:0 0 15px; width:55px; height:55px; font-size:24px;"><i class="fa-solid ${example.icon}"></i></div><h3 style="margin:0; font-size:15px;">${cat}</h3></div>`;
         });
     }
 
-    function openCategoryView(catName) {
-        document.getElementById('cat-title').innerText = catName;
-        const grid = document.getElementById('cat-items-grid');
-        grid.innerHTML = "";
-        const items = MEDICINE_DB.filter(m => m.category === catName);
-        items.forEach(item => { grid.innerHTML += renderItemCard(item); });
-        document.getElementById('screen-dash').classList.add('hidden');
-        document.getElementById('screen-cat-items').classList.remove('hidden');
-    }
+    function openCategoryView(catName) { document.getElementById('cat-title').innerText = catName; const grid = document.getElementById('cat-items-grid'); grid.innerHTML = ""; const items = MEDICINE_DB.filter(m => m.category === catName); items.forEach(item => { grid.innerHTML += renderItemCard(item); }); document.getElementById('screen-dash').classList.add('hidden'); document.getElementById('screen-cat-items').classList.remove('hidden'); }
+    function closeCategoryView() { document.getElementById('screen-cat-items').classList.add('hidden'); document.getElementById('screen-dash').classList.remove('hidden'); }
 
-    function closeCategoryView() {
-        document.getElementById('screen-cat-items').classList.add('hidden');
-        document.getElementById('screen-dash').classList.remove('hidden');
-    }
 
-    // --- AUTH ---
-   async function autoPhone(el) {
-        clearErr('phone-err');
-        let v = el.value.replace(/\D/g, '');
-        if (v.length > 4 && v.length <= 7) v = v.slice(0,4) + '-' + v.slice(4);
-        if (v.length > 7) v = v.slice(0,4) + '-' + v.slice(4,7) + '-' + v.slice(7);
-        el.value = v;
+    // ==========================================
+    // --- AUTHENTICATION (NEW EMAIL SYSTEM) ---
+    // ==========================================
+
+    async function sendEmailOtp() {
+        const el = document.getElementById('login-email');
+        const v = el.value.trim().toLowerCase();
         
-        // When the user finishes typing 10 digits (12 characters with dashes)
-        if(v.length === 12) {
-            currentPhoneRaw = v;
-            currentPhoneClean = v.replace(/-/g, '');
-            el.style.borderColor = "var(--success)";
-            el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
+        // Use a simple Regex to ensure it's a valid email structure before sending to server
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if(!emailRegex.test(v)) {
+            el.style.borderColor = "var(--error)";
+            document.getElementById('email-err').style.display = 'block';
+            return;
+        }
+
+        currentEmailClean = v;
+        el.style.borderColor = "var(--success)";
+        el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
+        clearErr('email-err');
+        
+        loading(true, "SENDING OTP...");
+        try {
+            const res = await fetch(`${API_BASE}/auth/send-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: currentEmailClean })
+            });
+            const data = await res.json();
             
-            // NEW: Ask the backend to generate and send a real OTP!
-            loading(true, "SENDING OTP...");
-            try {
-                const res = await fetch(`${API_BASE}/auth/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: currentPhoneClean })
-                });
-                const data = await res.json();
-                
-                loading(false);
-                if (data.success) {
-                    showToast("OTP Sent to your phone! 💬");
-                    // Move to OTP screen
-                    setTimeout(() => { showScreen('screen-otp'); setTimeout(() => document.getElementById('otp-1').focus(), 600); }, 500);
-                } else {
-                    alert("Failed to send OTP.");
-                }
-            } catch(e) {
-                loading(false);
-                alert("Server error. Ensure backend is running.");
+            loading(false);
+            if (data.success) {
+                showToast("OTP Sent to your email! 📧");
+                setTimeout(() => { showScreen('screen-otp'); setTimeout(() => document.getElementById('otp-1').focus(), 600); }, 500);
+            } else {
+                alert("Failed to send OTP.");
             }
-        } else {
-            el.style.borderColor = "";
-            el.style.boxShadow = "";
+        } catch(e) {
+            loading(false);
+            alert("Server error. Ensure your cloud backend is running.");
         }
     }
 
@@ -935,11 +748,7 @@
         }
     }
 
-    function selG(el, selectedGender) {
-        document.querySelectorAll('.gender-chip').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        gender = selectedGender;
-    }
+    function selG(el, selectedGender) { document.querySelectorAll('.gender-chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); gender = selectedGender; }
 
     async function checkLocalLogin(otpCode) {
         loading(true, "VERIFYING...");
@@ -947,7 +756,7 @@
             const res = await fetch(`${API_BASE}/auth/verify`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentPhoneClean, otp: otpCode })
+                body: JSON.stringify({ email: currentEmailClean, otp: otpCode }) // Now sends Email
             });
             const data = await res.json();
             
@@ -990,7 +799,7 @@
             const res = await fetch(`${API_BASE}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentPhoneClean, name: n, age: a, gender: gender })
+                body: JSON.stringify({ email: currentEmailClean, name: n, age: a, gender: gender }) // Now sends Email
             });
             const data = await res.json();
             
@@ -1008,8 +817,72 @@
             alert("API connection failed.");
         }
     }
+// --- ORDER HISTORY LOGIC ---
+    function openOrderHistory() {
+        document.getElementById('screen-dash').classList.add('hidden');
+        document.getElementById('screen-orders').classList.remove('hidden');
+        fetchOrderHistory();
+    }
 
-    // --- BOOKING & PAY ---
+    function closeOrderHistory() {
+        document.getElementById('screen-orders').classList.add('hidden');
+        document.getElementById('screen-dash').classList.remove('hidden');
+    }
+
+    async function fetchOrderHistory() {
+        const container = document.getElementById('order-history-list');
+        container.innerHTML = `<div style="text-align:center; padding:40px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px; color:var(--c3);"></i></div>`;
+        
+        const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
+        if(!session) return;
+
+        try {
+            const res = await fetch(`${API_BASE}/orders/${session.id}`);
+            const data = await res.json();
+            
+            if(data.success && data.data.length > 0) {
+                container.innerHTML = "";
+                data.data.forEach(order => {
+                    const date = new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                    // Combine all item names into a single string
+                    const itemsList = order.items.map(i => i.name).join(", ");
+                    
+                    container.innerHTML += `
+                        <div class="glass-card" style="margin-bottom: 15px; display: block; min-height: auto;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; border-bottom:1.5px dashed #E5E7EB; padding-bottom:12px;">
+                                <span style="font-size:11px; font-weight:800; color:var(--gray-text); letter-spacing:0.5px;">${order.orderId}</span>
+                                <span style="font-size:12px; font-weight:800; color:var(--c4);">${date}</span>
+                            </div>
+                            <h3 style="font-size:14px; margin-bottom:5px; color:#111827; line-height:1.4;">
+                                ${itemsList.length > 40 ? itemsList.substring(0, 40) + '...' : itemsList}
+                            </h3>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                                <span style="background:var(--success-bg); color:var(--success); padding:6px 12px; border-radius:10px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+                                    <i class="fa-solid fa-check" style="margin-right:4px;"></i> ${order.status}
+                                </span>
+                                <span style="font-size:18px; font-weight:800; color:#111827;">₹${order.totalAmount}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--gray-text);"><div class="icon-orb orb-3" style="margin:0 auto 15px; width:60px; height:60px; font-size:24px;"><i class="fa-solid fa-box-open"></i></div><h3 style="font-size:16px;">No Orders Yet</h3><p style="margin-top:5px; font-size:13px; font-weight:500;">You haven't placed any orders.</p></div>`;
+            }
+        } catch(e) {
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--error); font-weight:600;">Failed to load order history. Ensure your cloud backend is running.</div>`;
+        }
+    }
+    // --- UTILS ---
+    function updateDash(user) {
+        document.getElementById('dash-user').innerText = user.name;
+        document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
+        document.getElementById('db-name-disp').innerText = user.name;
+        
+        // Show Email on Profile tab instead of Phone!
+        document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.email}`;
+    }
+
+    // --- BOOKING, PAYMENTS & REST (Remains perfectly the same) ---
     function triggerDoctorTab() { document.getElementById('nav-btn-doc').click(); }
     function checkAvailability() { loading(true, "CHECKING SCHEDULES..."); setTimeout(() => { loading(false); openConsultation(); }, 1200); }
     function openConsultation() { document.getElementById('screen-consult').classList.remove('hidden'); document.getElementById('screen-dash').classList.add('hidden'); }
@@ -1017,150 +890,32 @@
     function selUI(el) { el.parentNode.querySelectorAll('.select-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
     function selMode(el) { document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
     
-    function openPayment(amount, isRx = false, type = 'cart') { 
-        document.getElementById('pay-amt').innerText = "₹" + amount;
-        document.getElementById('rx-warning').style.display = isRx ? 'block' : 'none';
-        
-        const overlay = document.getElementById('payment-overlay');
-        overlay.classList.remove('hidden'); 
-        overlay.style.opacity = 0;
-        setTimeout(() => overlay.style.opacity = 1, 10);
-    }
-    
-    function closePayment() { 
-        const overlay = document.getElementById('payment-overlay');
-        overlay.style.opacity = 0;
-        setTimeout(() => overlay.classList.add('hidden'), 300);
-    }
+    function openPayment(amount, isRx = false, type = 'cart') { document.getElementById('pay-amt').innerText = "₹" + amount; document.getElementById('rx-warning').style.display = isRx ? 'block' : 'none'; const overlay = document.getElementById('payment-overlay'); overlay.classList.remove('hidden'); overlay.style.opacity = 0; setTimeout(() => overlay.style.opacity = 1, 10); }
+    function closePayment() { const overlay = document.getElementById('payment-overlay'); overlay.style.opacity = 0; setTimeout(() => overlay.classList.add('hidden'), 300); }
 
     async function verifyPayment() {
-        closePayment();
-        loading(true, "PROCESSING PAYMENT...");
-        
+        closePayment(); loading(true, "PROCESSING PAYMENT...");
         const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
-        
         try {
-            const res = await fetch(`${API_BASE}/orders`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: session ? session.id : 'guest',
-                    items: cart,
-                    totalAmount: window.currentCartTotal,
-                    addressId: selectedAddress ? selectedAddress.id : null,
-                    hasPrescription: window.rxVerified
-                })
-            });
-            
+            const res = await fetch(`${API_BASE}/orders`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: session ? session.id : 'guest', items: cart, totalAmount: window.currentCartTotal, addressId: selectedAddress ? selectedAddress.id : null, hasPrescription: window.rxVerified }) });
             const data = await res.json();
-            
-            if (data.success) {
-                loading(true, "PAYMENT SUCCESSFUL!");
-                setTimeout(() => {
-                    loading(false);
-                    alert("Order Confirmed! 🚀\nOrder ID: " + data.order.orderId);
-                    cart = []; 
-                    window.rxVerified = false; 
-                    updateCartUI();
-                    closeConsultation(); 
-                    document.getElementById('screen-dash').classList.remove('hidden');
-                    document.getElementById('screen-cat-items').classList.add('hidden');
-                    switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
-                }, 1500);
-            } else {
-                loading(false);
-                alert("Order failed: " + data.message);
-            }
+            if (data.success) { loading(true, "PAYMENT SUCCESSFUL!"); setTimeout(() => { loading(false); alert("Order Confirmed! 🚀\nOrder ID: " + data.order.orderId); cart = []; window.rxVerified = false; updateCartUI(); closeConsultation(); document.getElementById('screen-dash').classList.remove('hidden'); document.getElementById('screen-cat-items').classList.add('hidden'); switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home'); }, 1500); } else { loading(false); alert("Order failed: " + data.message); }
         } catch(e) {
-            loading(false);
-            // SIMULATED FALLBACK IF NODE SERVER IS DOWN
-            alert("Order Confirmed! 🚀 (Simulated locally)");
-            cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
-            document.getElementById('screen-dash').classList.remove('hidden');
-            document.getElementById('screen-cat-items').classList.add('hidden');
-            switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+            loading(false); alert("Order Confirmed! 🚀 (Simulated locally)"); cart = []; window.rxVerified = false; updateCartUI(); closeConsultation(); document.getElementById('screen-dash').classList.remove('hidden'); document.getElementById('screen-cat-items').classList.add('hidden'); switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
         }
     }
 
-    // --- UTILS ---
-    function updateDash(user) {
-        document.getElementById('dash-user').innerText = user.name;
-        document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
-        document.getElementById('db-name-disp').innerText = user.name;
-        document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
-    }
-
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    function switchTab(el, tabId) {
-        clearSearch();
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
-        document.getElementById(tabId).classList.add('active-view');
-        
-        const sticky = document.getElementById('sticky-checkout');
-        if(tabId !== 'tab-delivery' || cart.length === 0) { 
-            sticky.style.display = 'none'; 
-        } else { 
-            sticky.style.display = 'flex'; 
-        }
-    }
-
+    function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+    function switchTab(el, tabId) { clearSearch(); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view')); document.getElementById(tabId).classList.add('active-view'); const sticky = document.getElementById('sticky-checkout'); if(tabId !== 'tab-delivery' || cart.length === 0) { sticky.style.display = 'none'; } else { sticky.style.display = 'flex'; } }
     function loading(show, text) { const l = document.getElementById('pill-loader'); if(show) { if(text) document.getElementById('loader-text').innerText=text; l.style.opacity=1; l.style.display='flex'; } else { l.style.opacity=0; setTimeout(()=>l.style.display='none',300); } }
     function clearErr(errId) { document.getElementById(errId).style.display='none'; }
     function dbLogout() { if(confirm("Are you sure you want to log out?")) { localStorage.removeItem('mediflow_current_session'); location.reload(); } }
 
-    // --- PRESCRIPTION UPLOAD LOGIC ---
-    function openRxUpload() {
-        document.getElementById('screen-dash').classList.add('hidden');
-        document.getElementById('screen-rx-upload').classList.remove('hidden');
-    }
-
-    function closeRxUpload() {
-        document.getElementById('screen-rx-upload').classList.add('hidden');
-        document.getElementById('screen-dash').classList.remove('hidden');
-        clearRxUpload(); 
-    }
-
-    function handleRxFile(event) {
-        const file = event.target.files[0];
-        if(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('rx-preview-img').src = e.target.result;
-                document.getElementById('rx-upload-zone').style.display = 'none';
-                document.getElementById('rx-preview-container').style.display = 'block';
-                document.getElementById('rx-submit-btn').style.display = 'block';
-            }
-            reader.readAsDataURL(file); 
-        }
-    }
-
-    function clearRxUpload() {
-        document.getElementById('rx-file-input').value = "";
-        document.getElementById('rx-upload-zone').style.display = 'flex';
-        document.getElementById('rx-preview-container').style.display = 'none';
-        document.getElementById('rx-submit-btn').style.display = 'none';
-    }
-
-    function submitRx() {
-        loading(true, "AI SCANNING IMAGE...");
-        setTimeout(() => {
-            loading(true, "VERIFIED!");
-            setTimeout(() => {
-                loading(false);
-                showToast("Prescription Verified! ✅");
-                window.rxVerified = true; 
-                closeRxUpload();
-                updateCartUI();
-                document.getElementById('nav-btn-cart').click();
-            }, 1000);
-        }, 2000);
-    }
+    function openRxUpload() { document.getElementById('screen-dash').classList.add('hidden'); document.getElementById('screen-rx-upload').classList.remove('hidden'); }
+    function closeRxUpload() { document.getElementById('screen-rx-upload').classList.add('hidden'); document.getElementById('screen-dash').classList.remove('hidden'); clearRxUpload(); }
+    function handleRxFile(event) { const file = event.target.files[0]; if(file) { const reader = new FileReader(); reader.onload = function(e) { document.getElementById('rx-preview-img').src = e.target.result; document.getElementById('rx-upload-zone').style.display = 'none'; document.getElementById('rx-preview-container').style.display = 'block'; document.getElementById('rx-submit-btn').style.display = 'block'; }; reader.readAsDataURL(file); } }
+    function clearRxUpload() { document.getElementById('rx-file-input').value = ""; document.getElementById('rx-upload-zone').style.display = 'flex'; document.getElementById('rx-preview-container').style.display = 'none'; document.getElementById('rx-submit-btn').style.display = 'none'; }
+    function submitRx() { loading(true, "AI SCANNING IMAGE..."); setTimeout(() => { loading(true, "VERIFIED!"); setTimeout(() => { loading(false); showToast("Prescription Verified! ✅"); window.rxVerified = true; closeRxUpload(); updateCartUI(); document.getElementById('nav-btn-cart').click(); }, 1000); }, 2000); }
 </script>
 </body>
 </html>
