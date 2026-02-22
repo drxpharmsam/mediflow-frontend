@@ -477,10 +477,8 @@
 
 <script>
     // --- API CONFIG ---
-    // Change this to your IP if using on mobile! e.g., 'http://192.168.1.X:3000/api'
     const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
     
-    // Changed to 'let' so it can be updated via API, but provided a fallback
     let MEDICINE_DB = [
         { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false },
         { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false },
@@ -883,43 +881,42 @@
     }
 
     // --- AUTH ---
-   let currentEmailClean = "";
-
-    async function sendEmailOtp() {
-        const el = document.getElementById('login-email');
-        const v = el.value.trim().toLowerCase();
+    async function autoPhone(el) {
+        clearErr('phone-err');
+        let v = el.value.replace(/\D/g, '');
+        if (v.length > 4 && v.length <= 7) v = v.slice(0,4) + '-' + v.slice(4);
+        if (v.length > 7) v = v.slice(0,4) + '-' + v.slice(4,7) + '-' + v.slice(7);
+        el.value = v;
         
-        // Basic Email Validation
-        if(!v.includes('@') || !v.includes('.')) {
-            applyShake(el, 'email-err');
-            el.style.borderColor = "var(--error)";
-            return;
-        }
-
-        currentEmailClean = v;
-        el.style.borderColor = "var(--success)";
-        el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
-        clearErr('email-err');
-        
-        loading(true, "SENDING OTP...");
-        try {
-            const res = await fetch(`${API_BASE}/auth/send-otp`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: currentEmailClean })
-            });
-            const data = await res.json();
+        if(v.length === 12) {
+            currentPhoneRaw = v;
+            currentPhoneClean = v.replace(/-/g, '');
+            el.style.borderColor = "var(--success)";
+            el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
             
-            loading(false);
-            if (data.success) {
-                showToast("OTP Sent to your email! 📧");
-                setTimeout(() => { showScreen('screen-otp'); setTimeout(() => document.getElementById('otp-1').focus(), 600); }, 500);
-            } else {
-                alert("Failed to send OTP.");
+            loading(true, "SENDING OTP...");
+            try {
+                const res = await fetch(`${API_BASE}/auth/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: currentPhoneClean })
+                });
+                const data = await res.json();
+                
+                loading(false);
+                if (data.success) {
+                    showToast("OTP Sent to your phone! 💬");
+                    setTimeout(() => { showScreen('screen-otp'); setTimeout(() => document.getElementById('otp-1').focus(), 600); }, 500);
+                } else {
+                    alert("Failed to send OTP.");
+                }
+            } catch(e) {
+                loading(false);
+                alert("Server error. Ensure backend is running.");
             }
-        } catch(e) {
-            loading(false);
-            alert("Server error. Ensure backend is running.");
+        } else {
+            el.style.borderColor = "";
+            el.style.boxShadow = "";
         }
     }
 
@@ -945,7 +942,7 @@
             const res = await fetch(`${API_BASE}/auth/verify`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: currentEmailClean, otp: otpCode })
+                body: JSON.stringify({ phone: currentPhoneClean, otp: otpCode })
             });
             const data = await res.json();
             
@@ -988,7 +985,7 @@
             const res = await fetch(`${API_BASE}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: currentEmailClean, name: n, age: a, gender: gender }) // <-- Changed here
+                body: JSON.stringify({ phone: currentPhoneClean, name: n, age: a, gender: gender })
             });
             const data = await res.json();
             
