@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1373,6 +1373,107 @@
 
         map.panTo([latitude, longitude], { animate: true, duration: 1.5 });
     });
+    // ==========================================
+    // SEAMLESS INJECTIONS (File Uploads & Reminders)
+    // ==========================================
+
+    // 1. Override submitRx to actually upload the file to the backend
+    submitRx = async function() {
+        const fileInput = document.getElementById('rx-file-input');
+        if(!fileInput.files[0]) return alert("Please select an image first.");
+
+        loading(true, "UPLOADING TO SERVER...");
+        
+        const formData = new FormData();
+        formData.append('prescription', fileInput.files[0]);
+
+        try {
+            const res = await fetch(`${API_BASE}/upload-rx`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                loading(true, "AI SCANNING IMAGE..."); // Keep the cool AI effect
+                setTimeout(() => {
+                    loading(false);
+                    showToast("Prescription Uploaded & Verified! ✅");
+                    window.rxVerified = true; 
+                    window.rxImageUrl = data.fileUrl; // Saving URL to attach to Order later
+                    closeRxUpload();
+                    updateCartUI();
+                    document.getElementById('nav-btn-cart').click();
+                }, 1500);
+            } else {
+                throw new Error("Upload Failed");
+            }
+        } catch(e) {
+            loading(false);
+            alert("Failed to upload prescription. Check server connection.");
+        }
+    }
+
+    // 2. Initialize Push Notifications & Service Worker
+    async function initPushNotifications() {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            try {
+                // Register the Service Worker we created
+                const register = await navigator.serviceWorker.register('./sw.js');
+                
+                // Ask user for OS-level notification permissions
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('✅ OS Notifications Enabled');
+                    // In a production app, we would subscribe to the WebPush VAPID key here
+                }
+            } catch (err) {
+                console.error('Service Worker registration failed:', err);
+            }
+        }
+    }
+    // Delay prompt slightly so it doesn't bother the user immediately upon opening
+    setTimeout(initPushNotifications, 3000); 
+
+    // 3. Local Medicine Reminder System (Background Monitor)
+    // Example: addReminder("Paracetamol", "08:30");
+    function addReminder(medicineName, timeHHMM) {
+        let reminders = JSON.parse(localStorage.getItem('med_reminders')) || [];
+        reminders.push({ medicine: medicineName, time: timeHHMM, lastTriggered: null });
+        localStorage.setItem('med_reminders', JSON.stringify(reminders));
+        showToast(`Reminder set for ${timeHHMM} ⏰`);
+    }
+
+    // Background Loop: Checks the clock every 30 seconds
+    setInterval(() => {
+        const now = new Date();
+        const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        const todayDate = now.toDateString();
+
+        let reminders = JSON.parse(localStorage.getItem('med_reminders')) || [];
+        let updated = false;
+
+        reminders.forEach(rem => {
+            // If the clock matches the reminder time AND we haven't alerted them today yet
+            if (rem.time === currentTime && rem.lastTriggered !== todayDate) {
+                rem.lastTriggered = todayDate;
+                updated = true;
+                
+                // Trigger Native OS Notification
+                if (Notification.permission === 'granted') {
+                    new Notification("💊 Time for your Medicine!", {
+                        body: `Please take your ${rem.medicine} now.`,
+                        icon: "https://cdn-icons-png.flaticon.com/512/2869/2869713.png"
+                    });
+                } else {
+                    // Fallback to in-app toast if OS notifications are blocked
+                    showToast(`💊 Time to take: ${rem.medicine}`);
+                }
+            }
+        });
+
+        if(updated) localStorage.setItem('med_reminders', JSON.stringify(reminders));
+    }, 30000);
 </script>
 </body>
 </html>
