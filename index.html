@@ -31,6 +31,24 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
         
+        /* --- HORIZONTAL CATEGORY SLIDER --- */
+        .category-slider {
+            display: flex; gap: 14px; overflow-x: auto; padding-bottom: 15px;
+            margin: 0 -20px; padding: 5px 20px 15px; scroll-behavior: smooth;
+        }
+        /* Hide scrollbar for a native app feel */
+        .category-slider::-webkit-scrollbar { display: none; }
+        
+        .slider-card {
+            min-width: 105px; background: white; border: 1.5px solid #F3F4F6;
+            border-radius: 22px; padding: 18px 10px; text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02); flex-shrink: 0;
+            cursor: pointer; transition: 0.2s;
+        }
+        .slider-card:active { transform: scale(0.95); border-color: var(--c3); box-shadow: 0 4px 10px rgba(54, 184, 183, 0.15); }
+        .slider-card .icon-orb { width: 48px; height: 48px; margin: 0 auto 12px; font-size: 20px; }
+        .slider-card h4 { margin: 0; font-size: 13px; color: #111827; font-weight: 700; }
+
         /* HIDE SCROLLBARS FOR NATIVE APP FEEL */
         ::-webkit-scrollbar { width: 0px; height: 0px; background: transparent; }
         
@@ -73,13 +91,56 @@
         .gender-chip { flex: 1; padding: 16px; border-radius: 18px; background: white; border: 1.5px solid #E5E7EB; text-align: center; font-size: 14px; font-weight: 700; color: var(--gray-text); cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .gender-chip.selected { background: linear-gradient(135deg, var(--c1), #fff); border-color: var(--c3); color: var(--c5); transform: translateY(-3px); box-shadow: 0 8px 15px rgba(54, 184, 183, 0.15); }
 
-        /* --- DASHBOARD HEADER --- */
-        .header-aura { position: absolute; top: 0; left: 0; right: 0; height: 210px; background: linear-gradient(135deg, var(--c5) 0%, var(--c4) 100%); border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; padding: 55px 25px 0; color: white; z-index: 50; box-shadow: 0 15px 30px rgba(5, 92, 97, 0.2); }
-        .search-container { margin-top: 30px; position: relative; z-index: 100; transition: transform 0.3s; }
+       /* --- DASHBOARD HEADER --- */
+        .header-aura { 
+            position: absolute; top: 0; left: 0; right: 0; height: 210px; 
+            background: linear-gradient(135deg, var(--c5) 0%, var(--c4) 100%); 
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; 
+            padding: 55px 25px 0; color: white; z-index: 50; 
+            box-shadow: 0 15px 30px rgba(5, 92, 97, 0.2); 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            overflow: hidden; 
+        }
+        
+        /* New Compact State for non-home tabs */
+        .header-aura.compact {
+            height: 130px;
+            border-bottom-left-radius: 30px; 
+            border-bottom-right-radius: 30px;
+        }
+
+        .search-container { 
+            margin-top: 30px; position: relative; z-index: 100; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        
+        .header-aura.compact .search-container {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        
         .search-container:focus-within { transform: translateY(-2px) scale(1.02); }
-        .search-input { width: 100%; height: 58px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: none; border-radius: 20px; padding: 0 20px 0 55px; font-size: 15px; font-weight: 600; box-shadow: 0 15px 35px rgba(0,0,0,0.1); outline: none; color: #1F2937; }
-        .search-input::placeholder { color: #9CA3AF; font-weight: 500; }
-        .search-icon { position: absolute; left: 22px; top: 20px; color: var(--c3); font-size: 18px; }
+        
+        /* NEW AESTHETIC SEARCH BAR */
+        .search-input { 
+            width: 100%; height: 54px; 
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 27px; 
+            padding: 0 20px 0 55px; 
+            font-size: 15px; font-weight: 600; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05); 
+            outline: none; color: white; 
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.7); font-weight: 500; }
+        .search-icon { position: absolute; left: 22px; top: 18px; color: rgba(255, 255, 255, 0.9); font-size: 18px; }
 
         #main-scroll { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding-top: 230px; padding-bottom: 110px; }
 
@@ -170,6 +231,7 @@
     </style>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
 
@@ -236,13 +298,13 @@
     </div>
 
     <div id="screen-dash" class="screen hidden">
-        <div class="header-aura">
+      <div class="header-aura" id="main-dash-header">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <p style="margin:0; opacity:0.8; font-size:14px; font-weight:600; color:#E0F7F6;">Good morning,</p>
+                    <p id="greeting-text" style="margin:0; opacity:0.8; font-size:14px; font-weight:600; color:#E0F7F6;">Good morning,</p>
                     <h2 id="dash-user" style="margin:0; font-size:28px; font-weight:800;">User</h2>
                 </div>
-                <div id="initial-box" style="width:50px; height:50px; background:var(--white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--c4); font-size:20px; font-weight:800; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">U</div>
+                <div id="initial-box" onclick="switchTab(null, 'tab-profile')" style="width:50px; height:50px; background:var(--white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--c4); font-size:20px; font-weight:800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor:pointer;">U</div>
             </div>
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -255,6 +317,7 @@
             <div id="tab-home" class="content-view active-view">
                 <div id="home-normal-content">
                     <div style="margin-bottom:20px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Quick Services</h3></div>
+                    
                     <div class="service-grid">
                         <div class="glass-card wide searchable" onclick="openRxUpload()">
                             <div class="icon-orb orb-1"><i class="fa-solid fa-file-prescription"></i></div>
@@ -269,13 +332,20 @@
                             <div><h3 style="margin:0; font-size:15px;">Pharmacy<br>Store</h3></div>
                         </div>
                     </div>
+
+                    <div style="margin-top: 35px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Popular Medicines</h3>
+                    </div>
+                    
+                    <div class="category-slider" id="popular-meds-slider">
+                        </div>
+
                 </div>
 
                 <div id="home-search-content" style="display:none;">
                     <div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Results</h3>
-                        <span style="font-size:12px; color:var(--error); font-weight:800; cursor:pointer; background:var(--error-bg); padding:6px 12px; border-radius:12px;" onclick="clearSearch()">CLOSE</span>
-                    </div>
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Search Results</h3>
+                        </div>
                     <div id="search-results-grid" class="service-grid"></div>
                 </div>
             </div>
@@ -321,18 +391,23 @@
                 </div>
             </div>
 
-            <div id="tab-profile" class="content-view">
+           <div id="tab-profile" class="content-view">
                 <div style="margin-bottom:20px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">My Account</h3></div>
                 <div class="glass-card wide" style="cursor:default;">
                      <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
                      <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
                 </div>
-                <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #FEE2E2; background:#FEF2F2;">
-                    <div class="icon-orb" style="background:#FCA5A5; color:#991B1B;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
-                    <div style="margin-left:5px;"><h3 style="color:#991B1B; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#B91C1C; font-weight:500;">Securely end session</p></div>
+                <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #E5E7EB;">
+                    <div class="icon-orb" style="background:#F3F4F6; color:#4B5563;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+                    <div style="margin-left:5px;"><h3 style="color:#4B5563; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#6B7280; font-weight:500;">Securely end session</p></div>
+                </div>
+                <div class="glass-card wide" onclick="deleteAccount()" style="cursor:pointer; border:1.5px solid #FEE2E2; background:#FFF0F0;">
+                    <div class="icon-orb" style="background:#FCA5A5; color:#991B1B;"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div style="margin-left:5px;"><h3 style="color:#991B1B; margin:0; font-size:16px;">Delete Account</h3><p style="margin:4px 0 0; font-size:12px; color:#B91C1C; font-weight:500;">Wipe local data</p></div>
                 </div>
             </div>
-        </div>
+            
+        </div> 
 
         <div id="sticky-checkout" class="sticky-checkout">
             <div>
@@ -347,7 +422,6 @@
             <i class="fa-solid fa-layer-group nav-item" onclick="switchTab(this, 'tab-category')"></i>
             <i id="nav-btn-doc" class="fa-solid fa-user-doctor nav-item" onclick="switchTab(this, 'tab-doctor')"></i>
             <i id="nav-btn-cart" class="fa-solid fa-cart-shopping nav-item" onclick="switchTab(this, 'tab-delivery')"></i>
-            <i class="fa-solid fa-user nav-item" onclick="switchTab(this, 'tab-profile')"></i>
         </div>
     </div>
 
@@ -478,7 +552,11 @@
 <script>
     // --- API CONFIG ---
     const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
+    const SOCKET_URL = 'https://mediflow-backend-z29j.onrender.com';
     
+    const socket = io(SOCKET_URL);
+    let driverMarker = null;
+
     let MEDICINE_DB = [
         { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false },
         { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false },
@@ -536,6 +614,7 @@
             loading(true, "WELCOME BACK");
             updateDash(user);
             renderCategoriesTab();
+            renderPopularMeds(); // Load the dynamic medicine slider
             await loadAddresses(user.id); 
             setTimeout(() => { loading(false); showScreen('screen-dash'); }, 1500);
         } else { loading(false); }
@@ -697,9 +776,10 @@
         updateCartUI();
     }
 
-    function updateCartUI() {
+   function updateCartUI() {
         const container = document.getElementById('cart-container');
         const stickyBar = document.getElementById('sticky-checkout');
+        const mainScroll = document.getElementById('main-scroll');
         
         if(cart.length === 0) {
             container.innerHTML = `
@@ -708,7 +788,9 @@
                     <h3 style="font-size:18px;">Your Cart is Empty</h3>
                     <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p>
                 </div>`;
+            stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
+            mainScroll.style.paddingBottom = '110px';
             return;
         }
 
@@ -767,11 +849,21 @@
         
         document.getElementById('sticky-total').innerText = "₹" + grandTotal;
         document.getElementById('nav-btn-cart').style.color = 'var(--c4)';
-        stickyBar.classList.add('show');
+        
+        const activeTab = document.querySelector('.content-view.active-view').id;
+        if(activeTab === 'tab-profile') {
+            stickyBar.style.display = 'none';
+            stickyBar.classList.remove('show');
+            mainScroll.style.paddingBottom = '110px'; 
+        } else {
+            stickyBar.style.display = 'flex';
+            stickyBar.classList.add('show');
+            mainScroll.style.paddingBottom = '190px'; 
+        }
         
         window.currentCartTotal = grandTotal;
         window.currentCartRx = hasRx;
-    }
+    } 
 
     function processCartPay() {
         if(!selectedAddress) {
@@ -800,8 +892,16 @@
         const homeSearch = document.getElementById('home-search-content');
         const resultsGrid = document.getElementById('search-results-grid');
 
-        switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+        // Smooth switch back to Dashboard view if you type while on a different tab
+        const currentTab = document.querySelector('.content-view.active-view').id;
+        if (currentTab !== 'tab-home') {
+             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+             document.querySelector('.nav-dock .nav-item:first-child').classList.add('active');
+             document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
+             document.getElementById('tab-home').classList.add('active-view');
+        }
 
+        // Auto close search view when input is cleared
         if(query.length === 0) {
             homeNormal.style.display = 'block';
             homeSearch.style.display = 'none';
@@ -839,6 +939,36 @@
         `;
     }
 
+    // New Function: Dynamically load medicine cards onto the dashboard horizontal slider
+    function renderPopularMeds() {
+        const slider = document.getElementById('popular-meds-slider');
+        slider.innerHTML = "";
+        
+        // Pick the first 4 items from the DB to show as "Popular"
+        const popular = MEDICINE_DB.slice(0, 4);
+        
+        popular.forEach(item => {
+            slider.innerHTML += `
+                <div class="glass-card" style="min-width: 150px; flex-shrink: 0; padding: 18px; min-height: 190px;">
+                    ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                    <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                    <h3 style="margin:0; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">${item.name}</h3>
+                    <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.category}</p>
+                    <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                    <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick="addToCart('${item.name}')">ADD +</button>
+                </div>
+            `;
+        });
+        
+        // Add the specialized "See All Medicines" card at the end
+        slider.innerHTML += `
+            <div class="glass-card" style="min-width: 140px; flex-shrink: 0; background: linear-gradient(135deg, var(--c5), var(--c4)); border: none; align-items:center; justify-content:center; text-align:center; min-height: 190px;" onclick="switchTab(document.querySelectorAll('.nav-dock .nav-item')[1], 'tab-category')">
+                <div class="icon-orb" style="background: rgba(255,255,255,0.2); color: white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
+                <h4 style="color: white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
+            </div>
+        `;
+    }
+
     function clearSearch() {
         document.getElementById('global-search').value = "";
         document.getElementById('home-normal-content').style.display = 'block';
@@ -849,7 +979,6 @@
         const grid = document.getElementById('all-cats-grid');
         grid.innerHTML = "";
         const categories = [...new Set(MEDICINE_DB.map(item => item.category))];
-        
         const colors = ['orb-1', 'orb-2', 'orb-3'];
         
         categories.forEach((cat, idx) => {
@@ -954,6 +1083,7 @@
                     localStorage.setItem('mediflow_current_session', JSON.stringify(data.user));
                     updateDash(data.user);
                     renderCategoriesTab();
+                    renderPopularMeds();
                     await loadAddresses(data.user.id);
                     loading(false);
                     showScreen('screen-dash');
@@ -993,6 +1123,7 @@
                 localStorage.setItem('mediflow_current_session', JSON.stringify(data.user));
                 updateDash(data.user);
                 renderCategoriesTab();
+                renderPopularMeds();
                 setTimeout(() => { loading(false); showScreen('screen-dash'); }, 1000);
             } else {
                 loading(false);
@@ -1054,6 +1185,9 @@
                 setTimeout(() => {
                     loading(false);
                     alert("Order Confirmed! 🚀\nOrder ID: " + data.order.orderId);
+                    
+                    socket.emit('joinDeliveryRoom', { orderId: data.order.orderId });
+
                     cart = []; 
                     window.rxVerified = false; 
                     updateCartUI();
@@ -1068,7 +1202,6 @@
             }
         } catch(e) {
             loading(false);
-            // SIMULATED FALLBACK IF NODE SERVER IS DOWN
             alert("Order Confirmed! 🚀 (Simulated locally)");
             cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
             document.getElementById('screen-dash').classList.remove('hidden');
@@ -1079,10 +1212,25 @@
 
     // --- UTILS ---
     function updateDash(user) {
-        document.getElementById('dash-user').innerText = user.name;
+        window.currentUser = user; 
+
         document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
         document.getElementById('db-name-disp').innerText = user.name;
         document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
+        
+        setHomeGreeting(); 
+    }
+
+    function setHomeGreeting() {
+        const currentHour = new Date().getHours();
+        let greeting = "Good evening,";
+        if (currentHour < 12) greeting = "Good morning,";
+        else if (currentHour < 18) greeting = "Good afternoon,";
+        
+        document.getElementById('greeting-text').innerText = greeting;
+        if(window.currentUser) {
+            document.getElementById('dash-user').innerText = window.currentUser.name;
+        }
     }
 
     function showScreen(id) {
@@ -1093,15 +1241,58 @@
     function switchTab(el, tabId) {
         clearSearch();
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
+        
+        // Handle logic if click came from Top-Right Profile (where el is null)
+        if(el) {
+            el.classList.add('active');
+        }
+        
         document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
         document.getElementById(tabId).classList.add('active-view');
         
         const sticky = document.getElementById('sticky-checkout');
-        if(tabId !== 'tab-delivery' || cart.length === 0) { 
+        const mainScroll = document.getElementById('main-scroll');
+        const dashHeader = document.getElementById('main-dash-header');
+        
+        if(tabId === 'tab-home') {
+            dashHeader.classList.remove('compact'); 
+            mainScroll.style.paddingTop = '230px';
+            setHomeGreeting(); 
+        } else {
+            dashHeader.classList.add('compact'); 
+            mainScroll.style.paddingTop = '150px'; 
+            
+            if(tabId === 'tab-category') {
+                document.getElementById('greeting-text').innerText = "Explore";
+                document.getElementById('dash-user').innerText = "Pharmacy";
+            } else if(tabId === 'tab-doctor') {
+                document.getElementById('greeting-text').innerText = "Consult";
+                document.getElementById('dash-user').innerText = "Specialists";
+            } else if(tabId === 'tab-delivery') {
+                document.getElementById('greeting-text').innerText = "Secure";
+                document.getElementById('dash-user').innerText = "Checkout";
+            } else if(tabId === 'tab-profile') {
+                document.getElementById('greeting-text').innerText = "Manage";
+                document.getElementById('dash-user').innerText = "Account";
+            }
+        }
+
+        if(tabId === 'tab-profile' || cart.length === 0) { 
             sticky.style.display = 'none'; 
+            sticky.classList.remove('show');
+            mainScroll.style.paddingBottom = '110px'; 
         } else { 
             sticky.style.display = 'flex'; 
+            sticky.classList.add('show');
+            mainScroll.style.paddingBottom = '190px'; 
+        }
+    }
+
+    function deleteAccount() {
+        const warning = "Are you sure you want to delete your account? Your device data will be wiped. Note: If you ever log in with this phone number again, your existing details will be restored.";
+        if(confirm(warning)) {
+            localStorage.removeItem('mediflow_current_session');
+            location.reload(); 
         }
     }
 
@@ -1156,6 +1347,32 @@
             }, 1000);
         }, 2000);
     }
+
+    // --- LIVE TRACKING LOGIC ---
+    socket.on('connect', () => {
+        console.log('✅ Connected to Live Tracking Server');
+    });
+
+    socket.on('driverLocationUpdate', (data) => {
+        const { latitude, longitude } = data;
+        
+        if (!map) return; 
+
+        if (!driverMarker) {
+            const driverIcon = L.divIcon({
+                className: 'driver-icon',
+                html: "<div style='background-color:var(--success); width:18px; height:18px; border-radius:50%; border:3px solid white; box-shadow: 0 0 15px var(--success);'></div>",
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            driverMarker = L.marker([latitude, longitude], { icon: driverIcon }).addTo(map);
+        } else {
+            driverMarker.setLatLng([latitude, longitude]);
+        }
+
+        map.panTo([latitude, longitude], { animate: true, duration: 1.5 });
+    });
 </script>
 </body>
 </html>
