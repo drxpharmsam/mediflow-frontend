@@ -8,9 +8,10 @@
     <meta name="theme-color" content="#0A858C">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- 🗺️ MAPBOX GL JS — replace version tag to upgrade, or swap for a self-hosted bundle -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
@@ -241,23 +242,31 @@
             </div>
         </div>
         <div style="margin-top:150px; padding:20px; flex:1; overflow-y:auto; padding-bottom:40px;">
+            <!-- Map container: Mapbox GL renders into #map; the floating pin & GPS button are CSS-positioned overlays -->
             <div id="map-container">
                 <div id="map"></div>
+                <!-- 🎨 BRAND EDIT: Change icon or color of center-pin below -->
                 <i class="fa-solid fa-location-dot map-pin-center"></i>
                 <div class="gps-btn" onclick="detectLocation()">
                     <i class="fa-solid fa-crosshairs" style="font-size:16px;"></i> Locate Me
                 </div>
             </div>
             <div id="address-list"></div>
+            <!-- Floating add-address sheet -->
             <div style="margin-top:30px; border-top:2px dashed #E5E7EB; padding-top:25px;">
                 <h3 style="font-size:16px; margin-bottom:20px; color:#111827; font-weight:800;">Add a New Address</h3>
+                <!-- House / flat number — user types this -->
                 <input type="text" id="addr-line1" class="input-group input" placeholder="House / Flat / Building No." style="width:100%; margin-bottom:15px;">
-                <input type="text" id="addr-line2" class="input-group input" placeholder="Street / Area Name" style="width:100%; margin-bottom:20px;">
+                <!-- Area / street — auto-filled by Mapbox reverse geocoding; user may edit for a landmark -->
+                <input type="text" id="addr-line2" class="input-group input" placeholder="Move map to detect area…"
+                       style="width:100%; margin-bottom:20px;"
+                       oninput="this.dataset.userTyped='1'">
                 <label style="font-size:11px; font-weight:800; color:var(--gray-text); display:block; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">SAVE AS</label>
+                <!-- 🎨 BRAND EDIT: Swap emoji icons or text labels for address types here -->
                 <div style="display:flex; gap:12px; margin-bottom:25px;">
-                    <div class="select-chip active" onclick="selAddrTag(this)" style="flex:1;">Home</div>
-                    <div class="select-chip" onclick="selAddrTag(this)" style="flex:1;">Work</div>
-                    <div class="select-chip" onclick="selAddrTag(this)" style="flex:1;">Other</div>
+                    <div class="select-chip active" onclick="selAddrTag(this)" data-tag="Home" style="flex:1;">🏠 Home</div>
+                    <div class="select-chip" onclick="selAddrTag(this)" data-tag="Work" style="flex:1;">🏢 Work</div>
+                    <div class="select-chip" onclick="selAddrTag(this)" data-tag="Other" style="flex:1;">📍 Other</div>
                 </div>
                 <button class="pay-btn" onclick="saveNewAddress()" style="margin-top:0;">SAVE ADDRESS</button>
             </div>

@@ -122,30 +122,104 @@ window.onload = async () => {
     }
 };
 
+// ==========================================
+// MAPBOX CONFIGURATION
+// 🎨 BRAND EDIT: Replace MAPBOX_TOKEN with your own Mapbox public token.
+//   Get yours at https://account.mapbox.com/
+//   ⚠️  SECURITY: This token is intentionally public (client-side PWA).
+//   Restrict it to your deployment domain(s) via the Mapbox account dashboard
+//   (Account → Access Tokens → URL restrictions) to prevent quota abuse.
+// 🎨 BRAND EDIT: Change MAPBOX_STYLE for a different map look.
+//   Options: mapbox://styles/mapbox/streets-v12 | light-v11 | dark-v11 | satellite-streets-v12
+// 🎨 BRAND EDIT: Change DEFAULT_LAT / DEFAULT_LNG to center the map on your city.
+// ==========================================
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiYXl1c2hrYXVzaGlrIiwiYSI6ImNtbTYyaG05NDBibnMyd3F5b25heXprM3gifQ.cCagfQHewVaM6GqzUhBL6A';
+const MAPBOX_STYLE = 'mapbox://styles/mapbox/streets-v12';
+const DEFAULT_LAT = 28.6139;  // Default map centre latitude  (Delhi, India)
+const DEFAULT_LNG = 77.2090;  // Default map centre longitude (Delhi, India)
+
 // --- MAP FUNCTIONS ---
 function initMap() {
     if (map) {
-        // Map already initialised; just ensure size is correct
-        try { map.invalidateSize(); } catch (e) { console.warn("invalidateSize error:", e); }
+        // Map already initialised; just ensure container dimensions are correct
+        try { map.resize(); } catch (e) { console.warn("map.resize error:", e); }
         return;
     }
     try {
-        map = L.map('map', { zoomControl: true }).setView([28.6139, 77.2090], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap',
-            maxZoom: 19
-        }).addTo(map);
-        map.on('moveend', function () {
-            const center = map.getCenter();
-            const addrLine2 = document.getElementById('addr-line2');
-            if (addrLine2 && !addrLine2.dataset.userTyped) {
-                addrLine2.value = `Lat: ${center.lat.toFixed(4)}, Lng: ${center.lng.toFixed(4)}`;
-            }
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: MAPBOX_STYLE,
+            center: [DEFAULT_LNG, DEFAULT_LAT],
+            zoom: 13,
+            attributionControl: false
         });
+        // Compact attribution control (bottom-left, stays out of the way)
+        map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+        // Zoom in/out buttons (compass hidden to save space on mobile)
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+        // Reverse-geocode the map centre whenever the user finishes panning/zooming
+        map.on('moveend', () => {
+            const { lat, lng } = map.getCenter();
+            reverseGeocode(lat, lng);
+        });
+        // Add saved-address markers once the base tiles have loaded
+        map.on('load', () => { addAddressMarkersToMap(); });
     } catch (e) {
         console.error("Map init failed:", e);
         map = null;
     }
+}
+
+// Reverse-geocode lat/lng → human-readable area using Mapbox Geocoding API.
+// Only overwrites addr-line2 if the user hasn't manually edited it.
+async function reverseGeocode(lat, lng) {
+    const addrLine2 = document.getElementById('addr-line2');
+    if (!addrLine2 || addrLine2.dataset.userTyped) return;
+    try {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json` +
+                    `?access_token=${MAPBOX_TOKEN}&language=en&types=address,neighborhood,place&limit=1`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.features && data.features.length > 0) {
+            addrLine2.value = data.features[0].place_name;
+        } else {
+            addrLine2.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        }
+    } catch (e) {
+        addrLine2.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+}
+
+// Add emoji markers on the Mapbox map for every saved address that has coordinates.
+// 🎨 BRAND EDIT: Change tagEmoji values or replace with custom SVG/img HTML.
+function addAddressMarkersToMap() {
+    if (!map) return;
+    // Remove any previously added address markers
+    if (window._addressMarkers) {
+        window._addressMarkers.forEach(m => m.remove());
+    }
+    window._addressMarkers = [];
+    const tagEmoji = { 'Home': '🏠', 'Work': '🏢', 'Other': '📍' };
+    (window.currentAddresses || []).forEach(addr => {
+        if (addr.lat == null || addr.lng == null) return;
+        const el = document.createElement('div');
+        el.title = `${addr.tag}: ${addr.line1}`;
+        // 🎨 BRAND EDIT: Adjust marker size / drop-shadow below
+        el.style.cssText = 'font-size:28px; cursor:pointer; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.35)); transition:transform 0.15s;';
+        el.textContent = tagEmoji[addr.tag] || '📍';
+        el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.2)'; });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+        el.addEventListener('click', () => selectAddress(addr));
+        const popup = new mapboxgl.Popup({ offset: 30, closeButton: false })
+            .setHTML(`<div style="font-size:13px;font-weight:700;color:#111827;">${addr.tag}: ${addr.line1}</div>` +
+                     `<div style="font-size:12px;color:#6B7280;margin-top:3px;">${addr.line2}</div>`);
+        const marker = new mapboxgl.Marker({ element: el })
+            .setLngLat([addr.lng, addr.lat])
+            .setPopup(popup)
+            .addTo(map);
+        window._addressMarkers.push(marker);
+    });
 }
 
 function detectLocation() {
@@ -154,7 +228,6 @@ function detectLocation() {
         return;
     }
     if (!map) { initMap(); }
-    // If initMap failed (no Leaflet or DOM issue), inform the user gracefully
     if (!map) {
         showToast("Map is not available. Please try again.");
         return;
@@ -162,14 +235,20 @@ function detectLocation() {
     loading(true, "LOCATING...");
     navigator.geolocation.getCurrentPosition(
         position => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            try { map.setView([lat, lng], 15); } catch (e) {}
+            const { latitude: lat, longitude: lng } = position.coords;
+            // Fly smoothly to the user's position
+            map.flyTo({ center: [lng, lat], zoom: 16, essential: true });
             loading(false);
+            // Clear any previous user-typed flag so geocoding can fill the field
             const addrLine2 = document.getElementById('addr-line2');
-            if (addrLine2) addrLine2.value = "Current GPS Location Detected";
+            if (addrLine2) delete addrLine2.dataset.userTyped;
+            reverseGeocode(lat, lng);
         },
-        () => { loading(false); showToast("Location access denied. Please allow location access."); }
+        () => {
+            loading(false);
+            showToast("Location access denied. Please allow location access.");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
 }
 
@@ -188,10 +267,16 @@ function openAddressManager(forceSelect = false) {
     setTimeout(() => {
         if (!map) {
             initMap();
+        } else {
+            try { map.resize(); } catch (e) {}
         }
-        if (map) {
-            try { map.invalidateSize(); } catch (e) {}
+        // Auto-request geolocation the first time the address screen opens per session
+        if (map && !window._locationRequested) {
+            window._locationRequested = true;
+            detectLocation();
         }
+        // Refresh saved-address markers (addresses may have loaded since last open)
+        if (map) { addAddressMarkersToMap(); }
     }, 350);
 }
 
@@ -225,42 +310,51 @@ async function loadAddresses(userId) {
 
 async function saveNewAddress() {
     const line1 = document.getElementById('addr-line1').value.trim();
-    const line2 = document.getElementById('addr-line2').value.trim();
+    const line2El = document.getElementById('addr-line2');
+    // Use auto-detected area if the user hasn't overridden it; fallback to map coords
+    let line2 = (line2El ? line2El.value.trim() : '');
+    if (!line2 && map) {
+        const c = map.getCenter();
+        line2 = `${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`;
+    }
     const tagEl = document.querySelector('#screen-address .select-chip.active');
-    const tag = tagEl ? tagEl.innerText : 'Home';
+    // Read tag from data-tag attribute to avoid parsing display text (which may include emoji)
+    const tag = (tagEl && tagEl.dataset.tag) ? tagEl.dataset.tag : 'Home';
     const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
 
-    if (!line1 || !line2) return alert("Please fill in the address details.");
+    if (!line1) return alert("Please enter your house / flat number.");
     if (!session) return alert("Please log in first.");
+
+    // Capture current map centre for storing coordinates with the address
+    let lat = null, lng = null;
+    if (map) { const c = map.getCenter(); lat = c.lat; lng = c.lng; }
 
     loading(true, "SAVING ADDRESS...");
     try {
         const res = await fetch(`${API_BASE}/addresses`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: session.id, line1, line2, tag })
+            body: JSON.stringify({ userId: session.id, line1, line2, tag, lat, lng })
         });
         const data = await res.json();
         loading(false);
         if (data.success) {
+            // Merge backend response with captured coordinates
+            const savedAddr = { ...data.data, lat, lng };
             document.getElementById('addr-line1').value = "";
-            document.getElementById('addr-line2').value = "";
-            window.currentAddresses.push(data.data);
-            selectAddress(data.data);
+            if (line2El) { line2El.value = ""; delete line2El.dataset.userTyped; }
+            window.currentAddresses.push(savedAddr);
+            addAddressMarkersToMap();
+            selectAddress(savedAddr);
         } else { alert("Failed to save address: " + (data.message || "")); }
     } catch (e) {
         loading(false);
-        // Local fallback: save address in memory and localStorage when backend is unavailable
-        const localAddr = {
-            id: 'local-' + Date.now(),
-            userId: session.id,
-            line1,
-            line2,
-            tag
-        };
+        // Local fallback: store in memory when backend is unavailable
+        const localAddr = { id: 'local-' + Date.now(), userId: session.id, line1, line2, tag, lat, lng };
         window.currentAddresses.push(localAddr);
         document.getElementById('addr-line1').value = "";
-        document.getElementById('addr-line2').value = "";
+        if (line2El) { line2El.value = ""; delete line2El.dataset.userTyped; }
+        addAddressMarkersToMap();
         selectAddress(localAddr);
         showToast("Address saved locally.");
     }
@@ -1163,13 +1257,15 @@ socket.on('driverLocationUpdate', (data) => {
     const { latitude, longitude } = data;
     if (!map) return;
     if (!driverMarker) {
-        const driverIcon = L.divIcon({
-            className: 'driver-icon',
-            html: "<div style='background-color:var(--success); width:18px; height:18px; border-radius:50%; border:3px solid white; box-shadow:0 0 15px var(--success);'></div>",
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
-        });
-        driverMarker = L.marker([latitude, longitude], { icon: driverIcon }).addTo(map);
-    } else { driverMarker.setLatLng([latitude, longitude]); }
-    try { map.panTo([latitude, longitude], { animate: true, duration: 1.5 }); } catch (e) {}
+        // Create a custom DOM element for the driver marker
+        // 🎨 BRAND EDIT: Adjust driver-dot colour / size here
+        const el = document.createElement('div');
+        el.style.cssText = 'width:22px; height:22px; background:var(--success); border-radius:50%; border:3px solid white; box-shadow:0 0 15px var(--success);';
+        driverMarker = new mapboxgl.Marker({ element: el })
+            .setLngLat([longitude, latitude])
+            .addTo(map);
+    } else {
+        driverMarker.setLngLat([longitude, latitude]);
+    }
+    try { map.easeTo({ center: [longitude, latitude], duration: 1500 }); } catch (e) {}
 });
