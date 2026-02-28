@@ -255,12 +255,19 @@
             <!-- Floating add-address sheet -->
             <div style="margin-top:30px; border-top:2px dashed #E5E7EB; padding-top:25px;">
                 <h3 style="font-size:16px; margin-bottom:20px; color:#111827; font-weight:800;">Add a New Address</h3>
-                <!-- House / flat number — user types this -->
-                <input type="text" id="addr-line1" class="input-group input" placeholder="House / Flat / Building No." style="width:100%; margin-bottom:15px;">
-                <!-- Area / street — auto-filled by Mapbox reverse geocoding; user may edit for a landmark -->
-                <input type="text" id="addr-line2" class="input-group input" placeholder="Move map to detect area…"
-                       style="width:100%; margin-bottom:20px;"
-                       oninput="this.dataset.userTyped='1'">
+                <!-- House / flat number — user types this; keep input focused to just the unit/flat -->
+                <div class="input-group">
+                    <label>House / Flat No.</label>
+                    <input type="text" id="addr-line1" placeholder="e.g. Flat 4B, Building 12">
+                </div>
+                <!-- Area & landmark — auto-filled by Mapbox reverse geocoding when map moves;
+                     user can append a landmark for clearer delivery instructions.
+                     🎨 BRAND EDIT: Change placeholder text here -->
+                <div class="input-group">
+                    <label>Area / Landmark <span style="font-weight:500; text-transform:none; font-size:10px;">(auto-detected)</span></label>
+                    <input type="text" id="addr-line2" placeholder="Area detected from map…"
+                           oninput="this.dataset.userTyped='1'">
+                </div>
                 <label style="font-size:11px; font-weight:800; color:var(--gray-text); display:block; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">SAVE AS</label>
                 <!-- 🎨 BRAND EDIT: Swap emoji icons or text labels for address types here -->
                 <div style="display:flex; gap:12px; margin-bottom:25px;">
@@ -343,6 +350,24 @@
             <button id="rx-submit-btn" class="pay-btn" onclick="submitRx()" style="display:none; margin-top:40px; background: linear-gradient(135deg, var(--success), #00A67C); box-shadow: 0 15px 30px rgba(0, 208, 156, 0.3);">
                 <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 10px;"></i> VERIFY WITH AI
             </button>
+        </div>
+    </div>
+
+    <!-- LOCATION PERMISSION OVERLAY
+     Shown before the browser's native geolocation prompt so users understand why access is needed.
+     🎨 BRAND EDIT: Update icon, heading, or description text here. -->
+    <div id="loc-perm-overlay" class="hidden" style="position:absolute; inset:0; background:rgba(17,24,39,0.85); backdrop-filter:blur(10px); z-index:2100; display:flex; align-items:flex-end; justify-content:center; padding:20px; transition:all 0.35s;">
+        <div style="background:white; padding:35px 28px 30px; border-radius:35px; width:100%; max-width:380px; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:slideUp 0.35s cubic-bezier(0.16,1,0.3,1) forwards;">
+            <!-- Pulsing location icon -->
+            <div style="width:80px; height:80px; background:linear-gradient(135deg,var(--c1),#C1F0ED); border-radius:25px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 10px 25px rgba(54,184,183,0.2);">
+                <i class="fa-solid fa-location-crosshairs" style="font-size:36px; color:var(--c4);"></i>
+            </div>
+            <h2 style="margin:0 0 8px; font-size:22px; font-weight:800; color:#111827;">Enable Location</h2>
+            <p style="color:var(--gray-text); font-size:14px; margin-bottom:28px; font-weight:500; line-height:1.6;">MediFlow needs your location to show nearby delivery options and auto-detect your address on the map.</p>
+            <button class="pay-btn" onclick="requestLocationPermission()" style="margin:0 0 14px; height:58px; background:linear-gradient(135deg,var(--c3),var(--c4));">
+                <i class="fa-solid fa-crosshairs" style="margin-right:8px;"></i> Allow Location Access
+            </button>
+            <p onclick="closeLocPermOverlay()" style="margin:0; font-size:14px; font-weight:700; color:var(--gray-text); cursor:pointer;">Not Now</p>
         </div>
     </div>
 

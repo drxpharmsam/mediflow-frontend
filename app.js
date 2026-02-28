@@ -222,24 +222,52 @@ function addAddressMarkersToMap() {
     });
 }
 
-function detectLocation() {
-    if (!navigator.geolocation) {
-        showToast("Geolocation is not supported by your browser.");
-        return;
+// --- LOCATION PERMISSION DIALOG ---
+// Shows a friendly permission explanation before the browser's native geolocation prompt.
+// 🎨 BRAND EDIT: Edit dialog copy in index.html (#loc-perm-overlay).
+
+function showLocPermOverlay() {
+    const el = document.getElementById('loc-perm-overlay');
+    if (el) { el.classList.remove('hidden'); el.style.opacity = '1'; }
+}
+
+function closeLocPermOverlay() {
+    const el = document.getElementById('loc-perm-overlay');
+    if (el) {
+        el.style.opacity = '0';
+        setTimeout(() => el.classList.add('hidden'), 350);
     }
+}
+
+// Called when user taps "Allow Location Access" in the permission dialog.
+function requestLocationPermission() {
+    closeLocPermOverlay();
+    // Mark that the user explicitly allowed — fallback path won't re-show the dialog.
+    window._locationPermGranted = true;
+    // Proceed immediately — the browser will now show its native prompt.
+    _doGetCurrentPosition();
+}
+
+// Core geolocation call, shared by detectLocation() and requestLocationPermission().
+function _doGetCurrentPosition() {
     if (!map) { initMap(); }
-    if (!map) {
-        showToast("Map is not available. Please try again.");
-        return;
-    }
+    if (!map) { showToast("Map is not available. Please try again."); return; }
     loading(true, "LOCATING...");
     navigator.geolocation.getCurrentPosition(
         position => {
             const { latitude: lat, longitude: lng } = position.coords;
-            // Fly smoothly to the user's position
-            map.flyTo({ center: [lng, lat], zoom: 16, essential: true });
             loading(false);
-            // Clear any previous user-typed flag so geocoding can fill the field
+            // Fly smoothly to the user's position with a close zoom.
+            map.flyTo({ center: [lng, lat], zoom: 16, essential: true });
+            // Place / update the "you are here" pulsing blue dot marker.
+            // 🎨 BRAND EDIT: Adjust .user-location-dot CSS in style.css for a different look.
+            if (window._userLocationMarker) { window._userLocationMarker.remove(); }
+            const dot = document.createElement('div');
+            dot.className = 'user-location-dot';
+            window._userLocationMarker = new mapboxgl.Marker({ element: dot, anchor: 'center' })
+                .setLngLat([lng, lat])
+                .addTo(map);
+            // Clear any previous user-typed flag so geocoding can fill the area field.
             const addrLine2 = document.getElementById('addr-line2');
             if (addrLine2) delete addrLine2.dataset.userTyped;
             reverseGeocode(lat, lng);
@@ -250,6 +278,40 @@ function detectLocation() {
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
+}
+
+// Public entry point: check permission state and show our friendly dialog if needed,
+// otherwise go straight to geolocation.
+function detectLocation() {
+    if (!navigator.geolocation) {
+        showToast("Geolocation is not supported by your browser.");
+        return;
+    }
+    // Use Permissions API when available to skip our dialog if already granted/denied.
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+            if (result.state === 'granted') {
+                // Permission already granted — go directly.
+                _doGetCurrentPosition();
+            } else if (result.state === 'denied') {
+                showToast("Location access denied. Please enable it in browser settings.");
+            } else {
+                // 'prompt' state — show our friendly explanation first.
+                showLocPermOverlay();
+            }
+        }).catch(() => {
+            // Permissions API unavailable — show dialog to be safe.
+            showLocPermOverlay();
+        });
+    } else {
+        // Fallback: show dialog on every call when permission hasn't been explicitly granted.
+        // Only go direct after the user has already clicked "Allow Location Access".
+        if (!window._locationPermGranted) {
+            showLocPermOverlay();
+        } else {
+            _doGetCurrentPosition();
+        }
+    }
 }
 
 function openAddressManager(forceSelect = false) {
