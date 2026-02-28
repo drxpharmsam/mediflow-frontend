@@ -96,19 +96,24 @@
         .address-bar { display: flex; align-items: center; background: white; padding: 18px; border-radius: 22px; margin-bottom: 25px; border: 1.5px solid var(--c2); cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 20px rgba(54, 184, 183, 0.08); }
         .address-bar:active { transform: scale(0.97); }
         .cart-section-title { font-size: 13px; font-weight: 800; color: var(--gray-text); margin: 25px 0 12px; text-transform: uppercase; letter-spacing: 1px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: white; border-radius: 20px; margin-bottom: 12px; border: 1px solid #F3F4F6; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: white; border-radius: 20px; margin-bottom: 12px; border: 1px solid #F3F4F6; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; gap: 15px;}
         .bill-details-card { background: white; padding: 22px; border-radius: 24px; margin-bottom: 90px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #F3F4F6; }
         .bill-row { display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 14px; color: #4B5563; font-weight: 500; }
         .bill-row.total { font-size: 19px; font-weight: 800; color: #111827; margin-top: 18px; padding-top: 18px; border-top: 2px dashed #E5E7EB; }
         .text-success { color: var(--success); font-weight: 700; background: var(--success-bg); padding: 2px 8px; border-radius: 8px; font-size: 12px; }
         
+        /* --- QUANTITY CONTROLS CSS --- */
+        .qty-controls { display: flex; align-items: center; gap: 10px; background: #F3F4F6; padding: 6px 10px; border-radius: 14px; }
+        .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
+        .qty-btn:active { transform: scale(0.9); background: var(--c1); }
+        .qty-num { font-size: 14px; font-weight: 800; color: var(--c5); min-width: 14px; text-align: center; }
+
         .legal-footer { margin-top: 25px; padding: 15px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 16px; font-size: 11px; color: #92400E; font-weight: 600; line-height: 1.5; text-align: center; }
         .legal-footer i { margin-right: 5px; color: #D97706; font-size: 14px; }
         .pharmacist-check { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 12px; background: rgba(54, 184, 183, 0.1); border-radius: 14px; color: var(--c5); font-size: 12px; font-weight: 700; }
         .pharmacist-check i { font-size: 18px; color: var(--c3); }
 
-        /* FIXED BUG: Updated bottom transition to glide over other screens */
-        .sticky-checkout { position: absolute; left: 20px; right: 20px; background: #111827; padding: 18px 25px; border-radius: 25px; box-shadow: 0 20px 40px rgba(17, 24, 39, 0.25); z-index: 300; display: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .sticky-checkout { position: absolute; bottom: 85px; left: 20px; right: 20px; background: #111827; padding: 18px 25px; border-radius: 25px; box-shadow: 0 20px 40px rgba(17, 24, 39, 0.25); z-index: 300; display: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .sticky-checkout.show { display: flex; justify-content: space-between; align-items: center; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .pay-btn-sml { background: linear-gradient(135deg, var(--c3), var(--c4)); color: white; border: none; padding: 14px 28px; border-radius: 16px; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px rgba(54, 184, 183, 0.3); transition: 0.2s; cursor: pointer;}
         .pay-btn-sml:active { transform: scale(0.95); }
@@ -143,6 +148,12 @@
         .section-label { font-size: 12px; font-weight: 800; color: var(--gray-text); display: block; margin: 25px 0 15px; text-transform: uppercase; letter-spacing: 1px; }
         .select-chip { padding: 16px; background: white; border: 1.5px solid #E5E7EB; border-radius: 18px; text-align: center; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; color: var(--gray-text); }
         .select-chip.active { border-color: var(--c3); background: var(--c1); color: var(--c5); box-shadow: 0 8px 15px rgba(54, 184, 183, 0.15); transform: translateY(-2px); }
+        
+        /* Order History Card Style */
+        .order-history-card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1.5px solid #E5E7EB; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .status-badge { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px; text-transform: uppercase; }
+        .status-pending { background: #FEF3C7; color: #D97706; }
+        .status-paid { background: var(--success-bg); color: var(--success); }
     </style>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -153,6 +164,14 @@
 <div id="app-frame">
     <div id="pill-loader"><i class="fa-solid fa-pills pill-icon"></i><p style="margin-top: 20px; letter-spacing: 3px; font-size: 13px; font-weight: 800;" id="loader-text">LOADING</p></div>
     <div id="toast">Added to Cart</div>
+
+    <div id="sticky-checkout" class="sticky-checkout" style="z-index: 300;">
+        <div>
+            <span style="font-size:12px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:1px;">To Pay</span><br>
+            <span id="sticky-total" style="font-size:24px; font-weight:800; color:white;">₹0</span>
+        </div>
+        <button id="sticky-btn-action" class="pay-btn-sml" onclick="handleStickyCheckout()">View Cart <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i></button>
+    </div>
 
     <div id="screen-login" class="screen auth-bg">
         <h1 style="color: var(--c5); font-size: 42px; margin: 0; letter-spacing: -1.5px; font-weight: 800;">MediFlow</h1>
@@ -303,13 +322,26 @@
                      <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
                      <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
                 </div>
+
+                <div class="glass-card wide" onclick="openOrderHistory()" style="cursor:pointer; border:1.5px solid #E5E7EB;">
+                    <div class="icon-orb orb-3" style="background:#E0EBFF; color:#2563EB;"><i class="fa-solid fa-box-open"></i></div>
+                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Orders</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">View past orders & status</p></div>
+                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
+                </div>
+
                 <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #E5E7EB;">
                     <div class="icon-orb" style="background:#F3F4F6; color:#4B5563;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                     <div style="margin-left:5px;"><h3 style="color:#4B5563; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#6B7280; font-weight:500;">Securely end session</p></div>
                 </div>
-                <div class="glass-card wide" onclick="deleteAccount()" style="cursor:pointer; border:1.5px solid #FEE2E2; background:#FFF0F0;">
-                    <div class="icon-orb" style="background:#FCA5A5; color:#991B1B;"><i class="fa-solid fa-user-xmark"></i></div>
-                    <div style="margin-left:5px;"><h3 style="color:#991B1B; margin:0; font-size:16px;">Delete Account</h3><p style="margin:4px 0 0; font-size:12px; color:#B91C1C; font-weight:500;">Wipe local data</p></div>
+            </div>
+
+            <div id="tab-orders" class="content-view">
+                <div style="margin-bottom:20px; margin-top:10px; display:flex; align-items:center; gap:15px;">
+                    <div onclick="switchTab(null, 'tab-profile')" style="width:40px; height:40px; background:white; border-radius:12px; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 10px rgba(0,0,0,0.05); cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></div>
+                    <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Order History</h3>
+                </div>
+                <div id="order-history-container">
+                    <p style="text-align:center; color:var(--gray-text); font-weight:600; margin-top: 40px;">Loading orders...</p>
                 </div>
             </div>
             
@@ -321,14 +353,6 @@
             <i id="nav-btn-doc" class="fa-solid fa-user-doctor nav-item" onclick="switchTab(this, 'tab-doctor')"></i>
             <i id="nav-btn-cart" class="fa-solid fa-cart-shopping nav-item" onclick="switchTab(this, 'tab-delivery')"></i>
         </div>
-    </div>
-
-    <div id="sticky-checkout" class="sticky-checkout">
-        <div>
-            <span style="font-size:12px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:1px;">To Pay</span><br>
-            <span id="sticky-total" style="font-size:24px; font-weight:800; color:white;">₹0</span>
-        </div>
-        <button id="sticky-btn-action" class="pay-btn-sml" onclick="handleStickyCheckout()">View Cart <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i></button>
     </div>
 
     <div id="screen-address" class="screen hidden" style="z-index: 250;">
@@ -368,7 +392,7 @@
     <div id="screen-cat-items" class="screen hidden">
         <div class="header-aura" style="height:140px; padding-top:30px;">
             <div style="display:flex; align-items:center; gap:15px;">
-                <div onclick="closeCategoryView()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
+                <div onclick="history.back()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
                 <h2 id="cat-title" style="margin:0; color:white; font-size:22px; font-weight:800;">Category</h2>
             </div>
         </div>
@@ -380,7 +404,7 @@
     <div id="screen-consult" class="screen hidden">
         <div class="header-aura" style="height:140px; padding-top:30px;">
             <div style="display:flex; align-items:center; gap:15px;">
-                <div onclick="closeConsultation()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
+                <div onclick="history.back()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
                 <h2 style="margin:0; color:white; font-size:22px; font-weight:800;">Book Slot</h2>
             </div>
         </div>
@@ -410,7 +434,7 @@
     <div id="screen-rx-upload" class="screen hidden">
         <div class="header-aura" style="height:140px; padding-top:30px;">
             <div style="display:flex; align-items:center; gap:15px;">
-                <div onclick="closeRxUpload()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
+                <div onclick="history.back()" style="background:rgba(255,255,255,0.2); width:40px; height:40px; border-radius:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(10px);"><i class="fa-solid fa-arrow-left" style="font-size:18px; color:white;"></i></div>
                 <h2 style="margin:0; color:white; font-size:22px; font-weight:800;">Upload Rx</h2>
             </div>
         </div>
@@ -440,9 +464,7 @@
             <div class="icon-orb" style="background:var(--error-bg); color:var(--error); width:80px; height:80px; font-size:35px; margin:0 auto 20px; border-radius:25px;"><i class="fa-solid fa-file-prescription"></i></div>
             <h2 style="margin:0 0 5px; font-size:22px; font-weight:800; color:#111827;">Prescription Required</h2>
             <p style="color:var(--gray-text); font-size:14px; margin-bottom:25px; font-weight:500; line-height: 1.5;">Your cart contains Schedule H medicines. A valid prescription is required to proceed.</p>
-            
             <button class="pay-btn" onclick="promptUploadRx()" style="margin:0 0 15px; height:58px; background:linear-gradient(135deg, var(--c3), var(--c4));">Upload Prescription</button>
-            
             <p onclick="closeRxPrompt()" style="margin:20px 0 0; font-size:14px; font-weight:700; color:var(--gray-text); cursor:pointer; text-decoration:underline;">Cancel</p>
         </div>
     </div>
@@ -452,10 +474,8 @@
             <div class="icon-orb" style="background:var(--c1); color:var(--c4); width:80px; height:80px; font-size:35px; margin:0 auto 20px; border-radius:25px;"><i class="fa-solid fa-wallet"></i></div>
             <h2 style="margin:0 0 5px; font-size:24px; font-weight:800; color:#111827;">Payment Method</h2>
             <p style="color:var(--gray-text); font-size:14px; margin-bottom:25px; font-weight:500;">How would you like to pay?</p>
-            
             <button class="pay-btn" onclick="selectPaymentMethod('Online')" style="margin:0 0 15px; height:58px; background:linear-gradient(135deg, var(--c5), var(--c4));">Pay Online (UPI / Cards)</button>
             <button id="cod-btn" class="pay-btn" onclick="selectPaymentMethod('COD')" style="margin:0; height:58px; background:white; color:#111827; border:2px solid #E5E7EB; box-shadow:none;">Cash on Delivery</button>
-            
             <p onclick="closePaymentMethod()" style="margin:20px 0 0; font-size:14px; font-weight:700; color:var(--gray-text); cursor:pointer; text-decoration:underline;">Cancel</p>
         </div>
     </div>
@@ -464,19 +484,14 @@
         <div style="background:white; padding:40px 30px; border-radius:35px; width:100%; max-width:360px; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.25);">
             <h3 style="margin:0 0 5px; color:var(--gray-text); font-size:14px; text-transform:uppercase; letter-spacing:1px; font-weight:800;">Scan & Pay</h3>
             <h2 id="pay-amt" style="margin:0 0 15px; font-size:36px; font-weight:800; color:#111827;">₹0.00</h2>
-            
             <div id="rx-warning" style="display:none; background:var(--error-bg); color:var(--error); padding:10px; border-radius:12px; font-size:12px; font-weight:700; margin-bottom:15px;"><i class="fa-solid fa-triangle-exclamation"></i> Prescription Required</div>
-            
             <div style="background:#F9FAFB; border:2px dashed #E5E7EB; border-radius:20px; padding:15px; margin:0 auto 20px; display:inline-block;">
                 <img id="upi-qr" src="" alt="UPI QR Code" style="width:160px; height:160px; border-radius:10px; display: block;">
             </div>
-
             <a id="upi-link" href="#" style="display:block; text-decoration:none; width:100%; background:#111827; color:white; padding:16px; border-radius:16px; font-weight:800; font-size:15px; margin-bottom:15px; transition:0.2s;">
                 Pay via App (GPay/PhonePe)
             </a>
-
             <button class="pay-btn" onclick="verifyPayment('Online')" style="margin:0; height:58px; background:linear-gradient(135deg, var(--success), #00A67C); box-shadow: 0 10px 25px rgba(0, 208, 156, 0.3);"><i class="fa-solid fa-arrows-rotate" style="margin-right:8px;"></i> CHECK PAYMENT STATUS</button>
-            
             <p onclick="closePayment()" style="margin:20px 0 0; font-size:14px; font-weight:700; color:var(--gray-text); cursor:pointer; text-decoration:underline;">Cancel</p>
         </div>
     </div>
@@ -522,13 +537,47 @@
     let currentPhoneRaw = ""; let currentPhoneClean = ""; let gender = ""; let cart = [];
     let selectedAddress = null; let map = null; window.currentAddresses = []; 
 
-    function showScreen(id) { 
+    // --- SMART BACK BUTTON (HISTORY API) SUPPORT ---
+    window.addEventListener('popstate', (e) => {
+        if (!document.getElementById('payment-overlay').classList.contains('hidden')) { closePayment(); return; }
+        if (!document.getElementById('payment-method-overlay').classList.contains('hidden')) { closePaymentMethod(); return; }
+        if (!document.getElementById('rx-prompt-overlay').classList.contains('hidden')) { closeRxPrompt(); return; }
+
+        const activeScreen = Array.from(document.querySelectorAll('.screen')).find(s => !s.classList.contains('hidden'))?.id;
+        if (activeScreen === 'screen-address' && window.currentAddresses.length === 0) {
+            history.pushState({ screen: 'screen-address', tab: 'tab-home' }, "");
+            alert("📍 Please select or add a delivery location to continue.");
+            return;
+        }
+
+        if (e.state) {
+            if (e.state.screen) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); 
+                document.getElementById(e.state.screen).classList.remove('hidden'); 
+            }
+            if (e.state.tab && e.state.screen === 'screen-dash') {
+                let el = null;
+                if(e.state.tab === 'tab-home') el = document.querySelectorAll('.nav-dock .nav-item')[0];
+                else if(e.state.tab === 'tab-category') el = document.querySelectorAll('.nav-dock .nav-item')[1];
+                else if(e.state.tab === 'tab-doctor') el = document.querySelectorAll('.nav-dock .nav-item')[2];
+                else if(e.state.tab === 'tab-delivery') el = document.querySelectorAll('.nav-dock .nav-item')[3];
+                if(el) switchTab(el, e.state.tab, false); 
+            }
+            updateCartUI(); 
+        }
+    });
+
+    function showScreen(id, pushHistory = true) { 
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); 
         document.getElementById(id).classList.remove('hidden'); 
-        updateCartUI(); // Keep cart bar globally synced
+        
+        if(pushHistory) {
+            let activeTab = document.querySelector('.content-view.active-view');
+            history.pushState({ screen: id, tab: activeTab ? activeTab.id : 'tab-home' }, "");
+        }
+        updateCartUI();
     }
 
-    // --- MANDATORY LOCATION ROUTING ON LOAD ---
     window.onload = async () => {
         window.rxVerified = false; 
         try {
@@ -548,9 +597,13 @@
             await loadAddresses(user.id); 
             loading(false);
 
-            // ALWAYS force Address Map Screen Every Time App Opens
-            openAddressManager(true); 
-            
+            if(window.currentAddresses.length === 0) {
+                history.replaceState({ screen: 'screen-address', tab: 'tab-home' }, "");
+                openAddressManager(true); 
+            } else {
+                history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
+                openAddressManager(true); 
+            }
         } else { loading(false); }
     };
 
@@ -596,7 +649,12 @@
             alert("📍 Please select or add a delivery location to continue.");
             return; 
         }
-        showScreen('screen-dash');
+        
+        if (history.state && history.state.screen !== 'screen-address') {
+            history.back();
+        } else {
+            showScreen('screen-dash');
+        }
     }
 
     async function loadAddresses(userId) {
@@ -687,60 +745,87 @@
         el.classList.add('active');
     }
 
-    // --- CART SYSTEM ---
+    // --- ACCURATE QUANTITY CART SYSTEM ---
     function addToCart(itemName) {
-        const item = MEDICINE_DB.find(i => i.name === itemName);
-        cart.push(item);
-        showToast(`Added ${item.name} to Cart`);
+        let existingItem = cart.find(i => i.name === itemName);
+        if(existingItem) {
+            existingItem.qty = (existingItem.qty || 1) + 1; 
+        } else {
+            const item = MEDICINE_DB.find(i => i.name === itemName);
+            cart.push({ ...item, qty: 1 }); 
+        }
+        showToast(`Added ${itemName} to Cart`);
         updateCartUI();
     }
-    function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
+
+    function updateQty(index, delta) {
+        if(!cart[index].qty) cart[index].qty = 1;
+        cart[index].qty += delta;
+        if(cart[index].qty <= 0) {
+            cart.splice(index, 1);
+        }
+        updateCartUI();
+    }
 
     function updateCartUI() {
         const container = document.getElementById('cart-container');
         const stickyBar = document.getElementById('sticky-checkout');
         const mainScroll = document.getElementById('main-scroll');
         
-        // BUG FIX: Checks exactly which screen is currently visible to hover correctly
         const activeScreenObj = Array.from(document.querySelectorAll('.screen')).find(s => !s.classList.contains('hidden'));
         const activeScreen = activeScreenObj ? activeScreenObj.id : 'screen-dash';
-        const activeTab = document.querySelector('.content-view.active-view').id;
+        const activeTabObj = document.querySelector('.content-view.active-view');
+        const activeTab = activeTabObj ? activeTabObj.id : 'tab-home';
         
         if(cart.length === 0) {
-            container.innerHTML = `
-                <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
-                    <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <h3 style="font-size:18px;">Your Cart is Empty</h3>
-                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p>
-                </div>`;
-            stickyBar.style.display = 'none';
-            stickyBar.classList.remove('show');
+            if(container) {
+                container.innerHTML = `
+                    <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
+                        <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
+                        <h3 style="font-size:18px;">Your Cart is Empty</h3>
+                        <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p>
+                    </div>`;
+            }
+            if(stickyBar) {
+                stickyBar.style.display = 'none';
+                stickyBar.classList.remove('show');
+            }
             if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px';
             return;
         }
 
         let itemsHtml = "";
         let itemTotal = 0;
+        let totalItems = 0;
         let hasRx = false;
         let hasScheduleH = false; 
 
         cart.forEach((item, index) => {
-            itemTotal += item.price;
+            const currentQty = item.qty || 1;
+            itemTotal += (item.price * currentQty); 
+            totalItems += currentQty;
+            
             if(item.isRx) {
                 hasRx = true;
                 hasScheduleH = true; 
             }
+            
             itemsHtml += `
                 <div class="cart-item">
-                    <div style="display:flex; align-items:center;">
+                    <div style="display:flex; align-items:center; flex:1;">
                         <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0;"><i class="fa-solid ${item.icon}"></i></div>
                         <div>
                             <b style="font-size:15px; color:#111827;">${item.name}</b>
                             ${item.isRx ? '<span class="rx-badge" style="position:static; margin-left:8px; display:inline-block; background:#FEE2E2; color:#DC2626;">Schedule H</span>' : ''}
-                            <div style="font-size:14px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price}</div>
+                            <div style="font-size:14px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price * currentQty}</div>
                         </div>
                     </div>
-                    <div onclick="removeFromCart(${index})" style="width:35px; height:35px; background:var(--error-bg); color:var(--error); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
+                    
+                    <div class="qty-controls" style="display: flex; align-items: center; gap: 10px; background: #F3F4F6; padding: 4px 8px; border-radius: 12px;">
+                        <div class="qty-btn" onclick="updateQty(${index}, -1)" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); color: ${currentQty === 1 ? 'var(--error)' : 'var(--c5)'};"><i class="fa-solid ${currentQty === 1 ? 'fa-trash-can' : 'fa-minus'}"></i></div>
+                        <div class="qty-num" style="font-size: 14px; font-weight: 800; color: var(--c5); min-width: 14px; text-align: center;">${currentQty}</div>
+                        <div class="qty-btn" onclick="updateQty(${index}, 1)" style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); color: var(--c5);"><i class="fa-solid fa-plus"></i></div>
+                    </div>
                 </div>
             `;
         });
@@ -790,32 +875,38 @@
                 </div>`;
         }
 
-        container.innerHTML = billHtml;
-        document.getElementById('sticky-total').innerText = "₹" + grandTotal;
+        if(container) container.innerHTML = billHtml;
+        
+        if(document.getElementById('sticky-total')) {
+            document.getElementById('sticky-total').innerHTML = `₹${grandTotal} <span style="font-size:14px; font-weight:600; opacity:0.8; margin-left:8px;">(${totalItems} item${totalItems > 1 ? 's' : ''})</span>`;
+        }
         
         const actionBtn = document.getElementById('sticky-btn-action');
         const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload'];
 
-        if(!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile') {
-            stickyBar.style.display = 'none';
-            stickyBar.classList.remove('show');
-            if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px'; 
-        } else {
-            stickyBar.style.display = 'flex';
-            stickyBar.classList.add('show');
-            
-            // Reposition based on whether nav-dock is showing
-            if (activeScreen === 'screen-dash') {
-                if(mainScroll) mainScroll.style.paddingBottom = '190px'; 
-                stickyBar.style.bottom = '85px'; 
+        if(stickyBar) {
+            if(!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
+                stickyBar.style.display = 'none';
+                stickyBar.classList.remove('show');
+                if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px'; 
             } else {
-                stickyBar.style.bottom = '20px'; 
-            }
-            
-            if(activeTab === 'tab-delivery' && activeScreen === 'screen-dash') {
-                actionBtn.innerHTML = 'Place Order <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
-            } else {
-                actionBtn.innerHTML = 'View Cart <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
+                stickyBar.style.display = 'flex';
+                stickyBar.classList.add('show');
+                
+                if (activeScreen === 'screen-dash') {
+                    if(mainScroll) mainScroll.style.paddingBottom = '190px'; 
+                    stickyBar.style.bottom = '85px'; 
+                } else {
+                    stickyBar.style.bottom = '20px'; 
+                }
+                
+                if(actionBtn) {
+                    if(activeTab === 'tab-delivery' && activeScreen === 'screen-dash') {
+                        actionBtn.innerHTML = 'Place Order <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
+                    } else {
+                        actionBtn.innerHTML = 'View Cart <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
+                    }
+                }
             }
         }
         
@@ -825,7 +916,6 @@
 
     let currentPaymentContext = {}; 
 
-    // --- RX REQUIRED OVERLAY LOGIC ---
     function closeRxPrompt() {
         const overlay = document.getElementById('rx-prompt-overlay');
         overlay.style.opacity = 0;
@@ -857,7 +947,6 @@
             return;
         }
         if (window.currentCartRx && !window.rxVerified) {
-            // SHOW BEAUTIFUL RX POPUP
             const overlay = document.getElementById('rx-prompt-overlay');
             overlay.classList.remove('hidden'); 
             overlay.style.opacity = 0;
@@ -914,6 +1003,10 @@
         setTimeout(() => overlay.classList.add('hidden'), 300);
     }
 
+    function generateOrderId() {
+        return 'ORD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    }
+
     async function verifyPayment(method) {
         if(method === 'Online') closePayment();
         loading(true, method === 'COD' ? "PLACING ORDER..." : "VERIFYING BANK STATUS...");
@@ -921,12 +1014,14 @@
         setTimeout(async () => {
             const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
             const orderItems = currentPaymentContext.type === 'cart' ? cart : [{ name: "Doctor Consultation (Online)", price: 59, qty: 1 }];
+            const generatedId = generateOrderId(); 
 
             try {
                 const res = await fetch(`${API_BASE}/orders`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        orderId: generatedId,
                         userId: session ? session.id : 'guest',
                         items: orderItems,
                         totalAmount: currentPaymentContext.amount,
@@ -942,8 +1037,8 @@
                     loading(true, "ORDER PLACED SUCCESSFULLY!");
                     setTimeout(() => {
                         loading(false);
-                        alert(`Order Confirmed! 🚀\nMethod: ${method}\nOrder ID: ${data.order.orderId}`);
-                        if(currentPaymentContext.type === 'cart') socket.emit('joinDeliveryRoom', { orderId: data.order.orderId });
+                        alert(`Order Confirmed! 🚀\nMethod: ${method}\nOrder ID: ${data.order.orderId || generatedId}`);
+                        if(currentPaymentContext.type === 'cart') socket.emit('joinDeliveryRoom', { orderId: data.order.orderId || generatedId });
                         cart = []; window.rxVerified = false; window.rxImageUrl = null;
                         updateCartUI(); closeConsultation(); 
                         switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
@@ -951,11 +1046,89 @@
                 } else { loading(false); alert("Order failed: " + data.message); }
             } catch(e) {
                 loading(false);
-                alert("Order Confirmed! 🚀 (Simulated locally)");
+                alert(`Order Confirmed! 🚀 (Simulated Locally)\nMethod: ${method}\nOrder ID: ${generatedId}`);
+                
+                let localHistory = JSON.parse(localStorage.getItem('mediflow_local_history')) || [];
+                localHistory.push({
+                    orderId: generatedId,
+                    totalAmount: currentPaymentContext.amount,
+                    status: method === 'COD' ? 'Confirmed (Pending Payment)' : 'Confirmed (Paid Online)',
+                    date: new Date().toLocaleDateString(),
+                    items: orderItems
+                });
+                localStorage.setItem('mediflow_local_history', JSON.stringify(localHistory));
+
                 cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
                 switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
             }
         }, 2500); 
+    }
+
+    // --- ORDER HISTORY LOGIC (RESTORED) ---
+    function openOrderHistory() {
+        switchTab(null, 'tab-orders');
+        fetchOrderHistory();
+    }
+
+    async function fetchOrderHistory() {
+        const container = document.getElementById('order-history-container');
+        const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
+        
+        if (!session) {
+            container.innerHTML = "<p style='text-align:center; color:var(--gray-text); font-weight:600;'>Please login to view orders</p>";
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/orders/${session.id}`);
+            const data = await res.json();
+            
+            if (data.success && data.data.length > 0) {
+                renderHistoryUI(data.data, container);
+            } else {
+                throw new Error("No remote data"); 
+            }
+        } catch(e) {
+            const localHistory = JSON.parse(localStorage.getItem('mediflow_local_history')) || [];
+            if(localHistory.length > 0) {
+                renderHistoryUI(localHistory.reverse(), container); 
+            } else {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px 20px;">
+                        <div class="icon-orb orb-2" style="width:60px; height:60px; font-size:24px; margin:0 auto 15px;"><i class="fa-solid fa-box-open"></i></div>
+                        <h3 style="font-size:16px;">No Orders Yet</h3>
+                        <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Your past purchases will appear here.</p>
+                    </div>`;
+            }
+        }
+    }
+
+    function renderHistoryUI(orders, container) {
+        container.innerHTML = "";
+        orders.forEach(order => {
+            const isPaid = order.status.includes('Paid');
+            const statusClass = isPaid ? 'status-paid' : 'status-pending';
+            
+            let itemsSummary = order.items.map(i => `${i.qty || 1}x ${i.name}`).join(', ');
+            if (itemsSummary.length > 40) itemsSummary = itemsSummary.substring(0, 40) + '...';
+
+            container.innerHTML += `
+                <div class="order-history-card">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                        <div>
+                            <b style="font-size:14px; color:#111827;">${order.orderId}</b>
+                            <div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${order.date ? new Date(order.date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${order.status}</span>
+                    </div>
+                    <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 12px; line-height:1.4;">${itemsSummary}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #E5E7EB; padding-top:12px;">
+                        <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Order Total</span>
+                        <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                    </div>
+                </div>
+            `;
+        });
     }
 
     function handleGlobalSearch(el) {
@@ -1069,10 +1242,8 @@
         showScreen('screen-cat-items');
     }
 
-    function closeCategoryView() { showScreen('screen-dash'); }
-
-    // --- AUTH ---
-  async function autoPhone(el) {
+    // --- RENDER SMART OTP LOGIC (RESTORED) ---
+    async function autoPhone(el) {
         clearErr('phone-err');
         let v = el.value.replace(/\D/g, '');
         if (v.length > 4 && v.length <= 7) v = v.slice(0,4) + '-' + v.slice(4);
@@ -1085,7 +1256,7 @@
             el.style.borderColor = "var(--success)";
             el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
             
-            loading(true, "WAKING UP SERVER...");
+            loading(true, "WAKING UP SECURE SERVER...");
             try {
                 const res = await fetch(`${API_BASE}/auth/send-otp`, {
                     method: 'POST',
@@ -1105,7 +1276,7 @@
                 }
             } catch(e) { 
                 loading(false); 
-                alert(`SERVER CONNECTION FAILED!\n\nDetails: ${e.message}\n\n1. Wait 60 seconds (Render might be waking up).\n2. Click the link to your backend in your browser to make sure it's online.`); 
+                alert(`SERVER CONNECTION FAILED!\n\nDetails: ${e.message}\n\n1. Wait 60 seconds (Render might be waking up).\n2. Check if backend is online.`); 
                 el.value = "";
                 el.style.borderColor = ""; 
                 el.style.boxShadow = "";
@@ -1113,6 +1284,20 @@
         } else {
             el.style.borderColor = ""; el.style.boxShadow = "";
         }
+    }
+
+    function m(el) {
+        clearErr('otp-err');
+        if(el.value && el.nextElementSibling) el.nextElementSibling.focus();
+        let code = "";
+        document.querySelectorAll('.otp-box').forEach(b => code += b.value);
+        if(code.length === 6) checkLocalLogin(code); 
+    }
+
+    function selG(el, selectedGender) {
+        document.querySelectorAll('.gender-chip').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        gender = selectedGender;
     }
 
     async function checkLocalLogin(otpCode) {
@@ -1155,58 +1340,6 @@
             document.getElementById('otp-1').focus();
         }
     }
-    function m(el) {
-        clearErr('otp-err');
-        if(el.value && el.nextElementSibling) el.nextElementSibling.focus();
-        let code = "";
-        document.querySelectorAll('.otp-box').forEach(b => code += b.value);
-        if(code.length === 6) checkLocalLogin(code); 
-    }
-
-    function selG(el, selectedGender) {
-        document.querySelectorAll('.gender-chip').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        gender = selectedGender;
-    }
-
-    async function checkLocalLogin(otpCode) {
-        loading(true, "VERIFYING...");
-        try {
-            const res = await fetch(`${API_BASE}/auth/verify`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentPhoneClean, otp: otpCode })
-            });
-            const data = await res.json();
-            
-            if (data.success) {
-                if (data.isNewUser) {
-                    loading(false);
-                    showScreen('screen-profile');
-                } else {
-                    localStorage.setItem('mediflow_current_session', JSON.stringify(data.user));
-                    updateDash(data.user);
-                    renderCategoriesTab();
-                    renderPopularMeds();
-                    
-                    await loadAddresses(data.user.id);
-                    loading(false);
-
-                    openAddressManager(true);
-                }
-            } else {
-                loading(false);
-                document.querySelectorAll('.otp-box').forEach(b => { b.value = ""; b.style.borderColor = "var(--error)"; });
-                document.getElementById('otp-err').style.display = 'block';
-                document.getElementById('otp-1').focus();
-            }
-        } catch(e) {
-            loading(false);
-            alert("Could not connect to server.");
-            document.querySelectorAll('.otp-box').forEach(b => b.value = "");
-            document.getElementById('otp-1').focus();
-        }
-    }
 
     async function saveProfileToLocal() { 
         const n = document.getElementById('user-name').value;
@@ -1234,7 +1367,6 @@
         } catch(e) { loading(false); alert("API connection failed."); }
     }
 
-    // --- UTILS ---
     function updateDash(user) {
         window.currentUser = user; 
         document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
@@ -1261,6 +1393,10 @@
         document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
         document.getElementById(tabId).classList.add('active-view');
         
+        if(pushHistory) {
+            history.pushState({ screen: 'screen-dash', tab: tabId }, "");
+        }
+        
         const mainScroll = document.getElementById('main-scroll');
         const dashHeader = document.getElementById('main-dash-header');
         
@@ -1275,14 +1411,14 @@
             if(tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; } 
             else if(tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; } 
             else if(tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; } 
-            else if(tabId === 'tab-profile') { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
+            else if(tabId === 'tab-profile' || tabId === 'tab-orders') { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
         }
 
         updateCartUI(); 
     }
 
     function deleteAccount() {
-        if(confirm("Are you sure you want to delete your account? Your device data will be wiped. Note: If you ever log in with this phone number again, your existing details will be restored.")) {
+        if(confirm("Are you sure you want to delete your account? Your device data will be wiped.")) {
             localStorage.removeItem('mediflow_current_session'); location.reload(); 
         }
     }
@@ -1294,9 +1430,8 @@
     function openRxUpload() { showScreen('screen-rx-upload'); }
     function closeRxUpload() { 
         clearRxUpload();
-        // Return exactly back to the tab they were on instead of forcing home
-        if (document.getElementById('tab-delivery').classList.contains('active-view')) {
-            showScreen('screen-dash', false); 
+        if (history.state && history.state.screen !== 'screen-rx-upload') {
+            history.back();
         } else {
             showScreen('screen-dash'); 
         }
@@ -1344,7 +1479,13 @@
                     window.rxImageUrl = data.fileUrl; 
                     closeRxUpload();
                     updateCartUI();
-                    document.getElementById('nav-btn-cart').click();
+                    
+                    if(document.getElementById('tab-delivery').classList.contains('active-view')) {
+                        processCartPay();
+                    } else {
+                        document.getElementById('nav-btn-cart').click();
+                    }
+
                 }, 1500);
             } else { throw new Error("Upload Failed"); }
         } catch(e) {
@@ -1353,7 +1494,12 @@
             setTimeout(() => {
                 loading(false); showToast("Verified (Local Fallback) ✅");
                 window.rxVerified = true; closeRxUpload(); updateCartUI();
-                document.getElementById('nav-btn-cart').click();
+                
+                if(document.getElementById('tab-delivery').classList.contains('active-view')) {
+                    processCartPay();
+                } else {
+                    document.getElementById('nav-btn-cart').click();
+                }
             }, 1000);
         }
     }
