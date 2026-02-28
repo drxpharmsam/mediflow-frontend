@@ -738,7 +738,7 @@ function renderItemCard(item) {
                 <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p>
                 <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
             </div>
-            <button class="add-btn" onclick="addToCart(${JSON.stringify(item.name)})">ADD +</button>
+            <button class="add-btn" onclick='addToCart(${JSON.stringify(item.name)})'>ADD +</button>
         </div>
     `;
 }
@@ -757,7 +757,7 @@ function renderPopularMeds() {
                 <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
                 <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.category}</p>
                 <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick="addToCart(${JSON.stringify(item.name)})">ADD +</button>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>
         `;
     });
@@ -788,7 +788,7 @@ function renderCategoriesTab() {
         const colorClass = colors[idx % colors.length];
 
         grid.innerHTML += `
-            <div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick="openCategoryView(${JSON.stringify(cat)})">
+            <div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick='openCategoryView(${JSON.stringify(cat)})'>
                 <div class="icon-orb ${colorClass}" style="margin:0 0 15px; width:55px; height:55px; font-size:24px;"><i class="fa-solid ${example.icon}"></i></div>
                 <h3 style="margin:0; font-size:15px;">${cat}</h3>
             </div>
