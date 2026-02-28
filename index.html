@@ -74,6 +74,12 @@
                 <input type="number" id="user-age" placeholder="25" oninput="clearErr('age-err')">
                 <div id="age-err" class="error-hint">Please enter a valid age</div>
             </div>
+            <div class="input-group">
+                <label>Email <span style="font-weight:500; text-transform:none; font-size:10px; letter-spacing:0;">(optional)</span></label>
+                <input type="email" id="user-email" placeholder="you@example.com" oninput="clearErr('email-err')">
+                <div id="email-err" class="error-hint">Please enter a valid email address</div>
+                <div style="font-size:11px; color:var(--gray-text); font-weight:500; margin-top:6px;">Email (optional, for updates and password recovery)</div>
+            </div>
             <label style="font-size:11px; font-weight:800; color:var(--gray-text); display:block; margin-bottom:10px; letter-spacing:0.5px;">GENDER</label>
             <div class="gender-selection">
                 <div class="gender-chip" onclick="selG(this, 'Male')">Male</div>
@@ -181,6 +187,18 @@
                 <div class="glass-card wide" style="cursor:default;">
                     <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
                     <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
+                </div>
+                <div class="glass-card wide" style="cursor:default; display:block; padding-bottom:18px;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                        <div class="icon-orb" style="background:#F0FDF4; color:#16A34A; margin-right:0;"><i class="fa-solid fa-envelope"></i></div>
+                        <h3 style="margin:0; font-size:15px;">Update Email</h3>
+                    </div>
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <input type="email" id="profile-email" placeholder="you@example.com" style="height:50px;" oninput="document.getElementById('profile-email-err').style.display='none'">
+                        <div id="profile-email-err" class="error-hint">Please enter a valid email address</div>
+                    </div>
+                    <p style="font-size:11px; color:var(--gray-text); font-weight:500; margin:0 0 12px;">Email (optional, for updates and password recovery)</p>
+                    <button onclick="saveProfileEmail()" class="pay-btn-sml" style="width:100%;">Save Email</button>
                 </div>
                 <div class="glass-card wide" onclick="openOrderHistory()" style="cursor:pointer; border:1.5px solid #E5E7EB;">
                     <div class="icon-orb orb-3" style="background:#E0EBFF; color:#2563EB;"><i class="fa-solid fa-box-open"></i></div>

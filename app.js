@@ -1,5 +1,6 @@
 const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
 const SOCKET_URL = 'https://mediflow-backend-z29j.onrender.com';
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const socket = io(SOCKET_URL);
 let driverMarker = null;
@@ -914,21 +915,29 @@ async function checkLocalLogin(otpCode) {
 async function saveProfileToLocal() {
     const n = document.getElementById('user-name').value;
     const a = document.getElementById('user-age').value;
+    const emailVal = document.getElementById('user-email').value.trim();
     if (n.length < 3 || a < 1) return alert("Please enter valid name and age");
     if (gender === "") return alert("Please select a gender");
+    if (emailVal && !EMAIL_REGEX.test(emailVal)) {
+        document.getElementById('email-err').style.display = 'block';
+        return;
+    }
 
     loading(true, "CREATING ACCOUNT...");
     try {
+        const payload = { phone: currentPhoneClean, name: n, age: a, gender: gender };
+        if (emailVal) payload.email = emailVal;
         const res = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: currentPhoneClean, name: n, age: a, gender: gender })
+            body: JSON.stringify(payload)
         });
         const data = await res.json();
 
         if (data.success) {
-            localStorage.setItem('mediflow_current_session', JSON.stringify(data.user));
-            updateDash(data.user);
+            const savedUser = emailVal && !data.user.email ? { ...data.user, email: emailVal } : data.user;
+            localStorage.setItem('mediflow_current_session', JSON.stringify(savedUser));
+            updateDash(savedUser);
             renderCategoriesTab();
             renderPopularMeds();
             loading(false);
@@ -942,7 +951,41 @@ function updateDash(user) {
     document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
     document.getElementById('db-name-disp').innerText = user.name;
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
+    document.getElementById('profile-email').value = user.email || '';
     setHomeGreeting();
+}
+
+async function saveProfileEmail() {
+    const email = document.getElementById('profile-email').value.trim();
+    const errEl = document.getElementById('profile-email-err');
+    errEl.style.display = 'none';
+    if (email && !EMAIL_REGEX.test(email)) {
+        errEl.style.display = 'block';
+        return;
+    }
+    if (!window.currentUser) return;
+    loading(true, "SAVING...");
+    let updatedUser = { ...window.currentUser };
+    let savedToBackend = false;
+    try {
+        const res = await fetch(`${API_BASE}/auth/profile`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: window.currentUser.id, email: email || null })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.user) { updatedUser = data.user; savedToBackend = true; }
+        } else if (res.status !== 404) {
+            console.warn('Profile update returned status:', res.status);
+        }
+    } catch (_) { /* backend may not support this endpoint yet */ }
+    if (email) updatedUser.email = email;
+    else delete updatedUser.email;
+    window.currentUser = updatedUser;
+    localStorage.setItem('mediflow_current_session', JSON.stringify(updatedUser));
+    loading(false);
+    alert(savedToBackend ? "Email saved!" : "Email saved locally. It will sync when backend support is available.");
 }
 
 function setHomeGreeting() {
