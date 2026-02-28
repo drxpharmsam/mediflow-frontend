@@ -137,6 +137,10 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoiYXl1c2hrYXVzaGlrIiwiYSI6ImNtbTYyaG05NDBibnMyd3F
 const MAPBOX_STYLE = 'mapbox://styles/mapbox/streets-v12';
 const DEFAULT_LAT = 28.6139;  // Default map centre latitude  (Delhi, India)
 const DEFAULT_LNG = 77.2090;  // Default map centre longitude (Delhi, India)
+// 🎨 UX EDIT: Peek height (px) — must match .addr-sheet-peeked translateY value in style.css
+const PEEK_HEIGHT = 185;
+// Tracks which sheet elements have drag listeners to prevent double-initialisation
+const _initializedSheets = new WeakSet();
 
 // --- MAP FUNCTIONS ---
 function initMap() {
@@ -328,10 +332,15 @@ function openAddressManager(forceSelect = false) {
     showScreen('screen-address');
     renderAddressList();
 
-    // Always start on Step 1 (location pick); reset Step 2 to hidden
+    // Always start on Step 1 (location pick) in peek state; reset Step 2 to hidden
     const pickSheet = document.getElementById('addr-sheet-pick');
     const detailsSheet = document.getElementById('addr-sheet-details');
-    if (pickSheet) pickSheet.classList.remove('addr-sheet-hidden');
+    if (pickSheet) {
+        pickSheet.classList.remove('addr-sheet-hidden');
+        // 🎨 UX EDIT: Remove the next line to open fully expanded instead of peeked
+        pickSheet.classList.add('addr-sheet-peeked');
+        initBottomSheetDrag('addr-sheet-pick');
+    }
     if (detailsSheet) detailsSheet.classList.add('addr-sheet-hidden');
 
     const backBtn = document.getElementById('address-back-btn');
@@ -382,6 +391,64 @@ function backToLocationPick() {
     if (detailsSheet) detailsSheet.classList.add('addr-sheet-hidden');
     const pickSheet = document.getElementById('addr-sheet-pick');
     if (pickSheet) pickSheet.classList.remove('addr-sheet-hidden');
+}
+
+// ── Bottom sheet expand/collapse helpers ────────────────────────────────────
+// Expand the pick sheet to full height (remove peeked state).
+// Called by tap on the drag handle or drag-up gesture.
+// 🎨 UX EDIT: Call expandPickSheet(false) to collapse back to peek programmatically.
+function expandPickSheet(expand = true) {
+    const sheet = document.getElementById('addr-sheet-pick');
+    if (!sheet) return;
+    if (expand) {
+        sheet.classList.remove('addr-sheet-peeked');
+    } else {
+        sheet.classList.add('addr-sheet-peeked');
+    }
+}
+
+// Attach touch-drag listeners to the sheet's handle so the user can drag to expand/collapse.
+// Guards against double-initialisation with a WeakSet (_initializedSheets).
+// 🎨 UX EDIT: Adjust DRAG_THRESHOLD (px) to control how far a drag must travel before toggling.
+function initBottomSheetDrag(sheetId) {
+    const sheet = document.getElementById(sheetId);
+    if (!sheet || _initializedSheets.has(sheet)) return;
+    _initializedSheets.add(sheet);
+    const handle = sheet.querySelector('.addr-sheet-handle');
+    if (!handle) return;
+
+    const DRAG_THRESHOLD = 60; // px — minimum drag distance to trigger expand/collapse
+    let startY = 0;
+
+    handle.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        // Suppress CSS transition while dragging for a fluid feel
+        sheet.classList.add('addr-sheet-no-transition');
+    }, { passive: true });
+
+    handle.addEventListener('touchmove', (e) => {
+        const dy = e.touches[0].clientY - startY;
+        const isPeeked = sheet.classList.contains('addr-sheet-peeked');
+        // Only allow dragging in the natural direction (down when expanded, up when peeked)
+        if ((!isPeeked && dy > 0) || (isPeeked && dy < 0)) {
+            sheet.style.transform = isPeeked
+                ? `translateY(calc(100% - ${PEEK_HEIGHT}px + ${dy}px))`
+                : `translateY(${Math.max(0, dy)}px)`;
+        }
+    }, { passive: true });
+
+    handle.addEventListener('touchend', (e) => {
+        // Re-enable CSS transition and clear inline transform before snapping
+        sheet.classList.remove('addr-sheet-no-transition');
+        sheet.style.transform = '';
+        const dy = e.changedTouches[0].clientY - startY;
+        if (dy < -DRAG_THRESHOLD) {
+            expandPickSheet(true);   // dragged up → expand
+        } else if (dy > DRAG_THRESHOLD) {
+            expandPickSheet(false);  // dragged down → peek
+        }
+        // Small drag → snap back to current state (no change)
+    }, { passive: true });
 }
 
 function closeAddressManager() {
@@ -487,25 +554,22 @@ function renderAddressList() {
     // 🎨 BRAND EDIT: Change tag icons in tagIcon map, or swap FA icons for emoji
     const tagIcon = { 'Home': 'fa-house', 'Work': 'fa-briefcase', 'Other': 'fa-location-dot' };
 
-    let html = `<p style="font-size:11px; font-weight:800; color:var(--gray-text); text-transform:uppercase; letter-spacing:0.8px; margin: 16px 0 10px;">Saved Addresses</p>`;
+    // Horizontal scrollable chip row — Zepto-style
+    let html = `<p style="font-size:11px; font-weight:800; color:var(--gray-text); text-transform:uppercase; letter-spacing:0.8px; margin: 0 0 10px;">Saved Addresses</p>`;
+    html += `<div class="addr-chips-row">`;
 
     list.forEach(addr => {
         const isSelected = selectedAddress && selectedAddress.id === addr.id;
         const icon = tagIcon[addr.tag] || 'fa-location-dot';
         html += `
-            <div class="addr-card ${isSelected ? 'selected' : ''}" onclick='selectAddress(${JSON.stringify(addr)})'>
-                <div class="addr-card-icon"><i class="fa-solid ${icon}" style="color:var(--c4);"></i></div>
-                <div style="flex:1; min-width:0;">
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-                        <b style="font-size:14px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${addr.line1}</b>
-                        <span class="tag-chip">${addr.tag}</span>
-                    </div>
-                    <p style="margin:0; font-size:12px; color:var(--gray-text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${addr.line2}</p>
-                </div>
-                ${isSelected ? '<i class="fa-solid fa-circle-check" style="color:var(--c4); font-size:20px; flex-shrink:0;"></i>' : ''}
+            <div class="addr-saved-chip ${isSelected ? 'selected' : ''}" onclick='selectAddress(${JSON.stringify(addr)})'>
+                <div class="addr-saved-chip-icon"><i class="fa-solid ${icon}"></i></div>
+                <span class="addr-saved-chip-label">${addr.tag}</span>
             </div>
         `;
     });
+
+    html += `</div>`;
     container.innerHTML = html;
 }
 

@@ -266,27 +266,29 @@
         <!-- ══════════════════════════════════════════════════════════════
              BOTTOM SHEET — STEP 1 : Pick location
              User pans the map; sheet shows detected area + saved addresses.
+             Sheet starts "peeked" (185 px visible); drag or tap handle to expand.
              "Confirm Location" slides to Step 2.
              ══════════════════════════════════════════════════════════════ -->
-        <div id="addr-sheet-pick" class="addr-bottom-sheet">
-            <!-- Drag handle -->
-            <div class="addr-sheet-handle"></div>
+        <div id="addr-sheet-pick" class="addr-bottom-sheet addr-sheet-peeked">
+            <!-- Drag handle — tap to expand / drag to resize -->
+            <!-- 🎨 UX EDIT: Remove onclick to disable tap-to-expand -->
+            <div class="addr-sheet-handle" onclick="expandPickSheet()"></div>
 
-            <!-- "Use Current Location" row — triggers GPS, fills area automatically -->
+            <!-- "Use my current location" row — triggers GPS, fills area automatically -->
             <!-- 🎨 BRAND EDIT: Icon bg → .addr-curr-icon-wrap; label colour → .addr-curr-label -->
             <div class="addr-use-current" onclick="detectLocation()">
                 <div class="addr-curr-icon-wrap">
                     <i class="fa-solid fa-location-crosshairs"></i>
                 </div>
                 <div style="flex:1; min-width:0;">
-                    <div class="addr-curr-label">Use current location</div>
+                    <div class="addr-curr-label">Use my current location</div>
                     <!-- Filled by reverseGeocode() after GPS fix or map pan -->
                     <div class="addr-curr-sub" id="addr-detected-text">Tap to detect GPS position</div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:var(--c4); font-size:14px; flex-shrink:0;"></i>
             </div>
 
-            <!-- Saved addresses list (populated by renderAddressList()) -->
+            <!-- Saved addresses — rendered as horizontal icon chips by renderAddressList() -->
             <div id="address-list"></div>
 
             <!-- Confirm CTA — advances to Step 2 to enter house # and save -->
