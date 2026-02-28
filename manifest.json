@@ -1,0 +1,9 @@
+{
+  "name": "MediFlow",
+  "short_name": "MediFlow",
+  "description": "Your digital pharmacy.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#055C61",
+  "theme_color": "#0A858C"
+}
