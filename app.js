@@ -175,19 +175,29 @@ function initMap() {
 // Only overwrites addr-line2 if the user hasn't manually edited it.
 async function reverseGeocode(lat, lng) {
     const addrLine2 = document.getElementById('addr-line2');
-    if (!addrLine2 || addrLine2.dataset.userTyped) return;
+    if (!addrLine2) return;
     try {
         const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json` +
                     `?access_token=${MAPBOX_TOKEN}&language=en&types=address,neighborhood,place&limit=1`;
         const res = await fetch(url);
         const data = await res.json();
+        let areaText;
         if (data.features && data.features.length > 0) {
-            addrLine2.value = data.features[0].place_name;
+            areaText = data.features[0].place_name;
         } else {
-            addrLine2.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            areaText = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
         }
+        addrLine2.value = areaText;
+        // Update preview elements in the bottom-sheet UI
+        const detectedEl = document.getElementById('addr-detected-text');
+        if (detectedEl) detectedEl.textContent = areaText;
+        const stripEl = document.getElementById('addr-area-strip-text');
+        if (stripEl) stripEl.textContent = areaText;
     } catch (e) {
-        addrLine2.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        addrLine2.value = fallback;
+        const detectedEl = document.getElementById('addr-detected-text');
+        if (detectedEl) detectedEl.textContent = fallback;
     }
 }
 
@@ -318,11 +328,15 @@ function openAddressManager(forceSelect = false) {
     showScreen('screen-address');
     renderAddressList();
 
+    // Always start on Step 1 (location pick); reset Step 2 to hidden
+    const pickSheet = document.getElementById('addr-sheet-pick');
+    const detailsSheet = document.getElementById('addr-sheet-details');
+    if (pickSheet) pickSheet.classList.remove('addr-sheet-hidden');
+    if (detailsSheet) detailsSheet.classList.add('addr-sheet-hidden');
+
     const backBtn = document.getElementById('address-back-btn');
-    if (forceSelect || !selectedAddress) {
-        backBtn.style.display = 'none';
-    } else {
-        backBtn.style.display = 'flex';
+    if (backBtn) {
+        backBtn.style.display = (forceSelect || !selectedAddress) ? 'none' : 'flex';
     }
 
     // Use requestAnimationFrame + timeout for reliable map rendering after DOM paint
@@ -340,6 +354,34 @@ function openAddressManager(forceSelect = false) {
         // Refresh saved-address markers (addresses may have loaded since last open)
         if (map) { addAddressMarkersToMap(); }
     }, 350);
+}
+
+// Advance from Step 1 (location pick) → Step 2 (address details).
+// Syncs the detected area from the hidden addr-line2 to the area-strip label.
+function openAddressDetails() {
+    const line2El = document.getElementById('addr-line2');
+    const areaText = line2El ? line2El.value.trim() : '';
+    const displayArea = areaText || 'Detecting area…';
+    const stripEl = document.getElementById('addr-area-strip-text');
+    if (stripEl) stripEl.textContent = displayArea;
+
+    document.getElementById('addr-sheet-pick').classList.add('addr-sheet-hidden');
+    const detailsSheet = document.getElementById('addr-sheet-details');
+    detailsSheet.classList.remove('addr-sheet-hidden');
+
+    // Focus the house-number input after the animation completes
+    setTimeout(() => {
+        const el = document.getElementById('addr-line1');
+        if (el) el.focus();
+    }, 420);
+}
+
+// Go back from Step 2 (address details) → Step 1 (location pick).
+function backToLocationPick() {
+    const detailsSheet = document.getElementById('addr-sheet-details');
+    if (detailsSheet) detailsSheet.classList.add('addr-sheet-hidden');
+    const pickSheet = document.getElementById('addr-sheet-pick');
+    if (pickSheet) pickSheet.classList.remove('addr-sheet-hidden');
 }
 
 function closeAddressManager() {
@@ -373,14 +415,18 @@ async function loadAddresses(userId) {
 async function saveNewAddress() {
     const line1 = document.getElementById('addr-line1').value.trim();
     const line2El = document.getElementById('addr-line2');
-    // Use auto-detected area if the user hasn't overridden it; fallback to map coords
-    let line2 = (line2El ? line2El.value.trim() : '');
-    if (!line2 && map) {
+    const landmarkEl = document.getElementById('addr-landmark');
+    // Build line2 from auto-detected area (hidden field) + optional user landmark
+    let area = line2El ? line2El.value.trim() : '';
+    if (!area && map) {
         const c = map.getCenter();
-        line2 = `${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`;
+        area = `${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`;
     }
-    const tagEl = document.querySelector('#screen-address .select-chip.active');
+    const landmark = landmarkEl ? landmarkEl.value.trim() : '';
+    const line2 = area + (landmark ? ', near ' + landmark : '');
+
     // Read tag from data-tag attribute to avoid parsing display text (which may include emoji)
+    const tagEl = document.querySelector('#screen-address .select-chip.active');
     const tag = (tagEl && tagEl.dataset.tag) ? tagEl.dataset.tag : 'Home';
     const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
 
@@ -403,8 +449,7 @@ async function saveNewAddress() {
         if (data.success) {
             // Merge backend response with captured coordinates
             const savedAddr = { ...data.data, lat, lng };
-            document.getElementById('addr-line1').value = "";
-            if (line2El) { line2El.value = ""; delete line2El.dataset.userTyped; }
+            _clearAddressForm();
             window.currentAddresses.push(savedAddr);
             addAddressMarkersToMap();
             selectAddress(savedAddr);
@@ -414,12 +459,22 @@ async function saveNewAddress() {
         // Local fallback: store in memory when backend is unavailable
         const localAddr = { id: 'local-' + Date.now(), userId: session.id, line1, line2, tag, lat, lng };
         window.currentAddresses.push(localAddr);
-        document.getElementById('addr-line1').value = "";
-        if (line2El) { line2El.value = ""; delete line2El.dataset.userTyped; }
+        _clearAddressForm();
         addAddressMarkersToMap();
         selectAddress(localAddr);
         showToast("Address saved locally.");
     }
+}
+
+// Clears the address form fields and resets to Step 1 (location pick).
+function _clearAddressForm() {
+    const f1 = document.getElementById('addr-line1'); if (f1) f1.value = '';
+    const f2 = document.getElementById('addr-line2'); if (f2) f2.value = '';
+    const fl = document.getElementById('addr-landmark'); if (fl) fl.value = '';
+    // Reset Save-As chips: reactivate "Home"
+    const chips = document.querySelectorAll('#addr-sheet-details .select-chip');
+    chips.forEach((c, i) => c.classList.toggle('active', i === 0));
+    backToLocationPick();
 }
 
 function renderAddressList() {
@@ -427,25 +482,27 @@ function renderAddressList() {
     const container = document.getElementById('address-list');
     container.innerHTML = "";
 
-    if (list.length === 0) {
-        container.innerHTML = "<p style='text-align:center; color:#9CA3AF; font-weight:600;'>No saved addresses yet</p>";
-        return;
-    }
+    if (list.length === 0) return; // No saved addresses — sheet shows only GPS row + CTA
 
-    let html = `<h3 style="font-size:16px; margin-bottom:15px; color:#111827; font-weight:800;">Saved Locations</h3>`;
+    // 🎨 BRAND EDIT: Change tag icons in tagIcon map, or swap FA icons for emoji
+    const tagIcon = { 'Home': 'fa-house', 'Work': 'fa-briefcase', 'Other': 'fa-location-dot' };
+
+    let html = `<p style="font-size:11px; font-weight:800; color:var(--gray-text); text-transform:uppercase; letter-spacing:0.8px; margin: 16px 0 10px;">Saved Addresses</p>`;
 
     list.forEach(addr => {
         const isSelected = selectedAddress && selectedAddress.id === addr.id;
+        const icon = tagIcon[addr.tag] || 'fa-location-dot';
         html += `
             <div class="addr-card ${isSelected ? 'selected' : ''}" onclick='selectAddress(${JSON.stringify(addr)})'>
-                <div style="flex:1;">
-                    <div style="display:flex; align-items:center;">
-                        <b style="font-size:15px; color:#111827;">${addr.line1}</b>
+                <div class="addr-card-icon"><i class="fa-solid ${icon}" style="color:var(--c4);"></i></div>
+                <div style="flex:1; min-width:0;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                        <b style="font-size:14px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${addr.line1}</b>
                         <span class="tag-chip">${addr.tag}</span>
                     </div>
-                    <p style="margin:4px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">${addr.line2}</p>
+                    <p style="margin:0; font-size:12px; color:var(--gray-text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${addr.line2}</p>
                 </div>
-                ${isSelected ? '<i class="fa-solid fa-circle-check" style="color:var(--c4); font-size:20px;"></i>' : ''}
+                ${isSelected ? '<i class="fa-solid fa-circle-check" style="color:var(--c4); font-size:20px; flex-shrink:0;"></i>' : ''}
             </div>
         `;
     });
