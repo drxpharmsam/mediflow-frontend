@@ -102,7 +102,6 @@
         .bill-row.total { font-size: 19px; font-weight: 800; color: #111827; margin-top: 18px; padding-top: 18px; border-top: 2px dashed #E5E7EB; }
         .text-success { color: var(--success); font-weight: 700; background: var(--success-bg); padding: 2px 8px; border-radius: 8px; font-size: 12px; }
         
-        /* --- QUANTITY CONTROLS CSS --- */
         .qty-controls { display: flex; align-items: center; gap: 10px; background: #F3F4F6; padding: 6px 10px; border-radius: 14px; }
         .qty-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 8px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
         .qty-btn:active { transform: scale(0.9); background: var(--c1); }
@@ -149,7 +148,6 @@
         .select-chip { padding: 16px; background: white; border: 1.5px solid #E5E7EB; border-radius: 18px; text-align: center; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; color: var(--gray-text); }
         .select-chip.active { border-color: var(--c3); background: var(--c1); color: var(--c5); box-shadow: 0 8px 15px rgba(54, 184, 183, 0.15); transform: translateY(-2px); }
         
-        /* Order History Card Style */
         .order-history-card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1.5px solid #E5E7EB; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .status-badge { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 8px; text-transform: uppercase; }
         .status-pending { background: #FEF3C7; color: #D97706; }
@@ -163,7 +161,7 @@
 
 <div id="app-frame">
     <div id="pill-loader"><i class="fa-solid fa-pills pill-icon"></i><p style="margin-top: 20px; letter-spacing: 3px; font-size: 13px; font-weight: 800;" id="loader-text">LOADING</p></div>
-    <div id="toast">Added to Cart</div>
+    <div id="toast">Message here</div>
 
     <div id="sticky-checkout" class="sticky-checkout" style="z-index: 300;">
         <div>
@@ -536,6 +534,16 @@
 
     let currentPhoneRaw = ""; let currentPhoneClean = ""; let gender = ""; let cart = [];
     let selectedAddress = null; let map = null; window.currentAddresses = []; 
+
+    // --- ADDED MISSING SHOWTOAST FUNCTION ---
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        if(toast) {
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+    }
 
     // --- SMART BACK BUTTON (HISTORY API) SUPPORT ---
     window.addEventListener('popstate', (e) => {
@@ -1242,7 +1250,7 @@
         showScreen('screen-cat-items');
     }
 
-    // --- RENDER SMART OTP LOGIC (RESTORED) ---
+    // --- RENDER SMART OTP LOGIC (FIXED) ---
     async function autoPhone(el) {
         clearErr('phone-err');
         let v = el.value.replace(/\D/g, '');
@@ -1256,7 +1264,15 @@
             el.style.borderColor = "var(--success)";
             el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
             
-            loading(true, "WAKING UP SECURE SERVER...");
+            loading(true, "CONNECTING TO SERVER...");
+            
+            // Immediately show the OTP screen, assuming the server request will succeed.
+            // This fixes the issue of it getting "stuck" on the phone number page.
+            setTimeout(() => {
+                showScreen('screen-otp'); 
+                setTimeout(() => document.getElementById('otp-1').focus(), 600);
+            }, 500);
+
             try {
                 const res = await fetch(`${API_BASE}/auth/send-otp`, {
                     method: 'POST',
@@ -1269,13 +1285,14 @@
                 
                 loading(false);
                 if (data.success) {
-                    showToast("OTP Sent! 💬");
-                    setTimeout(() => { showScreen('screen-otp'); setTimeout(() => document.getElementById('otp-1').focus(), 600); }, 500);
+                    showToast("OTP Sent! Check server logs.");
                 } else { 
                     alert("Failed to send OTP: " + (data.message || "Unknown error")); 
+                    showScreen('screen-login'); // Kick them back if it fails
                 }
             } catch(e) { 
                 loading(false); 
+                showScreen('screen-login'); // Kick them back if it fails
                 alert(`SERVER CONNECTION FAILED!\n\nDetails: ${e.message}\n\n1. Wait 60 seconds (Render might be waking up).\n2. Check if backend is online.`); 
                 el.value = "";
                 el.style.borderColor = ""; 
