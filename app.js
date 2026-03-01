@@ -848,8 +848,10 @@ function generateOrderId() {
 
 async function verifyPayment(method) {
     if (method === 'Online') closePayment();
-    loading(true, method === 'COD' ? "PLACING ORDER..." : "VERIFYING BANK STATUS...");
+    loading(true, method === 'COD' ? "PLACING ORDER..." : "VERIFYING PAYMENT...");
 
+    // Short delay (500 ms) lets the payment overlay close-animation finish before
+    // the API call fires, keeping the UX transition smooth.
     setTimeout(async () => {
         const session = JSON.parse(localStorage.getItem('mediflow_current_session'));
         const orderItems = currentPaymentContext.type === 'cart' ? cart : [{ name: "Doctor Consultation (Online)", price: 59, qty: 1 }];
@@ -873,20 +875,20 @@ async function verifyPayment(method) {
             const data = await res.json();
 
             if (data.success) {
-                loading(true, "ORDER PLACED SUCCESSFULLY!");
-                setTimeout(() => {
-                    loading(false);
-                    const placedOrderId = data.order.orderId || generatedId;
-                    cart = []; window.rxVerified = false; window.rxImageUrl = null;
-                    updateCartUI(); closeConsultation();
-                    // Open live tracker for cart orders; show toast for consultations
-                    if (currentPaymentContext.type === 'cart') {
-                        openOrderTracker(placedOrderId, data.order);
-                    } else {
-                        showToast(`Order Confirmed! 🚀  ID: ${placedOrderId}`);
-                        switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
-                    }
-                }, 1500);
+                // Dismiss the loading spinner immediately and open the tracker right away
+                // so there is no gap between payment and seeing the live order status.
+                loading(false);
+                const placedOrderId = data.order.orderId || generatedId;
+                cart = []; window.rxVerified = false; window.rxImageUrl = null;
+                updateCartUI(); closeConsultation();
+                // Open live tracker for cart orders; show toast for consultations
+                if (currentPaymentContext.type === 'cart') {
+                    // freshOrder = true → shows the order-confirmed banner on the tracker screen
+                    openOrderTracker(placedOrderId, data.order, true);
+                } else {
+                    showToast(`Order Confirmed! 🚀  ID: ${placedOrderId}`);
+                    switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+                }
             } else { loading(false); alert("Order failed: " + data.message); }
         } catch (e) {
             loading(false);
@@ -905,13 +907,14 @@ async function verifyPayment(method) {
             cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
             // Open live tracker for cart orders (simulated locally); toast for consultations
             if (currentPaymentContext.type === 'cart') {
-                openOrderTracker(generatedId, localOrderData);
+                // freshOrder = true → shows the order-confirmed banner on the tracker screen
+                openOrderTracker(generatedId, localOrderData, true);
             } else {
                 showToast(`Order Confirmed! 🚀 (Local)  ID: ${generatedId}`);
                 switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
             }
         }
-    }, 2500);
+    }, 500);
 }
 
 // --- ORDER HISTORY LOGIC ---
@@ -1494,6 +1497,8 @@ let _orderPollInterval = null;
 let _currentTrackedOrderId = null;
 /** Full order object for the currently tracked order. */
 let _currentTrackedOrderData = null;
+/** setTimeout ID for the order-confirmed banner auto-dismiss. */
+let _confirmBannerTimeout = null;
 
 // 🎨 UX EDIT: How often (ms) to poll order status from the backend.
 const TRACKER_POLL_INTERVAL_MS = 15000; // 15 seconds
@@ -1788,10 +1793,12 @@ function stopOrderPolling() {
  * Opens the live order tracker screen.
  * Call this immediately after a successful order placement.
  *
- * @param {string} orderId   - The placed order's ID (e.g. "ORD-AB12CD")
- * @param {object} orderData - Full order object from backend (or local fallback)
+ * @param {string}  orderId    - The placed order's ID (e.g. "ORD-AB12CD")
+ * @param {object}  orderData  - Full order object from backend (or local fallback)
+ * @param {boolean} freshOrder - Pass true immediately after order placement to show
+ *                               the order-confirmed celebration banner.
  */
-function openOrderTracker(orderId, orderData) {
+function openOrderTracker(orderId, orderData, freshOrder = false) {
     _currentTrackedOrderId  = orderId;
     _currentTrackedOrderData = orderData || {};
 
@@ -1799,7 +1806,7 @@ function openOrderTracker(orderId, orderData) {
     const orderIdEl = document.getElementById('ot-order-id');
     if (orderIdEl) orderIdEl.textContent = 'Order #' + orderId;
 
-    // Show the tracker screen
+    // Show the tracker screen — this is the immediate transition with no gap.
     showScreen('screen-order-tracker');
 
     // Determine initial step from the order status string
@@ -1807,6 +1814,23 @@ function openOrderTracker(orderId, orderData) {
 
     renderTrackerTimeline(initStep);
     updateTrackerStatusChip(initStep);
+
+    // Show or hide the order-confirmed celebration banner.
+    // When freshOrder is true (called right after payment), the banner slides in
+    // and auto-dismisses after 4 s so the user always sees immediate confirmation.
+    const confirmBanner = document.getElementById('ot-confirm-banner');
+    if (confirmBanner) {
+        // Cancel any previous auto-dismiss timer to prevent multiple concurrent timers
+        clearTimeout(_confirmBannerTimeout);
+        if (freshOrder) {
+            confirmBanner.classList.add('show');
+            // Auto-hide after 4 seconds — user can continue viewing the tracker
+            _confirmBannerTimeout = setTimeout(() => confirmBanner.classList.remove('show'), 4000);
+        } else {
+            // Re-opening tracker from history: ensure banner is hidden
+            confirmBanner.classList.remove('show');
+        }
+    }
 
     // Populate rider name if available
     // 🎨 INTEGRATION: replace 'riderName' with your backend's actual field name
@@ -1829,6 +1853,10 @@ function openOrderTracker(orderId, orderData) {
  */
 function closeOrderTracker() {
     stopOrderPolling();
+
+    // Cancel the confirm-banner auto-dismiss timer if the user exits early
+    clearTimeout(_confirmBannerTimeout);
+    _confirmBannerTimeout = null;
 
     // Remove the tracker Mapbox instance to free GPU/memory
     if (trackerMap) {

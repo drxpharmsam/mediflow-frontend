@@ -544,6 +544,15 @@
                 <p style="margin:0; font-size:13px; color:#047857; font-weight:500;">Thank you for choosing MediFlow.</p>
             </div>
 
+            <!-- Order-confirmed celebration banner — shown immediately after placing a new order -->
+            <!-- Auto-hides after 4 s; controlled by openOrderTracker(freshOrder=true) in app.js -->
+            <!-- 🎨 BRAND EDIT: gradient colours → .ot-confirm-banner in style.css -->
+            <div class="ot-confirm-banner" id="ot-confirm-banner">
+                <div style="font-size:32px; margin-bottom:8px;">🎉</div>
+                <h3 style="margin:0 0 4px; font-size:17px; font-weight:800; color:#fff;">Order Confirmed!</h3>
+                <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.85); font-weight:500;">Your medicines are being prepared.</p>
+            </div>
+
             <!-- Step timeline — rendered by renderTrackerTimeline() -->
             <!-- 🎨 BRAND EDIT: step icon/text → TRACKER_STATUS_MAP in app.js -->
             <div class="ot-timeline" id="ot-timeline">
