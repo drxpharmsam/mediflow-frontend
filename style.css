@@ -343,6 +343,21 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
 }
 .ot-delivered-banner.show { display: block; animation: otChipIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
+/* ── Order-confirmed celebration banner (fresh order placement) ── */
+/* Slides in from above using brand teal gradient; auto-hidden by JS after 4 s. */
+/* 🎨 BRAND EDIT: gradient → var(--c5)/var(--c4) */
+.ot-confirm-banner {
+    background: linear-gradient(135deg, var(--c5), var(--c4));
+    border-radius: 20px; padding: 18px 16px;
+    text-align: center; margin-bottom: 16px;
+    display: none;
+}
+.ot-confirm-banner.show { display: block; animation: otBannerIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes otBannerIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Step Timeline ── */
 .ot-timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 14px; }
 .ot-step { display: flex; align-items: flex-start; gap: 14px; position: relative; padding-bottom: 14px; }
