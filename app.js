@@ -1425,11 +1425,7 @@ async function submitRx() {
                 closeRxUpload();
                 updateCartUI();
 
-                if (document.getElementById('tab-delivery').classList.contains('active-view')) {
-                    processCartPay();
-                } else {
-                    document.getElementById('nav-btn-cart').click();
-                }
+                document.getElementById('nav-btn-cart').click();
             }, 1500);
         } else { throw new Error("Upload Failed"); }
     } catch (e) {
@@ -1439,11 +1435,7 @@ async function submitRx() {
             loading(false); showToast("Verified (Local Fallback) ✅");
             window.rxVerified = true; closeRxUpload(); updateCartUI();
 
-            if (document.getElementById('tab-delivery').classList.contains('active-view')) {
-                processCartPay();
-            } else {
-                document.getElementById('nav-btn-cart').click();
-            }
+            document.getElementById('nav-btn-cart').click();
         }, 1000);
     }
 }
