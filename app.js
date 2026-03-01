@@ -876,29 +876,40 @@ async function verifyPayment(method) {
                 loading(true, "ORDER PLACED SUCCESSFULLY!");
                 setTimeout(() => {
                     loading(false);
-                    alert(`Order Confirmed! 🚀\nMethod: ${method}\nOrder ID: ${data.order.orderId || generatedId}`);
-                    if (currentPaymentContext.type === 'cart') socket.emit('joinDeliveryRoom', { orderId: data.order.orderId || generatedId });
+                    const placedOrderId = data.order.orderId || generatedId;
                     cart = []; window.rxVerified = false; window.rxImageUrl = null;
                     updateCartUI(); closeConsultation();
-                    switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+                    // Open live tracker for cart orders; show toast for consultations
+                    if (currentPaymentContext.type === 'cart') {
+                        openOrderTracker(placedOrderId, data.order);
+                    } else {
+                        showToast(`Order Confirmed! 🚀  ID: ${placedOrderId}`);
+                        switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+                    }
                 }, 1500);
             } else { loading(false); alert("Order failed: " + data.message); }
         } catch (e) {
             loading(false);
-            alert(`Order Confirmed! 🚀 (Simulated Locally)\nMethod: ${method}\nOrder ID: ${generatedId}`);
 
             let localHistory = JSON.parse(localStorage.getItem('mediflow_local_history')) || [];
-            localHistory.push({
+            const localOrderData = {
                 orderId: generatedId,
                 totalAmount: currentPaymentContext.amount,
                 status: method === 'COD' ? 'Confirmed (Pending Payment)' : 'Confirmed (Paid Online)',
                 date: new Date().toLocaleDateString(),
                 items: orderItems
-            });
+            };
+            localHistory.push(localOrderData);
             localStorage.setItem('mediflow_local_history', JSON.stringify(localHistory));
 
             cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
-            switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+            // Open live tracker for cart orders (simulated locally); toast for consultations
+            if (currentPaymentContext.type === 'cart') {
+                openOrderTracker(generatedId, localOrderData);
+            } else {
+                showToast(`Order Confirmed! 🚀 (Local)  ID: ${generatedId}`);
+                switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home');
+            }
         }
     }, 2500);
 }
@@ -1438,6 +1449,9 @@ async function submitRx() {
 socket.on('connect', () => { console.log('✅ Connected to Live Tracking Server'); });
 socket.on('driverLocationUpdate', (data) => {
     const { latitude, longitude } = data;
+    // Update tracker-screen rider marker (new — primary map for live tracking)
+    updateTrackerRiderLocation(latitude, longitude);
+    // Also update the address-screen map if it happens to be open (legacy behaviour)
     if (!map) return;
     if (!driverMarker) {
         // Create a custom DOM element for the driver marker
@@ -1452,3 +1466,415 @@ socket.on('driverLocationUpdate', (data) => {
     }
     try { map.easeTo({ center: [longitude, latitude], duration: 1500 }); } catch (e) {}
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+// ORDER LIVE TRACKER
+// ──────────────────────────────────────────────────────────────────────────
+// Zepto/Blinkit-inspired order tracker with:
+//   • 5-step timeline  (Placed → Accepted → Ready → En Route → Delivered)
+//   • Mapbox map with pharmacy 🏥, rider 🛵, and user 📍 markers
+//   • Socket.IO real-time rider location updates + polling fallback
+//   • Contact actions: call pharmacy / rider, support
+//
+// Entry point : openOrderTracker(orderId, orderData)
+// Close       : closeOrderTracker()
+// ══════════════════════════════════════════════════════════════════════════
+
+/** Separate Mapbox map instance for the tracker screen (does not reuse address `map`). */
+let trackerMap = null;
+/** Mapbox Marker for the delivery rider on the tracker map. */
+let trackerRiderMarker = null;
+/** Mapbox Marker for the user's delivery address on the tracker map. */
+let trackerUserMarker = null;
+/** Mapbox Marker for the pharmacy on the tracker map. */
+let trackerPharmacyMarker = null;
+/** setInterval ID for order status polling. */
+let _orderPollInterval = null;
+/** Currently tracked order ID. */
+let _currentTrackedOrderId = null;
+/** Full order object for the currently tracked order. */
+let _currentTrackedOrderData = null;
+
+// 🎨 UX EDIT: How often (ms) to poll order status from the backend.
+const TRACKER_POLL_INTERVAL_MS = 15000; // 15 seconds
+
+// Default pharmacy location used when the order payload doesn't include one.
+// 🎨 INTEGRATION: Replace with values from your order/pharmacy API response.
+const DEFAULT_PHARMACY_LAT = 28.6200;
+const DEFAULT_PHARMACY_LNG = 77.2150;
+
+/**
+ * Maps order status strings to timeline steps.
+ * Keys and altKeys are matched against order.status using substring search (case-insensitive).
+ * 🎨 INTEGRATION: Add / rename entries to match your backend's actual status strings.
+ */
+const TRACKER_STATUS_MAP = [
+    { key: 'placed',           altKeys: ['confirmed', 'pending payment', 'paid online'],
+      icon: 'fa-check',            title: 'Order Placed',          sub: 'We received your order',              emoji: '📦',
+      eta: '~35 min',   pharmacyLabel: 'Preparing your order' },
+    { key: 'accepted',         altKeys: [],
+      icon: 'fa-store',            title: 'Pharmacy Accepted',     sub: 'Pharmacy is preparing your order',    emoji: '🏥',
+      eta: '~25 min',   pharmacyLabel: 'Preparing your order' },
+    { key: 'ready',            altKeys: ['preparing', 'packed'],
+      icon: 'fa-box-open',         title: 'Medicines Ready',       sub: 'Packed and ready for pickup',         emoji: '✅',
+      eta: '~18 min',   pharmacyLabel: 'Order packed' },
+    { key: 'out for delivery', altKeys: ['en route', 'picked up', 'dispatched'],
+      icon: 'fa-person-biking',    title: 'Rider En Route',        sub: 'Your order is on the way!',           emoji: '🛵',
+      eta: '~10 min',   pharmacyLabel: 'Order dispatched' },
+    { key: 'delivered',        altKeys: ['completed'],
+      icon: 'fa-house-circle-check', title: 'Delivered',           sub: 'Enjoy your medicines!',               emoji: '🎉',
+      eta: 'Delivered!', pharmacyLabel: 'Order delivered' }
+];
+
+/**
+ * Resolves a raw status string to its zero-based step index in TRACKER_STATUS_MAP.
+ * Returns 0 (Placed) as default for unknown / empty statuses.
+ * Iterates in reverse order so the most-advanced step that matches wins
+ * (e.g. if the status string is "Out for Delivery", step 3 is returned rather than
+ * step 0, even though "Placed" alt-keys could also partially match).
+ * @param {string} statusStr - e.g. "Confirmed (Paid Online)"
+ * @returns {number} step index 0–4
+ */
+function _resolveTrackerStep(statusStr) {
+    if (!statusStr) return 0;
+    const s = statusStr.toLowerCase();
+    // Iterate in reverse: the first match found is the highest (most advanced) step
+    for (let i = TRACKER_STATUS_MAP.length - 1; i >= 0; i--) {
+        const step = TRACKER_STATUS_MAP[i];
+        if (s.includes(step.key)) return i;
+        if (step.altKeys.some(k => s.includes(k))) return i;
+    }
+    return 0;
+}
+
+/**
+ * Renders the 5-step timeline inside #ot-timeline.
+ * Steps are marked done (✓), active (pulsing), or pending.
+ * @param {number} activeStep - zero-based index of the current step (0–4)
+ */
+function renderTrackerTimeline(activeStep) {
+    const container = document.getElementById('ot-timeline');
+    if (!container) return;
+
+    let html = '';
+    TRACKER_STATUS_MAP.forEach((step, idx) => {
+        const isDone   = idx < activeStep;
+        const isActive = idx === activeStep;
+        const cls      = isDone ? 'done' : (isActive ? 'active' : '');
+
+        html += `
+            <div class="ot-step ${cls}">
+                <div class="ot-step-icon">
+                    ${isDone
+                        ? '<i class="fa-solid fa-check"></i>'
+                        : `<i class="fa-solid ${step.icon}"></i>`}
+                </div>
+                <div class="ot-step-text">
+                    <p class="ot-step-title">${step.title}</p>
+                    <p class="ot-step-sub">${isActive ? step.sub : (isDone ? 'Completed' : 'Pending')}</p>
+                </div>
+                ${isActive ? '<span class="ot-step-time">Now</span>' : ''}
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    // Show/hide the delivered banner
+    const banner = document.getElementById('ot-delivered-banner');
+    if (banner) banner.classList.toggle('show', activeStep === TRACKER_STATUS_MAP.length - 1);
+}
+
+/**
+ * Updates the floating status chip above the tracker map and the ETA badge.
+ * ETA and pharmacy label are read directly from TRACKER_STATUS_MAP entries so
+ * they stay in sync when steps are added or modified.
+ * @param {number} activeStep - zero-based step index (0–4)
+ */
+function updateTrackerStatusChip(activeStep) {
+    const step = TRACKER_STATUS_MAP[activeStep];
+    if (!step) return;
+
+    const iconEl   = document.getElementById('ot-status-icon');
+    const labelEl  = document.getElementById('ot-status-label');
+    const etaText  = document.getElementById('ot-eta-text');
+    const etaBadge = document.getElementById('ot-eta-badge');
+
+    if (iconEl)  iconEl.textContent  = step.emoji;
+    if (labelEl) labelEl.textContent = step.title;
+
+    // ETA and pharmacy label come from TRACKER_STATUS_MAP — single source of truth
+    // 🎨 INTEGRATION: Replace step.eta with actual ETA from backend when available
+    if (etaText) etaText.textContent = step.eta || '~15 min';
+    if (etaBadge) etaBadge.style.display = activeStep === TRACKER_STATUS_MAP.length - 1 ? 'none' : 'flex';
+
+    // Rider card: show only from "Out for Delivery" step onwards
+    const riderCard = document.getElementById('ot-rider-card');
+    if (riderCard) riderCard.style.display = activeStep >= 3 ? 'flex' : 'none';
+
+    // Pharmacy sub-label: updated per step using pharmacyLabel from TRACKER_STATUS_MAP
+    const pharmacySub = document.getElementById('ot-pharmacy-sub');
+    if (pharmacySub) pharmacySub.textContent = step.pharmacyLabel || 'Preparing your order';
+}
+
+/**
+ * Initialises a fresh Mapbox map instance inside #tracker-map.
+ * Places pharmacy 🏥, rider 🛵, and user 📍 markers, then fits the viewport.
+ * Destroys any existing tracker map instance before creating a new one.
+ *
+ * 🎨 BRAND EDIT: Marker emojis and styles are in _placeTrackerMarkers().
+ */
+function initTrackerMap() {
+    // Destroy previous instance if screen was re-opened
+    if (trackerMap) {
+        try { trackerMap.remove(); } catch (_) {}
+        trackerMap = null;
+    }
+    trackerRiderMarker = trackerUserMarker = trackerPharmacyMarker = null;
+
+    const container = document.getElementById('tracker-map');
+    if (!container) return;
+
+    try {
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+        trackerMap = new mapboxgl.Map({
+            container: 'tracker-map',
+            style: MAPBOX_STYLE,
+            center: [DEFAULT_LNG, DEFAULT_LAT],
+            zoom: 13,
+            attributionControl: false
+        });
+        trackerMap.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+        trackerMap.on('load', _placeTrackerMarkers);
+    } catch (e) {
+        console.error('Tracker map init failed:', e);
+        trackerMap = null;
+    }
+}
+
+/**
+ * Places / refreshes pharmacy, rider, and user markers on the tracker map,
+ * then fits the viewport to show all three.
+ * Called after the map tiles load and whenever markers need repositioning.
+ */
+function _placeTrackerMarkers() {
+    if (!trackerMap) return;
+
+    const pharmacyLat = DEFAULT_PHARMACY_LAT;
+    const pharmacyLng = DEFAULT_PHARMACY_LNG;
+    const userLat = selectedAddress ? selectedAddress.lat  : DEFAULT_LAT;
+    const userLng = selectedAddress ? selectedAddress.lng  : DEFAULT_LNG;
+
+    // ── Pharmacy marker (🏥) ──
+    // 🎨 BRAND EDIT: change pharmacy emoji or font-size in pharmEl.textContent / style
+    const pharmEl = document.createElement('div');
+    pharmEl.title = 'MediFlow Partner Pharmacy';
+    pharmEl.style.cssText = 'font-size:30px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
+    pharmEl.textContent = '🏥';
+    trackerPharmacyMarker = new mapboxgl.Marker({ element: pharmEl })
+        .setLngLat([pharmacyLng, pharmacyLat])
+        .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
+            .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">MediFlow Partner Pharmacy</div>'))
+        .addTo(trackerMap);
+
+    // ── User delivery location marker (📍) ──
+    if (userLat && userLng) {
+        const userEl = document.createElement('div');
+        userEl.title = 'Your delivery location';
+        userEl.style.cssText = 'font-size:30px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
+        userEl.textContent = '📍';
+        trackerUserMarker = new mapboxgl.Marker({ element: userEl })
+            .setLngLat([userLng, userLat])
+            .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
+                .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">Your Location</div>'))
+            .addTo(trackerMap);
+    }
+
+    // ── Rider marker (🛵) — starts at pharmacy until a real Socket.IO update arrives ──
+    // 🎨 BRAND EDIT: rider dot size / colours are set in the inline style below
+    const riderEl = document.createElement('div');
+    riderEl.title = 'Delivery Rider';
+    riderEl.style.cssText = `
+        width:42px; height:42px;
+        background: linear-gradient(135deg, var(--c4), var(--c5));
+        border-radius:50%; border:3px solid white;
+        box-shadow:0 0 0 0 rgba(10,133,140,0.5);
+        animation: trackerRiderPulse 2s ease-out infinite;
+        display:flex; align-items:center; justify-content:center;
+        font-size:20px; cursor:default;
+    `;
+    riderEl.textContent = '🛵';
+    trackerRiderMarker = new mapboxgl.Marker({ element: riderEl, anchor: 'center' })
+        .setLngLat([pharmacyLng, pharmacyLat]) // Initially at pharmacy
+        .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
+            .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">Delivery Rider</div>'))
+        .addTo(trackerMap);
+
+    // Fit map to show all markers with generous padding
+    const bounds = new mapboxgl.LngLatBounds();
+    bounds.extend([pharmacyLng, pharmacyLat]);
+    if (userLat && userLng) bounds.extend([userLng, userLat]);
+    try {
+        trackerMap.fitBounds(bounds, {
+            padding: { top: 80, bottom: 80, left: 60, right: 60 },
+            maxZoom: 15, duration: 1200
+        });
+    } catch (_) {}
+}
+
+/**
+ * Smoothly moves the rider marker on the tracker map.
+ * Called by both Socket.IO events and the polling fallback.
+ * @param {number} lat
+ * @param {number} lng
+ */
+function updateTrackerRiderLocation(lat, lng) {
+    if (!trackerMap || !trackerRiderMarker) return;
+    trackerRiderMarker.setLngLat([lng, lat]);
+    // Gently pan to keep the rider in view — does not snap the map
+    try {
+        trackerMap.easeTo({
+            center: [lng, lat],
+            duration: 1500,
+            zoom: Math.max(trackerMap.getZoom(), 13)
+        });
+    } catch (_) {}
+}
+
+/**
+ * Polls the order-status endpoint every TRACKER_POLL_INTERVAL_MS milliseconds.
+ * Updates the timeline and chip on each successful response.
+ * Stops automatically once the order is Delivered.
+ * Falls back gracefully when the backend is unavailable (no error shown to user).
+ * @param {string} orderId
+ */
+function startOrderPolling(orderId) {
+    stopOrderPolling(); // Clear any existing interval
+    if (!orderId) return;
+
+    const poll = async () => {
+        try {
+            const res = await fetch(`${API_BASE}/orders/detail/${orderId}`);
+            if (!res.ok) return; // Silently ignore HTTP errors (backend may not have this endpoint)
+            const data = await res.json();
+            if (data.success && data.order) {
+                const step = _resolveTrackerStep(data.order.status);
+                renderTrackerTimeline(step);
+                updateTrackerStatusChip(step);
+                // Update rider location if provided by the backend
+                // 🎨 INTEGRATION: ensure backend returns riderLat/riderLng on order objects
+                if (data.order.riderLat && data.order.riderLng) {
+                    updateTrackerRiderLocation(data.order.riderLat, data.order.riderLng);
+                }
+                // Stop polling once the order is delivered
+                if (step === TRACKER_STATUS_MAP.length - 1) stopOrderPolling();
+            }
+        } catch (_) { /* Network unavailable — will retry on next tick */ }
+    };
+
+    _orderPollInterval = setInterval(poll, TRACKER_POLL_INTERVAL_MS);
+    poll(); // Run immediately on open
+}
+
+/** Clears the order status polling interval. */
+function stopOrderPolling() {
+    if (_orderPollInterval) {
+        clearInterval(_orderPollInterval);
+        _orderPollInterval = null;
+    }
+}
+
+/**
+ * Opens the live order tracker screen.
+ * Call this immediately after a successful order placement.
+ *
+ * @param {string} orderId   - The placed order's ID (e.g. "ORD-AB12CD")
+ * @param {object} orderData - Full order object from backend (or local fallback)
+ */
+function openOrderTracker(orderId, orderData) {
+    _currentTrackedOrderId  = orderId;
+    _currentTrackedOrderData = orderData || {};
+
+    // Populate order ID label in the header
+    const orderIdEl = document.getElementById('ot-order-id');
+    if (orderIdEl) orderIdEl.textContent = 'Order #' + orderId;
+
+    // Show the tracker screen
+    showScreen('screen-order-tracker');
+
+    // Determine initial step from the order status string
+    const initStep = _resolveTrackerStep(_currentTrackedOrderData.status || '');
+
+    renderTrackerTimeline(initStep);
+    updateTrackerStatusChip(initStep);
+
+    // Populate rider name if available
+    // 🎨 INTEGRATION: replace 'riderName' with your backend's actual field name
+    const riderNameEl = document.getElementById('ot-rider-name');
+    if (riderNameEl && _currentTrackedOrderData.riderName) {
+        riderNameEl.textContent = _currentTrackedOrderData.riderName;
+    }
+
+    // Delay map init slightly so the screen transition completes first
+    setTimeout(() => {
+        initTrackerMap();
+        startOrderPolling(orderId);
+        // Join Socket.IO delivery room for real-time rider location
+        socket.emit('joinDeliveryRoom', { orderId });
+    }, 420);
+}
+
+/**
+ * Closes the tracker screen, cleans up the map and polling, and goes home.
+ */
+function closeOrderTracker() {
+    stopOrderPolling();
+
+    // Remove the tracker Mapbox instance to free GPU/memory
+    if (trackerMap) {
+        try { trackerMap.remove(); } catch (_) {}
+        trackerMap = null;
+        trackerRiderMarker = trackerUserMarker = trackerPharmacyMarker = null;
+    }
+
+    _currentTrackedOrderId   = null;
+    _currentTrackedOrderData = null;
+
+    showScreen('screen-dash');
+    switchTab(document.querySelector('.nav-dock .nav-item:first-child'), 'tab-home', false);
+}
+
+// ── Contact & support actions ────────────────────────────────────────────
+// 🎨 INTEGRATION: Replace stubs below with real phone numbers / chat flows
+//   from _currentTrackedOrderData (e.g. .riderPhone, .pharmacyPhone).
+
+/** Attempts to call the delivery rider directly. */
+function callDeliveryRider() {
+    if (_currentTrackedOrderData && _currentTrackedOrderData.riderPhone) {
+        window.location.href = `tel:${_currentTrackedOrderData.riderPhone}`;
+    } else {
+        showToast('Rider contact not available yet.');
+    }
+}
+
+/** Opens a chat or SMS with the delivery rider. */
+function messageDeliveryRider() {
+    showToast('Opening chat with rider…');
+    // 🎨 INTEGRATION: deep-link to WhatsApp / in-app chat with rider
+}
+
+/** Attempts to call the partner pharmacy. */
+function callPharmacy() {
+    if (_currentTrackedOrderData && _currentTrackedOrderData.pharmacyPhone) {
+        window.location.href = `tel:${_currentTrackedOrderData.pharmacyPhone}`;
+    } else {
+        // Fallback demo number
+        showToast('Pharmacy: +91-98765-43210');
+    }
+}
+
+/** Opens MediFlow support for order issues / delayed delivery. */
+function openOrderSupport() {
+    showToast('Connecting to MediFlow Support…');
+    // 🎨 INTEGRATION: navigate to a support chat overlay or help screen
+}

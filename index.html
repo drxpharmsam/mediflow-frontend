@@ -488,6 +488,115 @@
             <p onclick="closePayment()" style="margin:20px 0 0; font-size:14px; font-weight:700; color:var(--gray-text); cursor:pointer; text-decoration:underline;">Cancel</p>
         </div>
     </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         ORDER LIVE TRACKER SCREEN
+         Zepto/Blinkit-inspired live tracker with:
+           • 5-step status timeline (Placed → Accepted → Ready → En Route → Delivered)
+           • Mapbox map showing pharmacy 🏥, delivery rider 🛵, and user 📍
+           • Real-time rider location via Socket.IO (+ polling fallback)
+           • Contact actions: call rider, call pharmacy, support
+           • Full glassmorphism/Blueberry Cotton Candy theme
+         JS entry point: openOrderTracker(orderId, orderData) in app.js
+         ══════════════════════════════════════════════════════════════════════ -->
+    <div id="screen-order-tracker" class="screen hidden">
+
+        <!-- ── Gradient header ── -->
+        <!-- 🎨 BRAND EDIT: gradient → var(--c5)/var(--c4) in .ot-header (style.css) -->
+        <div class="ot-header">
+            <div class="ot-back-btn" onclick="closeOrderTracker()" title="Back to Home">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="ot-header-center">
+                <span class="ot-header-label">Live Tracker</span>
+                <!-- Filled by openOrderTracker() -->
+                <span id="ot-order-id" class="ot-header-order-id">Order #---</span>
+            </div>
+            <!-- ETA badge — updated by updateTrackerStatusChip() -->
+            <div id="ot-eta-badge" class="ot-eta-badge">
+                <i class="fa-solid fa-clock"></i>
+                <span id="ot-eta-text">~35 min</span>
+            </div>
+        </div>
+
+        <!-- ── Mapbox map ── -->
+        <!-- Fills the space between header and bottom sheet via flex:1 -->
+        <div id="tracker-map-container" class="ot-map-container">
+            <div id="tracker-map" style="width:100%; height:100%;"></div>
+
+            <!-- Floating status chip centred above the map -->
+            <!-- 🎨 BRAND EDIT: chip styling → .ot-status-chip in style.css -->
+            <div id="ot-status-chip" class="ot-status-chip">
+                <span id="ot-status-icon">📦</span>
+                <span id="ot-status-label">Order Placed</span>
+            </div>
+        </div>
+
+        <!-- ── Scrollable bottom sheet ── -->
+        <div class="ot-bottom-sheet" id="ot-bottom-sheet">
+            <!-- Drag-handle visual indicator -->
+            <div class="ot-sheet-handle"></div>
+
+            <!-- Delivered success banner — shown when status reaches Delivered -->
+            <div class="ot-delivered-banner" id="ot-delivered-banner">
+                <div style="font-size:36px; margin-bottom:8px;">🎉</div>
+                <h3 style="margin:0 0 4px; font-size:17px; font-weight:800; color:#065F46;">Order Delivered!</h3>
+                <p style="margin:0; font-size:13px; color:#047857; font-weight:500;">Thank you for choosing MediFlow.</p>
+            </div>
+
+            <!-- Step timeline — rendered by renderTrackerTimeline() -->
+            <!-- 🎨 BRAND EDIT: step icon/text → TRACKER_STATUS_MAP in app.js -->
+            <div class="ot-timeline" id="ot-timeline">
+                <!-- Steps injected by JS -->
+            </div>
+
+            <div class="ot-divider"></div>
+
+            <!-- Rider info card — visible from "Out for Delivery" step onwards -->
+            <!-- 🎨 BRAND EDIT: avatar background → .ot-rider-avatar in style.css -->
+            <div class="ot-rider-card" id="ot-rider-card" style="display:none;">
+                <div class="ot-rider-avatar">
+                    <i class="fa-solid fa-person-biking"></i>
+                </div>
+                <div class="ot-rider-info">
+                    <!-- Rider name filled by openOrderTracker() from order data -->
+                    <span class="ot-rider-name" id="ot-rider-name">Rahul K.</span>
+                    <span class="ot-rider-sub">Delivery Partner &bull; ⭐ 4.8</span>
+                </div>
+                <div class="ot-rider-actions">
+                    <!-- Call rider -->
+                    <div class="ot-action-btn ot-call-btn" onclick="callDeliveryRider()" title="Call Rider">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <!-- Message rider -->
+                    <div class="ot-action-btn ot-msg-btn" onclick="messageDeliveryRider()" title="Message Rider">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pharmacy contact row -->
+            <div class="ot-pharmacy-row" id="ot-pharmacy-row">
+                <div class="ot-pharmacy-icon">
+                    <i class="fa-solid fa-kit-medical"></i>
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <span class="ot-pharmacy-name">MediFlow Partner Pharmacy</span>
+                    <span class="ot-pharmacy-sub" id="ot-pharmacy-sub">Preparing your order</span>
+                </div>
+                <!-- Call pharmacy -->
+                <div class="ot-action-btn ot-call-btn" onclick="callPharmacy()" title="Call Pharmacy">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+            </div>
+
+            <!-- Support CTA -->
+            <!-- 🎨 BRAND EDIT: support button colour → .ot-support-btn in style.css -->
+            <button class="ot-support-btn" onclick="openOrderSupport()">
+                <i class="fa-solid fa-headset" style="margin-right:8px;"></i> Need Help?
+            </button>
+        </div>
+    </div>
 </div>
 
 <script src="app.js"></script>
