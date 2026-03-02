@@ -1213,7 +1213,9 @@ async function autoPhone(el) {
         if (result.ok) {
             const masked = currentPhoneClean.slice(0, 2) + '••••••' + currentPhoneClean.slice(-2);
             const sub = document.getElementById('otp-phone-hint');
-            if (sub) sub.innerText = `OTP sent to ${masked}`;
+            if (sub) sub.innerText = LOCAL_MODE
+                ? `Use OTP: 123456`
+                : `OTP sent to ${masked}`;
             showScreen('screen-otp');
             _startOtpResendCooldown(30);
             setTimeout(() => document.getElementById('otp-1').focus(), 400);
@@ -1269,6 +1271,11 @@ function _showOtpErr(msg) {
 async function checkLocalLogin(otpCode) {
     loading(true, "VERIFYING...");
     if (LOCAL_MODE) {
+        if (otpCode !== '123456') {
+            loading(false);
+            _showOtpErr("Incorrect OTP. Use 123456.");
+            return;
+        }
         const users = JSON.parse(localStorage.getItem('mediflow_local_users') || '[]');
         const existingUser = users.find(u => u.phone === currentPhoneClean);
         loading(false);
