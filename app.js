@@ -1,5 +1,13 @@
 const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
 const SOCKET_URL = 'https://mediflow-backend-z29j.onrender.com';
+
+// ── Push Notifications — VAPID Configuration ────────────────────────────────
+// 🔔 PUSH EDIT: Replace the placeholder below with your real VAPID public key.
+//   Generate a key pair on the backend: `npx web-push generate-vapid-keys`
+//   Set VAPID_PUBLIC_KEY in your backend .env, then copy the public key here
+//   (or load it from a meta tag / API endpoint if you prefer not to hard-code).
+//   See .env.example for the full setup checklist.
+const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const socket = io(SOCKET_URL);
@@ -114,9 +122,11 @@ window.onload = async () => {
             history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
             openAddressManager(true);
         }
+        // Re-subscribe to push on session restore (subscription may have expired)
+        initPushNotifications();
     } else { loading(false); }
 
-    // Register service worker for PWA
+    // Register service worker for PWA + push notifications
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
@@ -1187,6 +1197,8 @@ async function checkLocalLogin(otpCode) {
                 await loadAddresses(data.user.id);
                 loading(false);
                 openAddressManager(true);
+                // Request push permission and subscribe after login
+                initPushNotifications();
             }
         } else {
             loading(false);
@@ -1233,6 +1245,8 @@ async function saveProfileToLocal() {
             renderPopularMeds();
             loading(false);
             openAddressManager(true);
+            // Request push permission and subscribe for new users
+            initPushNotifications();
         } else { loading(false); alert("Failed to create profile: " + data.message); }
     } catch (e) { loading(false); alert("API connection failed."); }
 }
@@ -1244,6 +1258,123 @@ function updateDash(user) {
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
     document.getElementById('profile-email').value = user.email || '';
     setHomeGreeting();
+}
+
+// ── Push Notifications ───────────────────────────────────────────────────────
+// Converts a URL-safe base64 VAPID public key to a Uint8Array for pushManager.
+function _urlBase64ToUint8Array(base64String) {
+    // Compute the number of '=' characters needed to make the length a multiple of 4
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+// Updates the push-notification card in the Profile tab to reflect current state.
+// States: 'unsupported' | 'default' | 'denied' | 'granted'
+function _updatePushUI(state) {
+    const card = document.getElementById('push-notif-card');
+    if (!card) return;
+    const statusEl = document.getElementById('push-status-text');
+    const enableBtn = document.getElementById('push-enable-btn');
+    const testBtn = document.getElementById('push-test-btn');
+    const stateMap = {
+        unsupported: { text: 'Not supported in this browser', color: '#9CA3AF', enableShow: false, testShow: false },
+        default:     { text: 'Notifications not yet enabled', color: '#F59E0B', enableShow: true,  testShow: false },
+        denied:      { text: 'Blocked — allow in browser settings', color: '#EF4444', enableShow: false, testShow: false },
+        granted:     { text: 'Notifications enabled ✓', color: '#16A34A', enableShow: false, testShow: true }
+    };
+    const s = stateMap[state] || stateMap.default;
+    if (statusEl) { statusEl.textContent = s.text; statusEl.style.color = s.color; }
+    if (enableBtn) enableBtn.style.display = s.enableShow ? 'block' : 'none';
+    if (testBtn)   testBtn.style.display   = s.testShow   ? 'block' : 'none';
+}
+
+// Requests Notification permission, subscribes via pushManager, and sends the
+// subscription to the backend at POST /api/notifications/subscribe.
+// 🔔 PUSH EDIT: Make sure VAPID_PUBLIC_KEY at the top of this file matches the
+//   key used by your backend (VAPID_PUBLIC_KEY in backend .env).
+async function initPushNotifications() {
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+        _updatePushUI('unsupported');
+        return;
+    }
+
+    // Don't re-prompt if the user has already blocked notifications.
+    if (Notification.permission === 'denied') {
+        _updatePushUI('denied');
+        return;
+    }
+
+    // If already granted, subscribe silently (handles page reloads / session restore).
+    if (Notification.permission === 'granted') {
+        await _subscribePush();
+        return;
+    }
+
+    // 'default' — update UI so the user can tap "Enable" to trigger the browser prompt.
+    _updatePushUI('default');
+}
+
+// Called when the user explicitly taps the "Enable Notifications" button.
+async function enablePushNotifications() {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+        await _subscribePush();
+    } else {
+        _updatePushUI(permission === 'denied' ? 'denied' : 'default');
+    }
+}
+
+// Subscribes this device via pushManager and registers the subscription with
+// the backend (POST /api/notifications/subscribe).
+async function _subscribePush() {
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        // Skip if already subscribed to avoid duplicate backend calls.
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+            if (VAPID_PUBLIC_KEY === 'YOUR_VAPID_PUBLIC_KEY_HERE') {
+                // VAPID key not configured — log a reminder and update UI.
+                console.warn('[MediFlow Push] Set VAPID_PUBLIC_KEY in app.js to enable push notifications.');
+                _updatePushUI('default');
+                return;
+            }
+            sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+        }
+        // Send subscription to backend; treat non-2xx responses as errors.
+        const userId = window.currentUser ? window.currentUser.id : null;
+        const res = await fetch(`${API_BASE}/notifications/subscribe`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subscription: sub, userId })
+        });
+        if (!res.ok) throw new Error(`Subscribe endpoint returned ${res.status}`);
+        _updatePushUI('granted');
+    } catch (e) {
+        console.warn('[MediFlow Push] Subscription failed:', e);
+        _updatePushUI(Notification.permission === 'denied' ? 'denied' : 'default');
+    }
+}
+
+// Triggers a test push notification via the backend (POST /api/notifications/test).
+// Useful for verifying the end-to-end push pipeline during development.
+async function sendTestNotification() {
+    if (!window.currentUser) { showToast("Please log in first."); return; }
+    try {
+        const res = await fetch(`${API_BASE}/notifications/test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: window.currentUser.id })
+        });
+        const data = await res.json().catch(() => ({}));
+        showToast(data.message || "Test notification sent!");
+    } catch (e) {
+        showToast("Could not reach backend to send test notification.");
+    }
 }
 
 async function saveProfileEmail() {
