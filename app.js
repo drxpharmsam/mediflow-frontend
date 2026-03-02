@@ -1,5 +1,8 @@
-const API_BASE = 'https://mediflow-backend-z29j.onrender.com/api';
-const SOCKET_URL = 'https://mediflow-backend-z29j.onrender.com';
+const API_BASE = 'http://localhost:3000/api';
+const SOCKET_URL = 'http://localhost:3000';
+// LOCAL_MODE: when true the app runs entirely in-browser with no backend required.
+// Set to false (and start your local server on port 3000) to reconnect.
+const LOCAL_MODE = true;
 
 // ── Push Notifications — VAPID Configuration ────────────────────────────────
 // 🔔 PUSH EDIT: Replace the placeholder below with your real VAPID public key.
@@ -10,7 +13,7 @@ const SOCKET_URL = 'https://mediflow-backend-z29j.onrender.com';
 const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const socket = io(SOCKET_URL);
+const socket = LOCAL_MODE ? { on: () => {}, emit: () => {}, off: () => {} } : io(SOCKET_URL);
 let driverMarker = null;
 
 let MEDICINE_DB = [
@@ -1140,6 +1143,7 @@ function _startOtpResendCooldown(seconds) {
 }
 
 async function _doSendOtp() {
+    if (LOCAL_MODE) return { ok: true };
     try {
         const res = await fetch(`${API_BASE}/auth/send-otp`, {
             method: 'POST',
@@ -1148,7 +1152,8 @@ async function _doSendOtp() {
         });
 
         let data = {};
-        try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
+        if (res.status === 429) {
+            try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
             return { ok: false, message: data.message || "Too many requests. Please wait before requesting a new OTP." };
         }
         if (!res.ok) {
@@ -1238,6 +1243,23 @@ function _showOtpErr(msg) {
 
 async function checkLocalLogin(otpCode) {
     loading(true, "VERIFYING...");
+    if (LOCAL_MODE) {
+        const users = JSON.parse(localStorage.getItem('mediflow_local_users') || '[]');
+        const existingUser = users.find(u => u.phone === currentPhoneClean);
+        loading(false);
+        if (existingUser) {
+            localStorage.setItem('mediflow_current_session', JSON.stringify(existingUser));
+            updateDash(existingUser);
+            renderCategoriesTab();
+            renderPopularMeds();
+            await loadAddresses(existingUser.id);
+            openAddressManager(true);
+            initPushNotifications();
+        } else {
+            showScreen('screen-profile');
+        }
+        return;
+    }
     try {
         const res = await fetch(`${API_BASE}/auth/verify`, {
             method: 'POST',
@@ -1246,7 +1268,8 @@ async function checkLocalLogin(otpCode) {
         });
 
         let data = {};
-        try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
+        if (!res.ok) {
+            try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
             loading(false);
             _showOtpErr(data.message || `Verification failed (${res.status}). Please try again.`);
             return;
@@ -1290,6 +1313,21 @@ async function saveProfileToLocal() {
     }
 
     loading(true, "CREATING ACCOUNT...");
+    if (LOCAL_MODE) {
+        const newUser = { id: 'local-' + crypto.randomUUID(), phone: currentPhoneClean, name: n, age: a, gender };
+        if (emailVal) newUser.email = emailVal;
+        const users = JSON.parse(localStorage.getItem('mediflow_local_users') || '[]');
+        users.push(newUser);
+        localStorage.setItem('mediflow_local_users', JSON.stringify(users));
+        localStorage.setItem('mediflow_current_session', JSON.stringify(newUser));
+        updateDash(newUser);
+        renderCategoriesTab();
+        renderPopularMeds();
+        loading(false);
+        openAddressManager(true);
+        initPushNotifications();
+        return;
+    }
     try {
         const payload = { phone: currentPhoneClean, name: n, age: a, gender: gender };
         if (emailVal) payload.email = emailVal;
