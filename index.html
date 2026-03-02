@@ -206,6 +206,19 @@
                     <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Orders</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">View past orders &amp; status</p></div>
                     <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
                 </div>
+                <!-- PUSH NOTIFICATIONS CARD
+                     🔔 PUSH EDIT: Replace VAPID_PUBLIC_KEY in app.js with your real key.
+                     Backend must expose POST /api/notifications/subscribe and /api/notifications/test.
+                     See .env.example for the complete configuration checklist. -->
+                <div class="glass-card wide" id="push-notif-card" style="cursor:default; display:block; padding-bottom:18px;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                        <div class="icon-orb" style="background:#FFF7ED; color:#EA580C; margin-right:0;"><i class="fa-solid fa-bell"></i></div>
+                        <h3 style="margin:0; font-size:15px;">Push Notifications</h3>
+                    </div>
+                    <p id="push-status-text" style="font-size:12px; font-weight:600; color:#F59E0B; margin:0 0 12px;">Notifications not yet enabled</p>
+                    <button id="push-enable-btn" onclick="enablePushNotifications()" class="pay-btn-sml" style="width:100%; margin-bottom:8px;">Enable Notifications</button>
+                    <button id="push-test-btn" onclick="sendTestNotification()" class="pay-btn-sml" style="width:100%; display:none; background:#F0FDF4; color:#16A34A; border:1.5px solid #BBF7D0;">Send Test Notification</button>
+                </div>
                 <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #E5E7EB;">
                     <div class="icon-orb" style="background:#F3F4F6; color:#4B5563;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                     <div style="margin-left:5px;"><h3 style="color:#4B5563; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#6B7280; font-weight:500;">Securely end session</p></div>
