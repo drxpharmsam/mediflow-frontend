@@ -101,11 +101,13 @@ function showScreen(id, pushHistory = true) {
 
 window.onload = async () => {
     window.rxVerified = false;
-    try {
-        const res = await fetch(`${API_BASE}/medicines`);
-        const data = await res.json();
-        if (data.success && data.data && data.data.length > 0) MEDICINE_DB = data.data;
-    } catch (e) { console.log("Using local DB fallback"); }
+    if (!LOCAL_MODE) {
+        try {
+            const res = await fetch(`${API_BASE}/medicines`);
+            const data = await res.json();
+            if (data.success && data.data && data.data.length > 0) MEDICINE_DB = data.data;
+        } catch (e) { console.log("Using local DB fallback"); }
+    }
 
     const savedSession = localStorage.getItem('mediflow_current_session');
     if (savedSession) {
@@ -123,11 +125,14 @@ window.onload = async () => {
             openAddressManager(true);
         } else {
             history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
-            openAddressManager(true);
+            showScreen('screen-dash');
         }
         // Re-subscribe to push on session restore (subscription may have expired)
         initPushNotifications();
-    } else { loading(false); }
+    } else {
+        loading(false);
+        showScreen('screen-login', false);
+    }
 
     // Register service worker for PWA + push notifications
     if ('serviceWorker' in navigator) {
@@ -483,6 +488,16 @@ async function loadAddresses(userId) {
         if (session) userId = session.id;
     }
     if (!userId) return;
+    if (LOCAL_MODE) {
+        try {
+            const stored = localStorage.getItem('mediflow_addresses_' + userId);
+            window.currentAddresses = stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.warn('Failed to parse stored addresses; resetting.', e);
+            window.currentAddresses = [];
+        }
+        return;
+    }
     try {
         const res = await fetch(`${API_BASE}/addresses/${userId}`);
         const data = await res.json();
@@ -518,6 +533,16 @@ async function saveNewAddress() {
     if (map) { const c = map.getCenter(); lat = c.lat; lng = c.lng; }
 
     loading(true, "SAVING ADDRESS...");
+    if (LOCAL_MODE) {
+        loading(false);
+        const localAddr = { id: 'local-' + crypto.randomUUID(), userId: session.id, line1, line2, tag, lat, lng };
+        window.currentAddresses.push(localAddr);
+        localStorage.setItem('mediflow_addresses_' + session.id, JSON.stringify(window.currentAddresses));
+        _clearAddressForm();
+        addAddressMarkersToMap();
+        selectAddress(localAddr);
+        return;
+    }
     try {
         const res = await fetch(`${API_BASE}/addresses`, {
             method: 'POST',
@@ -1253,7 +1278,11 @@ async function checkLocalLogin(otpCode) {
             renderCategoriesTab();
             renderPopularMeds();
             await loadAddresses(existingUser.id);
-            openAddressManager(true);
+            if (window.currentAddresses.length === 0) {
+                openAddressManager(true);
+            } else {
+                showScreen('screen-dash');
+            }
             initPushNotifications();
         } else {
             showScreen('screen-profile');
