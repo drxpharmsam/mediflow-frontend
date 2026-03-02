@@ -1108,6 +1108,61 @@ function openCategoryView(catName) {
 }
 
 // --- AUTH LOGIC ---
+let _otpResendTimer = null;
+
+function _showPhoneErr(msg) {
+    const el = document.getElementById('phone-err');
+    el.innerText = msg;
+    el.style.display = 'block';
+}
+
+function _startOtpResendCooldown(seconds) {
+    const btn = document.getElementById('resend-otp-btn');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.style.cursor = 'not-allowed';
+    btn.style.opacity = '0.5';
+    let remaining = seconds;
+    btn.innerText = `Resend OTP (${remaining}s)`;
+    clearInterval(_otpResendTimer);
+    _otpResendTimer = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+            clearInterval(_otpResendTimer);
+            btn.disabled = false;
+            btn.style.cursor = 'pointer';
+            btn.style.opacity = '1';
+            btn.innerText = 'Resend OTP';
+        } else {
+            btn.innerText = `Resend OTP (${remaining}s)`;
+        }
+    }, 1000);
+}
+
+async function _doSendOtp() {
+    try {
+        const res = await fetch(`${API_BASE}/auth/send-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: currentPhoneClean })
+        });
+
+        let data = {};
+        try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
+            return { ok: false, message: data.message || "Too many requests. Please wait before requesting a new OTP." };
+        }
+        if (!res.ok) {
+            return { ok: false, message: data.message || `Server error (${res.status}). Please try again.` };
+        }
+        if (!data.success) {
+            return { ok: false, message: data.message || "Failed to send OTP. Please try again." };
+        }
+        return { ok: true };
+    } catch (e) {
+        return { ok: false, message: "Could not reach the server. Please check your connection and try again." };
+    }
+}
+
 async function autoPhone(el) {
     clearErr('phone-err');
     let v = el.value.replace(/\D/g, '');
@@ -1122,39 +1177,41 @@ async function autoPhone(el) {
         el.style.boxShadow = "0 0 0 4px rgba(0, 208, 156, 0.15)";
 
         loading(true, "CONNECTING TO SERVER...");
+        const result = await _doSendOtp();
+        loading(false);
 
-        setTimeout(() => {
+        if (result.ok) {
+            const masked = currentPhoneClean.slice(0, 2) + '••••••' + currentPhoneClean.slice(-2);
+            const sub = document.getElementById('otp-phone-hint');
+            if (sub) sub.innerText = `OTP sent to ${masked}`;
             showScreen('screen-otp');
-            setTimeout(() => document.getElementById('otp-1').focus(), 600);
-        }, 500);
-
-        try {
-            const res = await fetch(`${API_BASE}/auth/send-otp`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentPhoneClean })
-            });
-
-            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-            const data = await res.json();
-
-            loading(false);
-            if (data.success) {
-                showToast("OTP Sent! Check server logs.");
-            } else {
-                alert("Failed to send OTP: " + (data.message || "Unknown error"));
-                showScreen('screen-login');
-            }
-        } catch (e) {
-            loading(false);
-            showScreen('screen-login');
-            alert(`SERVER CONNECTION FAILED!\n\nDetails: ${e.message}\n\n1. Wait 60 seconds (Render might be waking up).\n2. Check if backend is online.`);
-            el.value = "";
-            el.style.borderColor = "";
+            _startOtpResendCooldown(30);
+            setTimeout(() => document.getElementById('otp-1').focus(), 400);
+        } else {
+            el.style.borderColor = "var(--error)";
             el.style.boxShadow = "";
+            _showPhoneErr(result.message);
+            el.value = "";
         }
     } else {
         el.style.borderColor = ""; el.style.boxShadow = "";
+    }
+}
+
+async function resendOtp() {
+    const btn = document.getElementById('resend-otp-btn');
+    if (btn) btn.disabled = true;
+    clearErr('otp-err');
+    loading(true, "SENDING OTP...");
+    const result = await _doSendOtp();
+    loading(false);
+    if (result.ok) {
+        showToast("OTP resent successfully.");
+        _startOtpResendCooldown(30);
+    } else {
+        document.getElementById('otp-err').innerText = result.message;
+        document.getElementById('otp-err').style.display = 'block';
+        if (btn) { btn.disabled = false; btn.innerText = 'Resend OTP'; }
     }
 }
 
@@ -1172,6 +1229,13 @@ function selG(el, selectedGender) {
     gender = selectedGender;
 }
 
+function _showOtpErr(msg) {
+    document.querySelectorAll('.otp-box').forEach(b => { b.value = ""; b.style.borderColor = "var(--error)"; });
+    document.getElementById('otp-err').innerText = msg;
+    document.getElementById('otp-err').style.display = 'block';
+    document.getElementById('otp-1').focus();
+}
+
 async function checkLocalLogin(otpCode) {
     loading(true, "VERIFYING...");
     try {
@@ -1181,8 +1245,12 @@ async function checkLocalLogin(otpCode) {
             body: JSON.stringify({ phone: currentPhoneClean, otp: otpCode })
         });
 
-        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-        const data = await res.json();
+        let data = {};
+        try { data = await res.json(); } catch (_) { /* non-JSON body; fall back to empty object */ }
+            loading(false);
+            _showOtpErr(data.message || `Verification failed (${res.status}). Please try again.`);
+            return;
+        }
 
         if (data.success) {
             if (data.isNewUser) {
@@ -1202,16 +1270,11 @@ async function checkLocalLogin(otpCode) {
             }
         } else {
             loading(false);
-            document.querySelectorAll('.otp-box').forEach(b => { b.value = ""; b.style.borderColor = "var(--error)"; });
-            document.getElementById('otp-err').innerText = data.message || "Incorrect OTP";
-            document.getElementById('otp-err').style.display = 'block';
-            document.getElementById('otp-1').focus();
+            _showOtpErr(data.message || "Incorrect OTP. Please try again.");
         }
     } catch (e) {
         loading(false);
-        alert(`LOGIN FAILED!\n\nDetails: ${e.message}\n\nCheck if your Render backend is running.`);
-        document.querySelectorAll('.otp-box').forEach(b => b.value = "");
-        document.getElementById('otp-1').focus();
+        _showOtpErr("Could not reach the server. Please check your connection and try again.");
     }
 }
 

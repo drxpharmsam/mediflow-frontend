@@ -47,7 +47,7 @@
         <h1 style="color: var(--c5); font-size: 42px; margin: 0; font-weight: 800;">Verify</h1>
         <div class="glass-sheet">
             <h2 style="font-size: 28px; color: #111827; margin-top: 0;">Enter Code</h2>
-            <p style="color: var(--gray-text); font-size: 13px; font-weight: 500;">We've sent an SMS to your number.</p>
+            <p id="otp-phone-hint" style="color: var(--gray-text); font-size: 13px; font-weight: 500;">We've sent a 6-digit OTP to your number.</p>
             <div style="display:flex; justify-content:space-between; margin: 30px 0;">
                 <input type="tel" class="otp-box" id="otp-1" maxlength="1" oninput="m(this)" style="width:48px; height:60px; border:1.5px solid #E5E7EB; border-radius:16px; text-align:center; font-size:24px; font-weight:800; background:white; color:#111827; outline:none; transition:0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" inputmode="numeric">
                 <input type="tel" class="otp-box" maxlength="1" oninput="m(this)" style="width:48px; height:60px; border:1.5px solid #E5E7EB; border-radius:16px; text-align:center; font-size:24px; font-weight:800; background:white; color:#111827; outline:none; transition:0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" inputmode="numeric">
@@ -57,6 +57,10 @@
                 <input type="tel" class="otp-box" maxlength="1" oninput="m(this)" style="width:48px; height:60px; border:1.5px solid #E5E7EB; border-radius:16px; text-align:center; font-size:24px; font-weight:800; background:white; color:#111827; outline:none; transition:0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" inputmode="numeric">
             </div>
             <div id="otp-err" class="error-hint" style="text-align:center">Incorrect 6-digit code</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
+                <button id="resend-otp-btn" onclick="resendOtp()" disabled style="background:none; border:none; color:var(--c1); font-size:13px; font-weight:700; cursor:not-allowed; padding:0; letter-spacing:0.3px; opacity:0.5;">Resend OTP (30s)</button>
+                <button onclick="showScreen('screen-login')" style="background:none; border:none; color:var(--gray-text); font-size:13px; font-weight:600; cursor:pointer; padding:0;">Change number</button>
+            </div>
         </div>
     </div>
 
