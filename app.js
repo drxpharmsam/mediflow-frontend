@@ -156,6 +156,8 @@ window.addEventListener('popstate', (e) => {
     if (!document.getElementById('payment-overlay').classList.contains('hidden')) { closePayment(); return; }
     if (!document.getElementById('payment-method-overlay').classList.contains('hidden')) { closePaymentMethod(); return; }
     if (!document.getElementById('rx-prompt-overlay').classList.contains('hidden')) { closeRxPrompt(); return; }
+    const remOv = document.getElementById('rem-overlay');
+    if (remOv && !remOv.classList.contains('hidden')) { closeReminderOverlay(); return; }
 
     // Clean up med-detail auto-slide when navigating away
     if (_medAutoSlideTimer) { clearInterval(_medAutoSlideTimer); _medAutoSlideTimer = null; }
@@ -854,7 +856,7 @@ function updateCartUI() {
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
-    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail'];
+    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail', 'screen-reminders'];
 
     if (stickyBar) {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
@@ -1195,6 +1197,7 @@ function renderPopularMeds() {
         </div>
     `;
     renderDailyNeeds();
+    _startReminderChecker();
 }
 
 // --- DAILY NEEDS SECTION ---
@@ -1381,6 +1384,217 @@ function _updateMedSlider() {
 
 function addMedDetailToCart() {
     if (_currentMedDetail) addToCart(_currentMedDetail.name);
+}
+
+function openReminderOverlayForCurrent() {
+    if (_currentMedDetail) openReminderOverlay(_currentMedDetail.name);
+}
+
+// --- REMINDER SYSTEM ---
+let _reminderCheckInterval = null;
+let _reminderAlertTimeout = null;
+
+function _getReminders() {
+    const session = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!session) return [];
+    return JSON.parse(localStorage.getItem('mediflow_reminders_' + session.id) || '[]');
+}
+
+function _saveRemindersLocal(reminders) {
+    const session = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!session) return;
+    localStorage.setItem('mediflow_reminders_' + session.id, JSON.stringify(reminders));
+}
+
+function _startReminderChecker() {
+    if (_reminderCheckInterval) clearInterval(_reminderCheckInterval);
+    _reminderCheckInterval = setInterval(_checkDueReminders, 30000);
+    _checkDueReminders();
+}
+
+function _checkDueReminders() {
+    const reminders = _getReminders().filter(r => r.active);
+    if (!reminders.length) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hh}:${mm}`;
+    const today = now.toISOString().split('T')[0];
+    // Clean alerted cache (keep only today's)
+    let alerted = {};
+    try { alerted = JSON.parse(localStorage.getItem('mediflow_rem_alerted') || '{}'); } catch (_) {}
+    Object.keys(alerted).forEach(k => { if (!k.includes(today)) delete alerted[k]; });
+    reminders.forEach(rem => {
+        if (!rem.times || !rem.times.includes(currentTime)) return;
+        const key = `${rem.id}_${today}_${currentTime}`;
+        if (alerted[key]) return;
+        alerted[key] = true;
+        localStorage.setItem('mediflow_rem_alerted', JSON.stringify(alerted));
+        _showReminderAlert(rem);
+    });
+}
+
+function _showReminderAlert(reminder) {
+    const banner = document.getElementById('reminder-alert-banner');
+    if (!banner) return;
+    const iconEl = document.getElementById('rab-icon');
+    if (iconEl) iconEl.className = `fa-solid ${reminder.medicineIcon}`;
+    const nameEl = document.getElementById('rab-name');
+    if (nameEl) nameEl.textContent = reminder.medicineName;
+    const dosageEl = document.getElementById('rab-dosage');
+    if (dosageEl) dosageEl.textContent = `Take ${reminder.dosage} now`;
+    const notesEl = document.getElementById('rab-notes');
+    if (notesEl) { notesEl.textContent = reminder.notes || ''; notesEl.style.display = reminder.notes ? '' : 'none'; }
+    banner.dataset.remId = reminder.id;
+    banner.classList.remove('hidden');
+    setTimeout(() => banner.classList.add('show'), 10);
+    if (_reminderAlertTimeout) clearTimeout(_reminderAlertTimeout);
+    _reminderAlertTimeout = setTimeout(() => dismissReminderAlert(), 30000);
+}
+
+function dismissReminderAlert() {
+    const banner = document.getElementById('reminder-alert-banner');
+    if (banner) { banner.classList.remove('show'); setTimeout(() => banner.classList.add('hidden'), 450); }
+    if (_reminderAlertTimeout) clearTimeout(_reminderAlertTimeout);
+}
+
+function markReminderTaken() {
+    dismissReminderAlert();
+    showToast('✅ Medicine marked as taken!');
+}
+
+function openReminderOverlay(itemName) {
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    const nameEl = document.getElementById('rem-overlay-med-name');
+    const iconEl = document.getElementById('rem-overlay-icon');
+    const saltEl = document.getElementById('rem-overlay-salt');
+    if (nameEl) nameEl.textContent = item.name;
+    if (iconEl) iconEl.className = `fa-solid ${item.icon}`;
+    if (saltEl) saltEl.textContent = item.salt || item.category;
+    // Store item name on save button
+    const saveBtn = document.getElementById('rem-save-btn');
+    if (saveBtn) saveBtn.dataset.itemName = itemName;
+    // Reset form
+    document.querySelectorAll('#rem-overlay .rem-dose-chip').forEach(c => c.classList.remove('active'));
+    const firstDose = document.querySelector('#rem-overlay .rem-dose-chip');
+    if (firstDose) firstDose.classList.add('active');
+    document.querySelectorAll('#rem-overlay .rem-time-chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('#rem-overlay .rem-dur-chip').forEach(c => c.classList.remove('active'));
+    const sevenDay = document.querySelector('#rem-overlay .rem-dur-chip[data-val="7"]');
+    if (sevenDay) sevenDay.classList.add('active');
+    const notesInput = document.getElementById('rem-notes');
+    if (notesInput) notesInput.value = '';
+    const overlay = document.getElementById('rem-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+    history.pushState({ remOverlay: true }, '');
+}
+
+function closeReminderOverlay() {
+    const overlay = document.getElementById('rem-overlay');
+    if (!overlay) return;
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.classList.add('hidden'), 350);
+}
+
+function selRemDosage(el) {
+    el.closest('#rem-dosage-grid').querySelectorAll('.rem-dose-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selRemDuration(el) {
+    el.closest('#rem-dur-grid').querySelectorAll('.rem-dur-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selRemTimeChip(el) { el.classList.toggle('active'); }
+
+function saveReminder() {
+    const saveBtn = document.getElementById('rem-save-btn');
+    if (!saveBtn) return;
+    const itemName = saveBtn.dataset.itemName;
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    const selectedTimes = Array.from(document.querySelectorAll('#rem-overlay .rem-time-chip.active')).map(c => c.dataset.time);
+    if (!selectedTimes.length) { showToast('⏰ Please select at least one reminder time'); return; }
+    const activeDose = document.querySelector('#rem-overlay .rem-dose-chip.active');
+    const dosage = activeDose ? activeDose.dataset.val : '1 tablet';
+    const activeDur = document.querySelector('#rem-overlay .rem-dur-chip.active');
+    const duration = activeDur ? parseInt(activeDur.dataset.val) : 7;
+    const notes = (document.getElementById('rem-notes') || {}).value || '';
+    const reminder = {
+        id: 'rem_' + Date.now(),
+        medicineName: item.name,
+        medicineIcon: item.icon,
+        salt: item.salt || item.category,
+        company: item.company || '',
+        dosage, times: selectedTimes, duration,
+        startDate: new Date().toISOString().split('T')[0],
+        notes: notes.trim(), active: true
+    };
+    const all = _getReminders();
+    all.push(reminder);
+    _saveRemindersLocal(all);
+    closeReminderOverlay();
+    showToast(`🔔 Reminder set for ${item.name}!`);
+}
+
+function openRemindersScreen() {
+    renderRemindersList();
+    showScreen('screen-reminders');
+}
+
+function renderRemindersList() {
+    const container = document.getElementById('reminders-list');
+    if (!container) return;
+    const reminders = _getReminders();
+    if (!reminders.length) {
+        container.innerHTML = `
+            <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
+                <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bell-slash"></i></div>
+                <h3>No Reminders Set</h3>
+                <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Open a medicine and tap "Set Reminder" to get started.</p>
+            </div>`;
+        return;
+    }
+    const timeLabels = { '08:00':'Morning (8 AM)', '14:00':'Afternoon (2 PM)', '19:00':'Evening (7 PM)', '22:00':'Night (10 PM)' };
+    container.innerHTML = reminders.map(rem => `
+        <div class="rem-card ${rem.active ? '' : 'rem-card-inactive'}">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+                <div class="icon-orb orb-1" style="width:48px; height:48px; font-size:20px; flex-shrink:0; margin:0;"><i class="fa-solid ${rem.medicineIcon}"></i></div>
+                <div style="flex:1; min-width:0;">
+                    <div style="font-weight:800; font-size:15px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${rem.medicineName}</div>
+                    <div style="font-size:12px; color:var(--gray-text); font-weight:500; margin-top:2px;">${rem.salt || ''}</div>
+                </div>
+                <div style="display:flex; gap:8px; flex-shrink:0; align-items:center;">
+                    <div class="rem-toggle ${rem.active ? 'active' : ''}" onclick="toggleReminder('${rem.id}')"><div class="rem-toggle-knob"></div></div>
+                    <div onclick="deleteReminder('${rem.id}')" style="width:34px; height:34px; background:#FEE2E2; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; font-size:14px; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
+                </div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                ${rem.times.map(t => `<span class="rem-time-badge"><i class="fa-solid fa-clock" style="margin-right:4px; font-size:10px;"></i>${timeLabels[t] || t}</span>`).join('')}
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-text); font-weight:600; border-top:1px dashed #E5E7EB; padding-top:10px;">
+                <span><i class="fa-solid fa-pills" style="margin-right:5px; color:var(--c4);"></i>${rem.dosage}</span>
+                <span><i class="fa-solid fa-calendar-days" style="margin-right:5px; color:var(--c4);"></i>${rem.duration === 0 ? 'Ongoing' : rem.duration + ' days'} · from ${rem.startDate}</span>
+            </div>
+            ${rem.notes ? `<div style="margin-top:10px; padding:10px 12px; background:#F9FAFB; border-radius:12px; font-size:12px; color:#4B5563; font-weight:500;"><i class="fa-solid fa-note-sticky" style="margin-right:6px; color:var(--c4);"></i>${rem.notes}</div>` : ''}
+        </div>`).join('');
+}
+
+function toggleReminder(remId) {
+    const all = _getReminders();
+    const rem = all.find(r => r.id === remId);
+    if (rem) { rem.active = !rem.active; _saveRemindersLocal(all); renderRemindersList(); showToast(rem.active ? '🔔 Reminder activated' : '🔕 Reminder paused'); }
+}
+
+function deleteReminder(remId) {
+    if (!confirm('Delete this reminder?')) return;
+    _saveRemindersLocal(_getReminders().filter(r => r.id !== remId));
+    renderRemindersList();
+    showToast('Reminder deleted');
 }
 
 function clearSearch() {

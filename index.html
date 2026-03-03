@@ -20,6 +20,23 @@
     <div id="pill-loader"><i class="fa-solid fa-pills pill-icon"></i><p style="margin-top: 20px; letter-spacing: 3px; font-size: 13px; font-weight: 800;" id="loader-text">LOADING</p></div>
     <div id="toast">Message here</div>
 
+    <!-- MEDICINE REMINDER ALERT BANNER — slides down from top when a reminder fires -->
+    <div id="reminder-alert-banner" class="rem-alert-banner hidden">
+        <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+            <div class="rem-alert-icon-wrap"><i id="rab-icon" class="fa-solid fa-pills"></i></div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">💊 Medicine Reminder</div>
+                <div id="rab-name" style="font-size:14px; font-weight:800; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+                <div id="rab-dosage" style="font-size:12px; color:rgba(255,255,255,0.8); font-weight:600; margin-top:2px;"></div>
+                <div id="rab-notes" style="font-size:11px; color:rgba(255,255,255,0.65); font-weight:500; margin-top:2px;"></div>
+            </div>
+        </div>
+        <div style="display:flex; gap:8px; flex-shrink:0; align-items:center; margin-left:8px;">
+            <button onclick="markReminderTaken()" class="rem-alert-take-btn">✓ Taken</button>
+            <div onclick="dismissReminderAlert()" class="rem-alert-dismiss"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+    </div>
+
     <div id="sticky-checkout" class="sticky-checkout" style="z-index: 300;">
         <div>
             <span style="font-size:12px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:1px;">To Pay</span><br>
@@ -588,10 +605,15 @@
                 <div id="med-detail-alternatives"></div>
             </div>
 
-            <!-- Add to Cart -->
-            <button class="pay-btn" onclick="addMedDetailToCart()" style="margin-top:6px; margin-bottom:30px;">
-                <i class="fa-solid fa-cart-plus" style="margin-right:10px;"></i> ADD TO CART
-            </button>
+            <!-- Action buttons -->
+            <div style="display:flex; gap:12px; margin-top:6px; margin-bottom:30px;">
+                <button class="pay-btn" onclick="addMedDetailToCart()" style="flex:1; margin:0; height:58px;">
+                    <i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i> ADD TO CART
+                </button>
+                <button class="rem-outline-btn" onclick="openReminderOverlayForCurrent()" title="Set Reminder">
+                    <i class="fa-solid fa-bell"></i>
+                </button>
+            </div>
         </div>
     </div>
 
