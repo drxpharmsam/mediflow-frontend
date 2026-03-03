@@ -17,33 +17,126 @@ const socket = LOCAL_MODE ? { on: () => {}, emit: () => {}, off: () => {} } : io
 let driverMarker = null;
 
 let MEDICINE_DB = [
-    { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false },
-    { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false },
-    { name: "Vicks Action 500", price: 45, category: "Fever & Flu", type: "Tab", icon: "fa-head-side-virus", isRx: false },
-    { name: "Benadryl Syrup", price: 125, category: "Cough & Cold", type: "Syr", icon: "fa-wine-bottle", isRx: false },
-    { name: "Ascoril LS", price: 115, category: "Cough & Cold", type: "Syr", icon: "fa-lungs", isRx: true },
-    { name: "Combiflam", price: 40, category: "Pain Relief", type: "Tab", icon: "fa-pills", isRx: false },
-    { name: "Diclofenac Gel", price: 85, category: "Pain Relief", type: "Gel", icon: "fa-spray-can", isRx: false },
-    { name: "Saridon", price: 10, category: "Headache", type: "Tab", icon: "fa-brain", isRx: false },
-    { name: "Digene Tablet", price: 20, category: "Digestion", type: "Chew", icon: "fa-fire-burner", isRx: false },
-    { name: "Eno (Lemon)", price: 10, category: "Digestion", type: "Sachet", icon: "fa-glass-water", isRx: false },
-    { name: "Pantop 40", price: 110, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true },
-    { name: "Omez", price: 150, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true },
-    { name: "Metformin (500mg)", price: 65, category: "Diabetes", type: "Tab", icon: "fa-cube", isRx: true },
-    { name: "Glycomet GP1", price: 95, category: "Diabetes", type: "Tab", icon: "fa-cubes", isRx: true },
-    { name: "Insulin (Lantus)", price: 650, category: "Diabetes", type: "Inj", icon: "fa-syringe", isRx: true },
-    { name: "Amlodipine (5mg)", price: 45, category: "Blood Pressure", type: "Tab", icon: "fa-heart-pulse", isRx: true },
-    { name: "Telma 40", price: 180, category: "Blood Pressure", type: "Tab", icon: "fa-droplet", isRx: true },
-    { name: "Atorva 10", price: 120, category: "Cholesterol", type: "Tab", icon: "fa-heart", isRx: true },
-    { name: "Limcee (Vit C)", price: 25, category: "Vitamins", type: "Chew", icon: "fa-lemon", isRx: false },
-    { name: "Zincovit", price: 105, category: "Vitamins", type: "Tab", icon: "fa-shield-virus", isRx: false },
-    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins", type: "Tab", icon: "fa-bone", isRx: false },
-    { name: "Evion 400 (Vit E)", price: 35, category: "Skin & Hair", type: "Cap", icon: "fa-sparkles", isRx: false },
-    { name: "Dettol Liquid", price: 65, category: "First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false },
-    { name: "Hansaplast Strips", price: 20, category: "First Aid", type: "Strip", icon: "fa-bandage", isRx: false },
-    { name: "Betadine Ointment", price: 95, category: "First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false },
-    { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false },
-    { name: "Allegra 120", price: 195, category: "Allergy", type: "Tab", icon: "fa-wind", isRx: false }
+    { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
+      salt: "Paracetamol", strength: "500 mg", company: "Unbranded / Generic",
+      description: "Paracetamol is a widely used analgesic and antipyretic. It relieves mild to moderate pain such as headache and toothache, and reduces high body temperature. Safe for adults and children when taken as directed.",
+      sideEffects: ["Nausea", "Stomach upset", "Skin rash (rare)", "Liver damage on overdose"] },
+    { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false,
+      salt: "Paracetamol", strength: "650 mg", company: "Micro Labs Ltd.",
+      description: "Dolo 650 contains Paracetamol 650 mg for fast relief from fever and pain. It is commonly prescribed for COVID-related fever, flu, and body aches. Do not exceed the recommended dose.",
+      sideEffects: ["Nausea", "Vomiting", "Allergic reaction (rare)", "Liver damage on overdose"] },
+    { name: "Crocin 500", price: 22, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
+      salt: "Paracetamol", strength: "500 mg", company: "Haleon (GSK Consumer)",
+      description: "Crocin 500 is a trusted brand of Paracetamol 500 mg for relief from fever, headache, body ache, and toothache. Suitable for adults and children above 12 years.",
+      sideEffects: ["Nausea", "Stomach pain", "Skin rash (rare)", "Liver damage on overdose"] },
+    { name: "Vicks Action 500", price: 45, category: "Fever & Flu", type: "Tab", icon: "fa-head-side-virus", isRx: false,
+      salt: "Paracetamol + Phenylephrine + Caffeine", strength: "500 mg/5 mg/30 mg", company: "P&G Health India",
+      description: "Vicks Action 500 is a combination tablet for multi-symptom cold & flu relief. It reduces fever, relieves nasal congestion, and alleviates body ache with a combination of Paracetamol, Phenylephrine, and Caffeine.",
+      sideEffects: ["Dizziness", "Increased heart rate", "Insomnia", "Nervousness", "High blood pressure (rare)"] },
+    { name: "Benadryl Syrup", price: 125, category: "Cough & Cold", type: "Syr", icon: "fa-wine-bottle", isRx: false,
+      salt: "Diphenhydramine + Ammonium Chloride + Sodium Citrate", strength: "14.08 mg/138 mg/57.03 mg per 5 ml", company: "Johnson & Johnson",
+      description: "Benadryl Cough Syrup provides effective relief from dry and productive cough. Its combination of antihistamine and expectorant soothes the throat and helps clear mucus.",
+      sideEffects: ["Drowsiness", "Dry mouth", "Blurred vision", "Constipation", "Urinary retention"] },
+    { name: "Ascoril LS", price: 115, category: "Cough & Cold", type: "Syr", icon: "fa-lungs", isRx: true,
+      salt: "Levosalbutamol + Ambroxol + Guaifenesin", strength: "1 mg/30 mg/50 mg per 5 ml", company: "Glenmark Pharma",
+      description: "Ascoril LS is a prescription cough syrup combining a bronchodilator (Levosalbutamol), a mucolytic (Ambroxol), and an expectorant (Guaifenesin) for effective relief from bronchospasm and productive cough.",
+      sideEffects: ["Tremor", "Palpitations", "Nausea", "Headache", "Dizziness"] },
+    { name: "Combiflam", price: 40, category: "Pain Relief", type: "Tab", icon: "fa-pills", isRx: false,
+      salt: "Ibuprofen + Paracetamol", strength: "400 mg/325 mg", company: "Sanofi India",
+      description: "Combiflam combines Ibuprofen (400 mg) and Paracetamol (325 mg) for powerful relief from moderate to severe pain, fever, and inflammation. Used for dental pain, musculoskeletal pain, and post-surgical pain.",
+      sideEffects: ["Gastric irritation", "Nausea", "Heartburn", "Dizziness", "Peptic ulcer (long-term use)"] },
+    { name: "Diclofenac Gel", price: 85, category: "Pain Relief", type: "Gel", icon: "fa-spray-can", isRx: false,
+      salt: "Diclofenac Diethylamine", strength: "1.16% w/w", company: "Unbranded / Generic",
+      description: "Diclofenac Gel is a topical NSAID used for local relief of pain and inflammation in conditions such as muscle strains, sprains, joint pain, and sports injuries. Apply to affected area 2–3 times daily.",
+      sideEffects: ["Skin irritation", "Redness at application site", "Rash (rare)", "Photosensitivity (rare)"] },
+    { name: "Saridon", price: 10, category: "Headache", type: "Tab", icon: "fa-brain", isRx: false,
+      salt: "Paracetamol + Propyphenazone + Caffeine", strength: "250 mg/150 mg/50 mg", company: "Bayer Consumer Health",
+      description: "Saridon is a fast-acting headache tablet combining Paracetamol, Propyphenazone, and Caffeine. The caffeine enhances pain-relief effectiveness and reduces the time to onset of action.",
+      sideEffects: ["Insomnia", "Nervousness", "Stomach upset", "Dizziness (rare)"] },
+    { name: "Digene Tablet", price: 20, category: "Digestion", type: "Chew", icon: "fa-fire-burner", isRx: false,
+      salt: "Magaldrate + Simethicone", strength: "480 mg/20 mg", company: "Abbott India",
+      description: "Digene Tablet is an antacid that provides fast relief from acidity, heartburn, and gas. Magaldrate neutralises stomach acid while Simethicone relieves bloating and flatulence.",
+      sideEffects: ["Constipation", "Diarrhoea (rare)", "Decreased phosphate absorption (long-term use)"] },
+    { name: "Eno (Lemon)", price: 10, category: "Digestion", type: "Sachet", icon: "fa-glass-water", isRx: false,
+      salt: "Sodium Bicarbonate + Citric Acid + Sodium Carbonate", strength: "2.32 g/2.18 g/0.5 g per sachet", company: "Haleon (GSK Consumer)",
+      description: "Eno Fruit Salt is a fast-acting antacid that neutralises stomach acid within 6 seconds, providing quick relief from acidity, heartburn, and stomach discomfort.",
+      sideEffects: ["Bloating (from CO₂ release)", "Sodium excess (avoid in hypertension)", "Rebound acidity (frequent use)"] },
+    { name: "Pantop 40", price: 110, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
+      salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
+      description: "Pantop 40 is a proton pump inhibitor (PPI) containing Pantoprazole 40 mg. It reduces stomach acid production and is used to treat GERD, peptic ulcers, and Zollinger-Ellison syndrome.",
+      sideEffects: ["Headache", "Diarrhoea", "Nausea", "Abdominal pain", "Hypomagnesaemia (long-term use)"] },
+    { name: "Pantocid 40", price: 88, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
+      salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
+      description: "Pantocid 40 is a Pantoprazole 40 mg tablet that suppresses excess stomach acid. It is prescribed for gastric and duodenal ulcers, GERD, and acid-related disorders.",
+      sideEffects: ["Headache", "Diarrhoea", "Flatulence", "Nausea", "Vitamin B12 deficiency (long-term use)"] },
+    { name: "Omez", price: 150, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
+      salt: "Omeprazole", strength: "20 mg", company: "Dr. Reddy's Laboratories",
+      description: "Omez (Omeprazole 20 mg) is a proton pump inhibitor used to treat gastric and duodenal ulcers, GERD, and H. pylori infection (in combination therapy). It significantly reduces stomach acid secretion.",
+      sideEffects: ["Headache", "Nausea", "Diarrhoea", "Constipation", "Hypomagnesaemia (long-term use)"] },
+    { name: "Omeprazole (20mg)", price: 48, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
+      salt: "Omeprazole", strength: "20 mg", company: "Unbranded / Generic",
+      description: "Generic Omeprazole 20 mg is a cost-effective proton pump inhibitor that reduces stomach acid production. Therapeutically equivalent to branded options like Omez and Prilosec.",
+      sideEffects: ["Headache", "Nausea", "Diarrhoea", "Abdominal pain", "Vitamin B12 deficiency (long-term use)"] },
+    { name: "Metformin (500mg)", price: 65, category: "Diabetes", type: "Tab", icon: "fa-cube", isRx: true,
+      salt: "Metformin Hydrochloride", strength: "500 mg", company: "Unbranded / Generic",
+      description: "Metformin 500 mg is the first-line oral antidiabetic drug for Type 2 diabetes. It reduces hepatic glucose production and improves insulin sensitivity without causing weight gain.",
+      sideEffects: ["Nausea", "Diarrhoea", "Metallic taste", "Vitamin B12 deficiency (long-term)", "Lactic acidosis (rare)"] },
+    { name: "Glycomet GP1", price: 95, category: "Diabetes", type: "Tab", icon: "fa-cubes", isRx: true,
+      salt: "Metformin + Glipizide", strength: "500 mg/1 mg", company: "USV Pvt. Ltd.",
+      description: "Glycomet GP1 is a combination tablet of Metformin (500 mg) and Glipizide (1 mg) for Type 2 diabetes management. It controls blood sugar through complementary mechanisms.",
+      sideEffects: ["Hypoglycaemia", "Nausea", "Diarrhoea", "Weight gain", "Dizziness"] },
+    { name: "Insulin (Lantus)", price: 650, category: "Diabetes", type: "Inj", icon: "fa-syringe", isRx: true,
+      salt: "Insulin Glargine", strength: "100 IU/ml", company: "Sanofi India",
+      description: "Lantus (Insulin Glargine) is a long-acting basal insulin used once daily to control blood glucose in Type 1 and Type 2 diabetes. It provides steady, 24-hour glucose lowering with no pronounced peak.",
+      sideEffects: ["Hypoglycaemia", "Injection-site reactions", "Lipodystrophy", "Weight gain", "Allergic reaction (rare)"] },
+    { name: "Amlodipine (5mg)", price: 45, category: "Blood Pressure", type: "Tab", icon: "fa-heart-pulse", isRx: true,
+      salt: "Amlodipine Besylate", strength: "5 mg", company: "Unbranded / Generic",
+      description: "Amlodipine 5 mg is a calcium channel blocker used to treat hypertension and angina. It relaxes blood vessels, lowering blood pressure and reducing cardiac workload.",
+      sideEffects: ["Ankle swelling", "Flushing", "Headache", "Dizziness", "Palpitations (rare)"] },
+    { name: "Telma 40", price: 180, category: "Blood Pressure", type: "Tab", icon: "fa-droplet", isRx: true,
+      salt: "Telmisartan", strength: "40 mg", company: "Glenmark Pharma",
+      description: "Telma 40 (Telmisartan 40 mg) is an angiotensin II receptor blocker (ARB) that controls hypertension and reduces the risk of cardiovascular events in high-risk patients.",
+      sideEffects: ["Dizziness", "Back pain", "Sinusitis", "Hyperkalaemia (high doses)", "Renal impairment (rare)"] },
+    { name: "Atorva 10", price: 120, category: "Cholesterol", type: "Tab", icon: "fa-heart", isRx: true,
+      salt: "Atorvastatin Calcium", strength: "10 mg", company: "Zydus Cadila",
+      description: "Atorva 10 (Atorvastatin 10 mg) is a statin that lowers LDL cholesterol and triglycerides while raising HDL cholesterol, reducing the risk of heart attack and stroke.",
+      sideEffects: ["Muscle pain (myalgia)", "Liver enzyme elevation", "Headache", "Nausea", "Rhabdomyolysis (rare)"] },
+    { name: "Limcee (Vit C)", price: 25, category: "Vitamins", type: "Chew", icon: "fa-lemon", isRx: false,
+      salt: "Ascorbic Acid (Vitamin C)", strength: "500 mg", company: "Abbott India",
+      description: "Limcee is a chewable Vitamin C (500 mg) tablet that supports immune function, collagen synthesis, and acts as an antioxidant. Orange-flavoured for pleasant consumption.",
+      sideEffects: ["Stomach upset (high doses)", "Diarrhoea (high doses)", "Kidney stones (very high doses)"] },
+    { name: "Zincovit", price: 105, category: "Vitamins", type: "Tab", icon: "fa-shield-virus", isRx: false,
+      salt: "Zinc + Multivitamins + Minerals", strength: "—", company: "Apex Laboratories",
+      description: "Zincovit is a comprehensive multivitamin and mineral supplement with Zinc, Vitamins A, B-complex, C, D, and E. It boosts immunity, supports growth, and aids in recovery.",
+      sideEffects: ["Nausea (on empty stomach)", "Metallic taste", "Stomach upset"] },
+    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins", type: "Tab", icon: "fa-bone", isRx: false,
+      salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg/250 IU", company: "Sun Pharma",
+      description: "Shelcal 500 provides Calcium Carbonate (500 mg) with Vitamin D3 to prevent and treat calcium deficiency, osteoporosis, and rickets. Vitamin D3 enhances calcium absorption.",
+      sideEffects: ["Constipation", "Bloating", "Kidney stones (high doses)", "Hypercalcaemia (overdose)"] },
+    { name: "Evion 400 (Vit E)", price: 35, category: "Skin & Hair", type: "Cap", icon: "fa-sparkles", isRx: false,
+      salt: "Tocopheryl Acetate (Vitamin E)", strength: "400 IU", company: "Merck (India)",
+      description: "Evion 400 is a Vitamin E supplement used for skin health, hair growth, and as an antioxidant. It is also applied topically for wound healing and stretch marks.",
+      sideEffects: ["Nausea (high doses)", "Headache (high doses)", "Blurred vision (very high doses)", "Fatigue"] },
+    { name: "Dettol Liquid", price: 65, category: "First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
+      salt: "Chloroxylenol (PCMX)", strength: "4.8% w/v", company: "Reckitt Benckiser",
+      description: "Dettol Antiseptic Liquid containing Chloroxylenol is used for wound cleansing, skin disinfection, and general hygiene. Dilute before applying to skin.",
+      sideEffects: ["Skin irritation (undiluted)", "Allergic contact dermatitis (rare)", "Toxic if swallowed"] },
+    { name: "Hansaplast Strips", price: 20, category: "First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
+      salt: "N/A (Medical Device)", strength: "N/A", company: "Beiersdorf India",
+      description: "Hansaplast adhesive wound strips protect minor cuts, scrapes, and blisters from dirt and germs. The breathable wound pad promotes faster healing and stays in place even when wet.",
+      sideEffects: ["Skin irritation (sensitive skin)", "Adhesive allergy (rare)"] },
+    { name: "Betadine Ointment", price: 95, category: "First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
+      salt: "Povidone-Iodine", strength: "5% w/w", company: "Win-Medicare Pvt. Ltd.",
+      description: "Betadine Ointment is a broad-spectrum antiseptic containing Povidone-Iodine, effective against bacteria, viruses, and fungi. Used for wound care, minor burns, and skin infections.",
+      sideEffects: ["Skin staining (brown)", "Skin irritation", "Iodine sensitivity reaction (rare)", "Avoid on large wounds"] },
+    { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false,
+      salt: "Cetirizine Hydrochloride", strength: "10 mg", company: "Unbranded / Generic",
+      description: "Cetirizine is a second-generation antihistamine with minimal sedation, used to treat allergic rhinitis, hives, hay fever, and other allergic conditions. Effective for 24 hours.",
+      sideEffects: ["Drowsiness (mild)", "Dry mouth", "Headache", "Nausea", "Fatigue"] },
+    { name: "Allegra 120", price: 195, category: "Allergy", type: "Tab", icon: "fa-wind", isRx: false,
+      salt: "Fexofenadine Hydrochloride", strength: "120 mg", company: "Sanofi India",
+      description: "Allegra 120 (Fexofenadine 120 mg) is a non-drowsy antihistamine for seasonal allergic rhinitis and chronic idiopathic urticaria. It does not cross the blood-brain barrier, ensuring no sedation.",
+      sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] }
 ];
 
 let currentPhoneRaw = ""; let currentPhoneClean = ""; let gender = ""; let cart = [];
@@ -63,6 +156,11 @@ window.addEventListener('popstate', (e) => {
     if (!document.getElementById('payment-overlay').classList.contains('hidden')) { closePayment(); return; }
     if (!document.getElementById('payment-method-overlay').classList.contains('hidden')) { closePaymentMethod(); return; }
     if (!document.getElementById('rx-prompt-overlay').classList.contains('hidden')) { closeRxPrompt(); return; }
+    const remOv = document.getElementById('rem-overlay');
+    if (remOv && !remOv.classList.contains('hidden')) { closeReminderOverlay(); return; }
+
+    // Clean up med-detail auto-slide when navigating away
+    if (_medAutoSlideTimer) { clearInterval(_medAutoSlideTimer); _medAutoSlideTimer = null; }
 
     const activeScreen = Array.from(document.querySelectorAll('.screen')).find(s => !s.classList.contains('hidden'))?.id;
     if (activeScreen === 'screen-address' && window.currentAddresses.length === 0) {
@@ -758,7 +856,7 @@ function updateCartUI() {
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
-    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload'];
+    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail', 'screen-reminders'];
 
     if (stickyBar) {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
@@ -1060,7 +1158,7 @@ function handleGlobalSearch(el) {
 
 function renderItemCard(item) {
     return `
-        <div class="glass-card">
+        <div class="glass-card" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
             ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
             <div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>
             <div>
@@ -1068,7 +1166,7 @@ function renderItemCard(item) {
                 <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p>
                 <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
             </div>
-            <button class="add-btn" onclick='addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            <button class="add-btn" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
         </div>
     `;
 }
@@ -1081,13 +1179,13 @@ function renderPopularMeds() {
 
     popular.forEach(item => {
         slider.innerHTML += `
-            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;">
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
                 <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
                 <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
                 <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.category}</p>
                 <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>
         `;
     });
@@ -1098,6 +1196,412 @@ function renderPopularMeds() {
             <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
         </div>
     `;
+    renderDailyNeeds();
+    _startReminderChecker();
+}
+
+// --- DAILY NEEDS SECTION ---
+let _dailyNeedsActiveCat = null;
+
+function renderDailyNeeds() {
+    const tabsEl = document.getElementById('daily-needs-tabs');
+    const medsEl = document.getElementById('daily-needs-meds');
+    if (!tabsEl || !medsEl) return;
+    const categories = [...new Set(MEDICINE_DB.map(m => m.category))];
+    _dailyNeedsActiveCat = categories[0];
+    tabsEl.innerHTML = '';
+    categories.forEach((cat, i) => {
+        const example = MEDICINE_DB.find(m => m.category === cat);
+        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${cat}</span></div>`;
+    });
+    _renderDailyNeedsMeds(_dailyNeedsActiveCat);
+}
+
+function switchDailyNeedsTab(catName, el) {
+    _dailyNeedsActiveCat = catName;
+    document.querySelectorAll('#daily-needs-tabs .daily-needs-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+    _renderDailyNeedsMeds(catName);
+}
+
+function _renderDailyNeedsMeds(catName) {
+    const medsEl = document.getElementById('daily-needs-meds');
+    if (!medsEl) return;
+    const items = MEDICINE_DB.filter(m => m.category === catName);
+    medsEl.innerHTML = '';
+    items.forEach(item => {
+        medsEl.innerHTML += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+}
+
+// --- MEDICINE DETAIL PAGE ---
+let _currentMedDetail = null;
+let _medSliderIdx = 0;
+let _medSliderTotal = 3;
+let _medAutoSlideTimer = null;
+
+const _MED_SLIDE_BGSM = [
+    'linear-gradient(135deg,#055C61 0%,#0A858C 100%)',
+    'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
+    'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
+];
+const _MED_SLIDE_LABELS = ['Product View', 'Manufacturer', 'Category'];
+
+function openMedicineDetail(itemName) {
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    _currentMedDetail = item;
+    _medSliderIdx = 0;
+
+    // Build slider slides
+    const slider = document.getElementById('med-slider');
+    const dots = document.getElementById('med-dots');
+    if (!slider || !dots) return;
+    _medSliderTotal = _MED_SLIDE_BGSM.length;
+    const subLabels = [item.name, item.company || item.category, item.category];
+    slider.innerHTML = '';
+    dots.innerHTML = '';
+    _MED_SLIDE_BGSM.forEach((bg, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'med-slide';
+        slide.style.background = bg;
+        slide.innerHTML = `
+            <div class="med-slide-icon"><i class="fa-solid ${item.icon}"></i></div>
+            <div class="med-slide-sublabel">${_MED_SLIDE_LABELS[i]}</div>
+            <div class="med-slide-label">${subLabels[i]}</div>`;
+        slide.style.transform = `translateX(${i * 100}%)`;
+        slider.appendChild(slide);
+        const dot = document.createElement('div');
+        dot.className = 'med-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('onclick', `medGoTo(${i})`);
+        dots.appendChild(dot);
+    });
+
+    // Fill Rx badge
+    const rxBadge = document.getElementById('med-rx-badge-top');
+    if (rxBadge) { item.isRx ? rxBadge.classList.remove('hidden') : rxBadge.classList.add('hidden'); }
+
+    // Fill name/price
+    document.getElementById('med-detail-name').textContent = item.name;
+    document.getElementById('med-detail-price').textContent = '₹' + item.price;
+
+    // Tags
+    const tagsDiv = document.getElementById('med-detail-tags');
+    if (tagsDiv) {
+        tagsDiv.innerHTML =
+            `<span class="med-tag-chip chip-cat">${item.category}</span>` +
+            `<span class="med-tag-chip chip-type">${_typeLabel(item.type)}</span>` +
+            (item.isRx ? '<span class="med-tag-chip chip-rx">Rx Required</span>' : '<span class="med-tag-chip chip-otc">OTC</span>');
+    }
+
+    // Info grid
+    document.getElementById('med-detail-company').textContent = item.company || 'N/A';
+    document.getElementById('med-detail-category').textContent = item.category;
+    document.getElementById('med-detail-salt').textContent = item.salt || item.category;
+    document.getElementById('med-detail-strength').textContent = item.strength || '—';
+    document.getElementById('med-detail-type').textContent = _typeLabel(item.type);
+
+    // Description
+    const descEl = document.getElementById('med-detail-desc');
+    if (descEl) descEl.textContent = item.description || 'No description available.';
+
+    // Side effects
+    const seDiv = document.getElementById('med-detail-side-effects');
+    if (seDiv) {
+        if (item.sideEffects && item.sideEffects.length > 0) {
+            seDiv.innerHTML = item.sideEffects.map(se => `<span class="med-side-effect-chip">${se}</span>`).join('');
+        } else {
+            seDiv.innerHTML = '<span style="font-size:13px;color:var(--gray-text);font-weight:500;">No known side effects listed.</span>';
+        }
+    }
+
+    // Same-salt alternatives
+    const altSection = document.getElementById('med-alternatives-section');
+    const altDiv = document.getElementById('med-detail-alternatives');
+    if (altSection && altDiv && item.salt) {
+        const alts = MEDICINE_DB.filter(m =>
+            m.salt && item.salt && m.strength && item.strength &&
+            m.salt === item.salt && m.strength === item.strength && m.name !== item.name
+        );
+        if (alts.length > 0) {
+            altSection.style.display = '';
+            altDiv.innerHTML = alts.map(alt => `
+                <div class="med-alt-card" onclick='openMedicineDetail(${JSON.stringify(alt.name)})'>
+                    <div class="icon-orb orb-1" style="width:44px;height:44px;font-size:18px;margin:0 14px 0 0;flex-shrink:0;"><i class="fa-solid ${alt.icon}"></i></div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:800;font-size:14px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${alt.name}</div>
+                        <div style="font-size:12px;color:var(--gray-text);font-weight:500;margin-top:2px;">${alt.company || alt.category}</div>
+                        <div style="font-size:11px;font-weight:700;color:var(--c4);margin-top:3px; background:var(--c1); display:inline-block; padding:2px 8px; border-radius:6px;">${alt.strength}</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:17px;font-weight:800;color:var(--c4);">₹${alt.price}</div>
+                        <button class="add-btn" style="margin-top:6px;padding:7px 14px;font-size:12px;width:auto;" onclick='event.stopPropagation();addToCart(${JSON.stringify(alt.name)})'>ADD</button>
+                    </div>
+                </div>`).join('');
+        } else {
+            altSection.style.display = 'none';
+        }
+    } else if (altSection) {
+        altSection.style.display = 'none';
+    }
+
+    // Auto-slide
+    if (_medAutoSlideTimer) clearInterval(_medAutoSlideTimer);
+    _medAutoSlideTimer = setInterval(() => medSlide(1), 3500);
+
+    showScreen('screen-med-detail');
+}
+
+function _typeLabel(type) {
+    const map = { Tab:'Tablet', Cap:'Capsule', Syr:'Syrup', Gel:'Gel', Liq:'Liquid',
+                  Inj:'Injection', Sachet:'Sachet', Chew:'Chewable', Cream:'Cream', Strip:'Strip' };
+    return map[type] || type;
+}
+
+function medSlide(dir) {
+    _medSliderIdx = (_medSliderIdx + dir + _medSliderTotal) % _medSliderTotal;
+    _updateMedSlider();
+}
+
+function medGoTo(idx) {
+    _medSliderIdx = idx;
+    _updateMedSlider();
+}
+
+function _updateMedSlider() {
+    const slider = document.getElementById('med-slider');
+    if (slider) {
+        Array.from(slider.children).forEach((slide, i) => {
+            slide.style.transform = `translateX(${(i - _medSliderIdx) * 100}%)`;
+        });
+    }
+    document.querySelectorAll('#med-dots .med-dot').forEach((d, i) => d.classList.toggle('active', i === _medSliderIdx));
+}
+
+function addMedDetailToCart() {
+    if (_currentMedDetail) addToCart(_currentMedDetail.name);
+}
+
+function openReminderOverlayForCurrent() {
+    if (_currentMedDetail) openReminderOverlay(_currentMedDetail.name);
+}
+
+// --- REMINDER SYSTEM ---
+const REMINDER_CHECK_MS = 15000;   // check every 15 s
+const REMINDER_DISMISS_MS = 30000; // auto-dismiss alert after 30 s
+let _reminderCheckInterval = null;
+let _reminderAlertTimeout = null;
+
+function _getReminders() {
+    const session = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!session) return [];
+    return JSON.parse(localStorage.getItem('mediflow_reminders_' + session.id) || '[]');
+}
+
+function _saveRemindersLocal(reminders) {
+    const session = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!session) return;
+    localStorage.setItem('mediflow_reminders_' + session.id, JSON.stringify(reminders));
+}
+
+function _startReminderChecker() {
+    if (_reminderCheckInterval) clearInterval(_reminderCheckInterval);
+    _reminderCheckInterval = setInterval(_checkDueReminders, REMINDER_CHECK_MS);
+    _checkDueReminders();
+}
+
+function _checkDueReminders() {
+    const reminders = _getReminders().filter(r => r.active);
+    if (!reminders.length) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hh}:${mm}`;
+    const today = now.toISOString().split('T')[0];
+    // Clean alerted cache (keep only today's)
+    let alerted = {};
+    try { alerted = JSON.parse(localStorage.getItem('mediflow_rem_alerted') || '{}'); } catch (e) { console.warn('Reminder history parse error:', e); }
+    Object.keys(alerted).forEach(k => { if (!k.includes(today)) delete alerted[k]; });
+    reminders.forEach(rem => {
+        if (!rem.times || !rem.times.includes(currentTime)) return;
+        const key = `${rem.id}_${today}_${currentTime}`;
+        if (alerted[key]) return;
+        alerted[key] = true;
+        localStorage.setItem('mediflow_rem_alerted', JSON.stringify(alerted));
+        _showReminderAlert(rem);
+    });
+}
+
+function _showReminderAlert(reminder) {
+    const banner = document.getElementById('reminder-alert-banner');
+    if (!banner) return;
+    const iconEl = document.getElementById('rab-icon');
+    if (iconEl) iconEl.className = `fa-solid ${reminder.medicineIcon}`;
+    const nameEl = document.getElementById('rab-name');
+    if (nameEl) nameEl.textContent = reminder.medicineName;
+    const dosageEl = document.getElementById('rab-dosage');
+    if (dosageEl) dosageEl.textContent = `Take ${reminder.dosage} now`;
+    const notesEl = document.getElementById('rab-notes');
+    if (notesEl) { notesEl.textContent = reminder.notes || ''; notesEl.style.display = reminder.notes ? '' : 'none'; }
+    banner.dataset.remId = reminder.id;
+    banner.classList.remove('hidden');
+    setTimeout(() => banner.classList.add('show'), 10);
+    if (_reminderAlertTimeout) clearTimeout(_reminderAlertTimeout);
+    _reminderAlertTimeout = setTimeout(() => dismissReminderAlert(), REMINDER_DISMISS_MS);
+}
+
+function dismissReminderAlert() {
+    const banner = document.getElementById('reminder-alert-banner');
+    if (banner) { banner.classList.remove('show'); setTimeout(() => banner.classList.add('hidden'), 450); }
+    if (_reminderAlertTimeout) clearTimeout(_reminderAlertTimeout);
+}
+
+function markReminderTaken() {
+    dismissReminderAlert();
+    showToast('✅ Medicine marked as taken!');
+}
+
+function openReminderOverlay(itemName) {
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    const nameEl = document.getElementById('rem-overlay-med-name');
+    const iconEl = document.getElementById('rem-overlay-icon');
+    const saltEl = document.getElementById('rem-overlay-salt');
+    if (nameEl) nameEl.textContent = item.name;
+    if (iconEl) iconEl.className = `fa-solid ${item.icon}`;
+    if (saltEl) saltEl.textContent = item.salt || item.category;
+    // Store item name on save button
+    const saveBtn = document.getElementById('rem-save-btn');
+    if (saveBtn) saveBtn.dataset.itemName = itemName;
+    // Reset form
+    document.querySelectorAll('#rem-overlay .rem-dose-chip').forEach(c => c.classList.remove('active'));
+    const firstDose = document.querySelector('#rem-overlay .rem-dose-chip');
+    if (firstDose) firstDose.classList.add('active');
+    document.querySelectorAll('#rem-overlay .rem-time-chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('#rem-overlay .rem-dur-chip').forEach(c => c.classList.remove('active'));
+    const sevenDay = document.querySelector('#rem-overlay .rem-dur-chip[data-val="7"]');
+    if (sevenDay) sevenDay.classList.add('active');
+    const notesInput = document.getElementById('rem-notes');
+    if (notesInput) notesInput.value = '';
+    const overlay = document.getElementById('rem-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    setTimeout(() => { overlay.style.opacity = '1'; }, 10);
+    history.pushState({ remOverlay: true }, '');
+}
+
+function closeReminderOverlay() {
+    const overlay = document.getElementById('rem-overlay');
+    if (!overlay) return;
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.classList.add('hidden'), 350);
+}
+
+function selRemDosage(el) {
+    el.closest('#rem-dosage-grid').querySelectorAll('.rem-dose-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selRemDuration(el) {
+    el.closest('#rem-dur-grid').querySelectorAll('.rem-dur-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selRemTimeChip(el) { el.classList.toggle('active'); }
+
+function saveReminder() {
+    const saveBtn = document.getElementById('rem-save-btn');
+    if (!saveBtn) return;
+    const itemName = saveBtn.dataset.itemName;
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    const selectedTimes = Array.from(document.querySelectorAll('#rem-overlay .rem-time-chip.active')).map(c => c.dataset.time);
+    if (!selectedTimes.length) { showToast('⏰ Please select at least one reminder time'); return; }
+    const activeDose = document.querySelector('#rem-overlay .rem-dose-chip.active');
+    const dosage = activeDose ? activeDose.dataset.val : '1 tablet';
+    const activeDur = document.querySelector('#rem-overlay .rem-dur-chip.active');
+    const duration = activeDur ? parseInt(activeDur.dataset.val) : 7;
+    const notes = (document.getElementById('rem-notes') || {}).value || '';
+    const reminder = {
+        id: 'rem_' + Date.now(),
+        medicineName: item.name,
+        medicineIcon: item.icon,
+        salt: item.salt || item.category,
+        company: item.company || '',
+        dosage, times: selectedTimes, duration,
+        startDate: new Date().toISOString().split('T')[0],
+        notes: notes.trim(), active: true
+    };
+    const all = _getReminders();
+    all.push(reminder);
+    _saveRemindersLocal(all);
+    closeReminderOverlay();
+    showToast(`🔔 Reminder set for ${item.name}!`);
+}
+
+function openRemindersScreen() {
+    renderRemindersList();
+    showScreen('screen-reminders');
+}
+
+function renderRemindersList() {
+    const container = document.getElementById('reminders-list');
+    if (!container) return;
+    const reminders = _getReminders();
+    if (!reminders.length) {
+        container.innerHTML = `
+            <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
+                <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bell-slash"></i></div>
+                <h3>No Reminders Set</h3>
+                <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Open a medicine and tap "Set Reminder" to get started.</p>
+            </div>`;
+        return;
+    }
+    const timeLabels = { '08:00':'Morning (8 AM)', '14:00':'Afternoon (2 PM)', '19:00':'Evening (7 PM)', '22:00':'Night (10 PM)' };
+    container.innerHTML = reminders.map(rem => `
+        <div class="rem-card ${rem.active ? '' : 'rem-card-inactive'}">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
+                <div class="icon-orb orb-1" style="width:48px; height:48px; font-size:20px; flex-shrink:0; margin:0;"><i class="fa-solid ${rem.medicineIcon}"></i></div>
+                <div style="flex:1; min-width:0;">
+                    <div style="font-weight:800; font-size:15px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${rem.medicineName}</div>
+                    <div style="font-size:12px; color:var(--gray-text); font-weight:500; margin-top:2px;">${rem.salt || ''}</div>
+                </div>
+                <div style="display:flex; gap:8px; flex-shrink:0; align-items:center;">
+                    <div class="rem-toggle ${rem.active ? 'active' : ''}" onclick="toggleReminder('${rem.id}')"><div class="rem-toggle-knob"></div></div>
+                    <div onclick="deleteReminder('${rem.id}')" style="width:34px; height:34px; background:#FEE2E2; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; font-size:14px; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
+                </div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                ${rem.times.map(t => `<span class="rem-time-badge"><i class="fa-solid fa-clock" style="margin-right:4px; font-size:10px;"></i>${timeLabels[t] || t}</span>`).join('')}
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-text); font-weight:600; border-top:1px dashed #E5E7EB; padding-top:10px;">
+                <span><i class="fa-solid fa-pills" style="margin-right:5px; color:var(--c4);"></i>${rem.dosage}</span>
+                <span><i class="fa-solid fa-calendar-days" style="margin-right:5px; color:var(--c4);"></i>${rem.duration === 0 ? 'Ongoing' : rem.duration + ' days'} · from ${rem.startDate}</span>
+            </div>
+            ${rem.notes ? `<div style="margin-top:10px; padding:10px 12px; background:#F9FAFB; border-radius:12px; font-size:12px; color:#4B5563; font-weight:500;"><i class="fa-solid fa-note-sticky" style="margin-right:6px; color:var(--c4);"></i>${rem.notes}</div>` : ''}
+        </div>`).join('');
+}
+
+function toggleReminder(remId) {
+    const all = _getReminders();
+    const rem = all.find(r => r.id === remId);
+    if (rem) { rem.active = !rem.active; _saveRemindersLocal(all); renderRemindersList(); showToast(rem.active ? '🔔 Reminder activated' : '🔕 Reminder paused'); }
+}
+
+function deleteReminder(remId) {
+    if (!confirm('Delete this reminder?')) return;
+    _saveRemindersLocal(_getReminders().filter(r => r.id !== remId));
+    renderRemindersList();
+    showToast('Reminder deleted');
 }
 
 function clearSearch() {
