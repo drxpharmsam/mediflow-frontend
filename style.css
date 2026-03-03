@@ -641,3 +641,89 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
 }
 .med-alt-card:last-child { margin-bottom: 0; }
 .med-alt-card:active { transform: scale(0.97); border-color: var(--c3); background: var(--c1); }
+
+/* ═══════════════════════════════════════════════════════════
+   REMINDER SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+
+/* In-app alert banner — slides in from top */
+.rem-alert-banner {
+    position: absolute; top: 16px; left: 14px; right: 14px; z-index: 4000;
+    background: linear-gradient(135deg, var(--c5) 0%, var(--c4) 100%);
+    border-radius: 22px; padding: 14px 16px;
+    display: flex; align-items: center;
+    box-shadow: 0 20px 40px rgba(5, 92, 97, 0.4);
+    transform: translateY(-130px); opacity: 0;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rem-alert-banner.show { transform: translateY(0); opacity: 1; }
+.rem-alert-icon-wrap {
+    width: 42px; height: 42px; flex-shrink: 0;
+    background: rgba(255,255,255,0.2); border-radius: 13px; backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: white;
+}
+.rem-alert-take-btn {
+    background: white; color: var(--c5); border: none;
+    padding: 8px 13px; border-radius: 11px;
+    font-size: 12px; font-weight: 800; cursor: pointer;
+    white-space: nowrap; transition: 0.2s;
+}
+.rem-alert-take-btn:active { transform: scale(0.93); }
+.rem-alert-dismiss {
+    width: 30px; height: 30px; flex-shrink: 0;
+    background: rgba(255,255,255,0.2); border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; cursor: pointer; transition: 0.2s;
+}
+.rem-alert-dismiss:active { background: rgba(255,255,255,0.35); }
+
+/* SET REMINDER outline button on medicine detail */
+.rem-outline-btn {
+    width: 58px; flex-shrink: 0; height: 58px;
+    background: white; border: 1.5px solid var(--c3); color: var(--c4);
+    border-radius: 18px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; cursor: pointer; transition: 0.2s;
+    box-shadow: 0 6px 15px rgba(54, 184, 183, 0.12);
+}
+.rem-outline-btn:active { background: var(--c1); transform: scale(0.93); }
+
+/* Time-selection chips in the reminder overlay */
+.rem-time-chip {
+    background: white; border: 1.5px solid #E5E7EB; border-radius: 18px;
+    padding: 14px 12px; text-align: center; cursor: pointer; transition: all 0.2s;
+}
+.rem-time-chip.active {
+    background: linear-gradient(135deg, var(--c1), #fff);
+    border-color: var(--c3); color: var(--c5);
+    box-shadow: 0 8px 15px rgba(54, 184, 183, 0.14);
+    transform: translateY(-2px);
+}
+.rem-time-chip:active { transform: scale(0.95); }
+
+/* Reminder list card */
+.rem-card {
+    background: white; border-radius: 22px; padding: 18px;
+    margin-bottom: 14px; border: 1.5px solid #F3F4F6;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+}
+.rem-card-inactive { opacity: 0.52; }
+.rem-time-badge {
+    background: var(--c1); color: var(--c5); border: 1px solid var(--c2);
+    padding: 5px 10px; border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+
+/* Toggle switch */
+.rem-toggle {
+    width: 44px; height: 26px; flex-shrink: 0;
+    background: #E5E7EB; border-radius: 13px;
+    position: relative; cursor: pointer; transition: background 0.3s;
+}
+.rem-toggle.active { background: var(--c4); }
+.rem-toggle-knob {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: white; transition: transform 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.rem-toggle.active .rem-toggle-knob { transform: translateX(18px); }

@@ -18,123 +18,123 @@ let driverMarker = null;
 
 let MEDICINE_DB = [
     { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
-      salt: "Paracetamol", company: "Unbranded / Generic",
+      salt: "Paracetamol", strength: "500 mg", company: "Unbranded / Generic",
       description: "Paracetamol is a widely used analgesic and antipyretic. It relieves mild to moderate pain such as headache and toothache, and reduces high body temperature. Safe for adults and children when taken as directed.",
       sideEffects: ["Nausea", "Stomach upset", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false,
-      salt: "Paracetamol", company: "Micro Labs Ltd.",
+      salt: "Paracetamol", strength: "650 mg", company: "Micro Labs Ltd.",
       description: "Dolo 650 contains Paracetamol 650 mg for fast relief from fever and pain. It is commonly prescribed for COVID-related fever, flu, and body aches. Do not exceed the recommended dose.",
       sideEffects: ["Nausea", "Vomiting", "Allergic reaction (rare)", "Liver damage on overdose"] },
     { name: "Crocin 500", price: 22, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
-      salt: "Paracetamol", company: "Haleon (GSK Consumer)",
+      salt: "Paracetamol", strength: "500 mg", company: "Haleon (GSK Consumer)",
       description: "Crocin 500 is a trusted brand of Paracetamol 500 mg for relief from fever, headache, body ache, and toothache. Suitable for adults and children above 12 years.",
       sideEffects: ["Nausea", "Stomach pain", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Vicks Action 500", price: 45, category: "Fever & Flu", type: "Tab", icon: "fa-head-side-virus", isRx: false,
-      salt: "Paracetamol + Phenylephrine + Caffeine", company: "P&G Health India",
+      salt: "Paracetamol + Phenylephrine + Caffeine", strength: "500 mg/5 mg/30 mg", company: "P&G Health India",
       description: "Vicks Action 500 is a combination tablet for multi-symptom cold & flu relief. It reduces fever, relieves nasal congestion, and alleviates body ache with a combination of Paracetamol, Phenylephrine, and Caffeine.",
       sideEffects: ["Dizziness", "Increased heart rate", "Insomnia", "Nervousness", "High blood pressure (rare)"] },
     { name: "Benadryl Syrup", price: 125, category: "Cough & Cold", type: "Syr", icon: "fa-wine-bottle", isRx: false,
-      salt: "Diphenhydramine + Ammonium Chloride + Sodium Citrate", company: "Johnson & Johnson",
+      salt: "Diphenhydramine + Ammonium Chloride + Sodium Citrate", strength: "14.08 mg/138 mg/57.03 mg per 5 ml", company: "Johnson & Johnson",
       description: "Benadryl Cough Syrup provides effective relief from dry and productive cough. Its combination of antihistamine and expectorant soothes the throat and helps clear mucus.",
       sideEffects: ["Drowsiness", "Dry mouth", "Blurred vision", "Constipation", "Urinary retention"] },
     { name: "Ascoril LS", price: 115, category: "Cough & Cold", type: "Syr", icon: "fa-lungs", isRx: true,
-      salt: "Levosalbutamol + Ambroxol + Guaifenesin", company: "Glenmark Pharma",
+      salt: "Levosalbutamol + Ambroxol + Guaifenesin", strength: "1 mg/30 mg/50 mg per 5 ml", company: "Glenmark Pharma",
       description: "Ascoril LS is a prescription cough syrup combining a bronchodilator (Levosalbutamol), a mucolytic (Ambroxol), and an expectorant (Guaifenesin) for effective relief from bronchospasm and productive cough.",
       sideEffects: ["Tremor", "Palpitations", "Nausea", "Headache", "Dizziness"] },
     { name: "Combiflam", price: 40, category: "Pain Relief", type: "Tab", icon: "fa-pills", isRx: false,
-      salt: "Ibuprofen + Paracetamol", company: "Sanofi India",
+      salt: "Ibuprofen + Paracetamol", strength: "400 mg/325 mg", company: "Sanofi India",
       description: "Combiflam combines Ibuprofen (400 mg) and Paracetamol (325 mg) for powerful relief from moderate to severe pain, fever, and inflammation. Used for dental pain, musculoskeletal pain, and post-surgical pain.",
       sideEffects: ["Gastric irritation", "Nausea", "Heartburn", "Dizziness", "Peptic ulcer (long-term use)"] },
     { name: "Diclofenac Gel", price: 85, category: "Pain Relief", type: "Gel", icon: "fa-spray-can", isRx: false,
-      salt: "Diclofenac Diethylamine", company: "Unbranded / Generic",
+      salt: "Diclofenac Diethylamine", strength: "1.16% w/w", company: "Unbranded / Generic",
       description: "Diclofenac Gel is a topical NSAID used for local relief of pain and inflammation in conditions such as muscle strains, sprains, joint pain, and sports injuries. Apply to affected area 2–3 times daily.",
       sideEffects: ["Skin irritation", "Redness at application site", "Rash (rare)", "Photosensitivity (rare)"] },
     { name: "Saridon", price: 10, category: "Headache", type: "Tab", icon: "fa-brain", isRx: false,
-      salt: "Paracetamol + Propyphenazone + Caffeine", company: "Bayer Consumer Health",
+      salt: "Paracetamol + Propyphenazone + Caffeine", strength: "250 mg/150 mg/50 mg", company: "Bayer Consumer Health",
       description: "Saridon is a fast-acting headache tablet combining Paracetamol, Propyphenazone, and Caffeine. The caffeine enhances pain-relief effectiveness and reduces the time to onset of action.",
       sideEffects: ["Insomnia", "Nervousness", "Stomach upset", "Dizziness (rare)"] },
     { name: "Digene Tablet", price: 20, category: "Digestion", type: "Chew", icon: "fa-fire-burner", isRx: false,
-      salt: "Magaldrate + Simethicone", company: "Abbott India",
+      salt: "Magaldrate + Simethicone", strength: "480 mg/20 mg", company: "Abbott India",
       description: "Digene Tablet is an antacid that provides fast relief from acidity, heartburn, and gas. Magaldrate neutralises stomach acid while Simethicone relieves bloating and flatulence.",
       sideEffects: ["Constipation", "Diarrhoea (rare)", "Decreased phosphate absorption (long-term use)"] },
     { name: "Eno (Lemon)", price: 10, category: "Digestion", type: "Sachet", icon: "fa-glass-water", isRx: false,
-      salt: "Sodium Bicarbonate + Citric Acid + Sodium Carbonate", company: "Haleon (GSK Consumer)",
+      salt: "Sodium Bicarbonate + Citric Acid + Sodium Carbonate", strength: "2.32 g/2.18 g/0.5 g per sachet", company: "Haleon (GSK Consumer)",
       description: "Eno Fruit Salt is a fast-acting antacid that neutralises stomach acid within 6 seconds, providing quick relief from acidity, heartburn, and stomach discomfort.",
       sideEffects: ["Bloating (from CO₂ release)", "Sodium excess (avoid in hypertension)", "Rebound acidity (frequent use)"] },
     { name: "Pantop 40", price: 110, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
-      salt: "Pantoprazole", company: "Sun Pharma",
+      salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
       description: "Pantop 40 is a proton pump inhibitor (PPI) containing Pantoprazole 40 mg. It reduces stomach acid production and is used to treat GERD, peptic ulcers, and Zollinger-Ellison syndrome.",
       sideEffects: ["Headache", "Diarrhoea", "Nausea", "Abdominal pain", "Hypomagnesaemia (long-term use)"] },
     { name: "Pantocid 40", price: 88, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
-      salt: "Pantoprazole", company: "Sun Pharma",
+      salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
       description: "Pantocid 40 is a Pantoprazole 40 mg tablet that suppresses excess stomach acid. It is prescribed for gastric and duodenal ulcers, GERD, and acid-related disorders.",
       sideEffects: ["Headache", "Diarrhoea", "Flatulence", "Nausea", "Vitamin B12 deficiency (long-term use)"] },
     { name: "Omez", price: 150, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
-      salt: "Omeprazole", company: "Dr. Reddy's Laboratories",
+      salt: "Omeprazole", strength: "20 mg", company: "Dr. Reddy's Laboratories",
       description: "Omez (Omeprazole 20 mg) is a proton pump inhibitor used to treat gastric and duodenal ulcers, GERD, and H. pylori infection (in combination therapy). It significantly reduces stomach acid secretion.",
       sideEffects: ["Headache", "Nausea", "Diarrhoea", "Constipation", "Hypomagnesaemia (long-term use)"] },
     { name: "Omeprazole (20mg)", price: 48, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
-      salt: "Omeprazole", company: "Unbranded / Generic",
+      salt: "Omeprazole", strength: "20 mg", company: "Unbranded / Generic",
       description: "Generic Omeprazole 20 mg is a cost-effective proton pump inhibitor that reduces stomach acid production. Therapeutically equivalent to branded options like Omez and Prilosec.",
       sideEffects: ["Headache", "Nausea", "Diarrhoea", "Abdominal pain", "Vitamin B12 deficiency (long-term use)"] },
     { name: "Metformin (500mg)", price: 65, category: "Diabetes", type: "Tab", icon: "fa-cube", isRx: true,
-      salt: "Metformin Hydrochloride", company: "Unbranded / Generic",
+      salt: "Metformin Hydrochloride", strength: "500 mg", company: "Unbranded / Generic",
       description: "Metformin 500 mg is the first-line oral antidiabetic drug for Type 2 diabetes. It reduces hepatic glucose production and improves insulin sensitivity without causing weight gain.",
       sideEffects: ["Nausea", "Diarrhoea", "Metallic taste", "Vitamin B12 deficiency (long-term)", "Lactic acidosis (rare)"] },
     { name: "Glycomet GP1", price: 95, category: "Diabetes", type: "Tab", icon: "fa-cubes", isRx: true,
-      salt: "Metformin + Glipizide", company: "USV Pvt. Ltd.",
+      salt: "Metformin + Glipizide", strength: "500 mg/1 mg", company: "USV Pvt. Ltd.",
       description: "Glycomet GP1 is a combination tablet of Metformin (500 mg) and Glipizide (1 mg) for Type 2 diabetes management. It controls blood sugar through complementary mechanisms.",
       sideEffects: ["Hypoglycaemia", "Nausea", "Diarrhoea", "Weight gain", "Dizziness"] },
     { name: "Insulin (Lantus)", price: 650, category: "Diabetes", type: "Inj", icon: "fa-syringe", isRx: true,
-      salt: "Insulin Glargine", company: "Sanofi India",
+      salt: "Insulin Glargine", strength: "100 IU/ml", company: "Sanofi India",
       description: "Lantus (Insulin Glargine) is a long-acting basal insulin used once daily to control blood glucose in Type 1 and Type 2 diabetes. It provides steady, 24-hour glucose lowering with no pronounced peak.",
       sideEffects: ["Hypoglycaemia", "Injection-site reactions", "Lipodystrophy", "Weight gain", "Allergic reaction (rare)"] },
     { name: "Amlodipine (5mg)", price: 45, category: "Blood Pressure", type: "Tab", icon: "fa-heart-pulse", isRx: true,
-      salt: "Amlodipine Besylate", company: "Unbranded / Generic",
+      salt: "Amlodipine Besylate", strength: "5 mg", company: "Unbranded / Generic",
       description: "Amlodipine 5 mg is a calcium channel blocker used to treat hypertension and angina. It relaxes blood vessels, lowering blood pressure and reducing cardiac workload.",
       sideEffects: ["Ankle swelling", "Flushing", "Headache", "Dizziness", "Palpitations (rare)"] },
     { name: "Telma 40", price: 180, category: "Blood Pressure", type: "Tab", icon: "fa-droplet", isRx: true,
-      salt: "Telmisartan", company: "Glenmark Pharma",
+      salt: "Telmisartan", strength: "40 mg", company: "Glenmark Pharma",
       description: "Telma 40 (Telmisartan 40 mg) is an angiotensin II receptor blocker (ARB) that controls hypertension and reduces the risk of cardiovascular events in high-risk patients.",
       sideEffects: ["Dizziness", "Back pain", "Sinusitis", "Hyperkalaemia (high doses)", "Renal impairment (rare)"] },
     { name: "Atorva 10", price: 120, category: "Cholesterol", type: "Tab", icon: "fa-heart", isRx: true,
-      salt: "Atorvastatin Calcium", company: "Zydus Cadila",
+      salt: "Atorvastatin Calcium", strength: "10 mg", company: "Zydus Cadila",
       description: "Atorva 10 (Atorvastatin 10 mg) is a statin that lowers LDL cholesterol and triglycerides while raising HDL cholesterol, reducing the risk of heart attack and stroke.",
       sideEffects: ["Muscle pain (myalgia)", "Liver enzyme elevation", "Headache", "Nausea", "Rhabdomyolysis (rare)"] },
     { name: "Limcee (Vit C)", price: 25, category: "Vitamins", type: "Chew", icon: "fa-lemon", isRx: false,
-      salt: "Ascorbic Acid (Vitamin C) 500 mg", company: "Abbott India",
+      salt: "Ascorbic Acid (Vitamin C)", strength: "500 mg", company: "Abbott India",
       description: "Limcee is a chewable Vitamin C (500 mg) tablet that supports immune function, collagen synthesis, and acts as an antioxidant. Orange-flavoured for pleasant consumption.",
       sideEffects: ["Stomach upset (high doses)", "Diarrhoea (high doses)", "Kidney stones (very high doses)"] },
     { name: "Zincovit", price: 105, category: "Vitamins", type: "Tab", icon: "fa-shield-virus", isRx: false,
-      salt: "Zinc + Multivitamins + Minerals", company: "Apex Laboratories",
+      salt: "Zinc + Multivitamins + Minerals", strength: "—", company: "Apex Laboratories",
       description: "Zincovit is a comprehensive multivitamin and mineral supplement with Zinc, Vitamins A, B-complex, C, D, and E. It boosts immunity, supports growth, and aids in recovery.",
       sideEffects: ["Nausea (on empty stomach)", "Metallic taste", "Stomach upset"] },
     { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins", type: "Tab", icon: "fa-bone", isRx: false,
-      salt: "Calcium Carbonate + Vitamin D3", company: "Sun Pharma",
+      salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg/250 IU", company: "Sun Pharma",
       description: "Shelcal 500 provides Calcium Carbonate (500 mg) with Vitamin D3 to prevent and treat calcium deficiency, osteoporosis, and rickets. Vitamin D3 enhances calcium absorption.",
       sideEffects: ["Constipation", "Bloating", "Kidney stones (high doses)", "Hypercalcaemia (overdose)"] },
     { name: "Evion 400 (Vit E)", price: 35, category: "Skin & Hair", type: "Cap", icon: "fa-sparkles", isRx: false,
-      salt: "Tocopheryl Acetate (Vitamin E) 400 IU", company: "Merck (India)",
+      salt: "Tocopheryl Acetate (Vitamin E)", strength: "400 IU", company: "Merck (India)",
       description: "Evion 400 is a Vitamin E supplement used for skin health, hair growth, and as an antioxidant. It is also applied topically for wound healing and stretch marks.",
       sideEffects: ["Nausea (high doses)", "Headache (high doses)", "Blurred vision (very high doses)", "Fatigue"] },
     { name: "Dettol Liquid", price: 65, category: "First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
-      salt: "Chloroxylenol (PCMX) 4.8%", company: "Reckitt Benckiser",
+      salt: "Chloroxylenol (PCMX)", strength: "4.8% w/v", company: "Reckitt Benckiser",
       description: "Dettol Antiseptic Liquid containing Chloroxylenol is used for wound cleansing, skin disinfection, and general hygiene. Dilute before applying to skin.",
       sideEffects: ["Skin irritation (undiluted)", "Allergic contact dermatitis (rare)", "Toxic if swallowed"] },
     { name: "Hansaplast Strips", price: 20, category: "First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
-      salt: "N/A (Medical Device)", company: "Beiersdorf India",
+      salt: "N/A (Medical Device)", strength: "N/A", company: "Beiersdorf India",
       description: "Hansaplast adhesive wound strips protect minor cuts, scrapes, and blisters from dirt and germs. The breathable wound pad promotes faster healing and stays in place even when wet.",
       sideEffects: ["Skin irritation (sensitive skin)", "Adhesive allergy (rare)"] },
     { name: "Betadine Ointment", price: 95, category: "First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
-      salt: "Povidone-Iodine 5%", company: "Win-Medicare Pvt. Ltd.",
+      salt: "Povidone-Iodine", strength: "5% w/w", company: "Win-Medicare Pvt. Ltd.",
       description: "Betadine Ointment is a broad-spectrum antiseptic containing Povidone-Iodine, effective against bacteria, viruses, and fungi. Used for wound care, minor burns, and skin infections.",
       sideEffects: ["Skin staining (brown)", "Skin irritation", "Iodine sensitivity reaction (rare)", "Avoid on large wounds"] },
     { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false,
-      salt: "Cetirizine Hydrochloride", company: "Unbranded / Generic",
+      salt: "Cetirizine Hydrochloride", strength: "10 mg", company: "Unbranded / Generic",
       description: "Cetirizine is a second-generation antihistamine with minimal sedation, used to treat allergic rhinitis, hives, hay fever, and other allergic conditions. Effective for 24 hours.",
       sideEffects: ["Drowsiness (mild)", "Dry mouth", "Headache", "Nausea", "Fatigue"] },
     { name: "Allegra 120", price: 195, category: "Allergy", type: "Tab", icon: "fa-wind", isRx: false,
-      salt: "Fexofenadine Hydrochloride", company: "Sanofi India",
+      salt: "Fexofenadine Hydrochloride", strength: "120 mg", company: "Sanofi India",
       description: "Allegra 120 (Fexofenadine 120 mg) is a non-drowsy antihistamine for seasonal allergic rhinitis and chronic idiopathic urticaria. It does not cross the blood-brain barrier, ensuring no sedation.",
       sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] }
 ];
@@ -1307,6 +1307,7 @@ function openMedicineDetail(itemName) {
     document.getElementById('med-detail-company').textContent = item.company || 'N/A';
     document.getElementById('med-detail-category').textContent = item.category;
     document.getElementById('med-detail-salt').textContent = item.salt || item.category;
+    document.getElementById('med-detail-strength').textContent = item.strength || '—';
     document.getElementById('med-detail-type').textContent = _typeLabel(item.type);
 
     // Description
@@ -1327,7 +1328,10 @@ function openMedicineDetail(itemName) {
     const altSection = document.getElementById('med-alternatives-section');
     const altDiv = document.getElementById('med-detail-alternatives');
     if (altSection && altDiv && item.salt) {
-        const alts = MEDICINE_DB.filter(m => m.salt === item.salt && m.name !== item.name);
+        const alts = MEDICINE_DB.filter(m =>
+            m.salt && item.salt && m.strength && item.strength &&
+            m.salt === item.salt && m.strength === item.strength && m.name !== item.name
+        );
         if (alts.length > 0) {
             altSection.style.display = '';
             altDiv.innerHTML = alts.map(alt => `
@@ -1335,7 +1339,8 @@ function openMedicineDetail(itemName) {
                     <div class="icon-orb orb-1" style="width:44px;height:44px;font-size:18px;margin:0 14px 0 0;flex-shrink:0;"><i class="fa-solid ${alt.icon}"></i></div>
                     <div style="flex:1;min-width:0;">
                         <div style="font-weight:800;font-size:14px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${alt.name}</div>
-                        <div style="font-size:12px;color:var(--gray-text);font-weight:500;margin-top:3px;">${alt.company || alt.category}</div>
+                        <div style="font-size:12px;color:var(--gray-text);font-weight:500;margin-top:2px;">${alt.company || alt.category}</div>
+                        <div style="font-size:11px;font-weight:700;color:var(--c4);margin-top:3px; background:var(--c1); display:inline-block; padding:2px 8px; border-radius:6px;">${alt.strength}</div>
                     </div>
                     <div style="text-align:right;flex-shrink:0;">
                         <div style="font-size:17px;font-weight:800;color:var(--c4);">₹${alt.price}</div>
@@ -1391,6 +1396,8 @@ function openReminderOverlayForCurrent() {
 }
 
 // --- REMINDER SYSTEM ---
+const REMINDER_CHECK_MS = 15000;   // check every 15 s
+const REMINDER_DISMISS_MS = 30000; // auto-dismiss alert after 30 s
 let _reminderCheckInterval = null;
 let _reminderAlertTimeout = null;
 
@@ -1408,7 +1415,7 @@ function _saveRemindersLocal(reminders) {
 
 function _startReminderChecker() {
     if (_reminderCheckInterval) clearInterval(_reminderCheckInterval);
-    _reminderCheckInterval = setInterval(_checkDueReminders, 30000);
+    _reminderCheckInterval = setInterval(_checkDueReminders, REMINDER_CHECK_MS);
     _checkDueReminders();
 }
 
@@ -1422,7 +1429,7 @@ function _checkDueReminders() {
     const today = now.toISOString().split('T')[0];
     // Clean alerted cache (keep only today's)
     let alerted = {};
-    try { alerted = JSON.parse(localStorage.getItem('mediflow_rem_alerted') || '{}'); } catch (_) {}
+    try { alerted = JSON.parse(localStorage.getItem('mediflow_rem_alerted') || '{}'); } catch (e) { console.warn('Reminder history parse error:', e); }
     Object.keys(alerted).forEach(k => { if (!k.includes(today)) delete alerted[k]; });
     reminders.forEach(rem => {
         if (!rem.times || !rem.times.includes(currentTime)) return;
@@ -1449,7 +1456,7 @@ function _showReminderAlert(reminder) {
     banner.classList.remove('hidden');
     setTimeout(() => banner.classList.add('show'), 10);
     if (_reminderAlertTimeout) clearTimeout(_reminderAlertTimeout);
-    _reminderAlertTimeout = setTimeout(() => dismissReminderAlert(), 30000);
+    _reminderAlertTimeout = setTimeout(() => dismissReminderAlert(), REMINDER_DISMISS_MS);
 }
 
 function dismissReminderAlert() {
