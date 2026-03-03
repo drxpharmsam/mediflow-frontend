@@ -133,6 +133,16 @@
                         <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Popular Medicines</h3>
                     </div>
                     <div class="category-slider" id="popular-meds-slider"></div>
+
+                    <!-- DAILY NEEDS SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Daily Needs</h3>
+                        <span style="font-size:12px; color:var(--c4); font-weight:700;">By Category</span>
+                    </div>
+                    <!-- Scrollable therapeutic category tab pills -->
+                    <div class="daily-needs-tabs category-slider" id="daily-needs-tabs"></div>
+                    <!-- Medicine cards for selected category -->
+                    <div class="category-slider" id="daily-needs-meds" style="margin-top:14px;"></div>
                 </div>
                 <div id="home-search-content" style="display:none;">
                     <div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
@@ -516,6 +526,75 @@
            • Full glassmorphism/Blueberry Cotton Candy theme
          JS entry point: openOrderTracker(orderId, orderData) in app.js
          ══════════════════════════════════════════════════════════════════════ -->
+
+    <!-- MEDICINE DETAIL SCREEN -->
+    <div id="screen-med-detail" class="screen hidden">
+        <!-- Image Slider -->
+        <div class="med-slider-wrap">
+            <div onclick="history.back()" class="med-back-btn"><i class="fa-solid fa-arrow-left"></i></div>
+            <span id="med-rx-badge-top" class="med-rx-badge-top hidden">Rx</span>
+            <div id="med-slider" class="med-slider"></div>
+            <div id="med-dots" class="med-dots"></div>
+            <div class="med-slider-arrow med-slider-prev" onclick="medSlide(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="med-slider-arrow med-slider-next" onclick="medSlide(1)"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+
+        <!-- Scrollable Detail Content -->
+        <div class="med-detail-scroll">
+            <!-- Name & Price -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                <h2 id="med-detail-name" style="margin:0; font-size:21px; font-weight:800; color:#111827; flex:1; padding-right:12px; line-height:1.3;"></h2>
+                <div id="med-detail-price" style="font-size:22px; font-weight:800; color:var(--c4); white-space:nowrap;"></div>
+            </div>
+            <!-- Tags row -->
+            <div id="med-detail-tags" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;"></div>
+
+            <!-- Info Grid -->
+            <div class="med-info-grid">
+                <div class="med-info-cell">
+                    <span class="med-info-label"><i class="fa-solid fa-building-columns"></i> Company</span>
+                    <span class="med-info-value" id="med-detail-company"></span>
+                </div>
+                <div class="med-info-cell">
+                    <span class="med-info-label"><i class="fa-solid fa-tag"></i> Category</span>
+                    <span class="med-info-value" id="med-detail-category"></span>
+                </div>
+                <div class="med-info-cell" style="grid-column:span 2;">
+                    <span class="med-info-label"><i class="fa-solid fa-flask"></i> Salt / Composition</span>
+                    <span class="med-info-value" id="med-detail-salt"></span>
+                </div>
+                <div class="med-info-cell" style="grid-column:span 2;">
+                    <span class="med-info-label"><i class="fa-solid fa-capsules"></i> Dosage Form</span>
+                    <span class="med-info-value" id="med-detail-type"></span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="med-section">
+                <h3 class="med-section-title"><i class="fa-solid fa-circle-info" style="color:var(--c4);"></i> About this Medicine</h3>
+                <p id="med-detail-desc" class="med-section-body"></p>
+            </div>
+
+            <!-- Side Effects -->
+            <div class="med-section">
+                <h3 class="med-section-title"><i class="fa-solid fa-triangle-exclamation" style="color:#D97706;"></i> Side Effects</h3>
+                <div id="med-detail-side-effects" class="med-side-effects"></div>
+            </div>
+
+            <!-- Same Salt Alternatives -->
+            <div class="med-section" id="med-alternatives-section" style="display:none;">
+                <h3 class="med-section-title"><i class="fa-solid fa-repeat" style="color:var(--c4);"></i> Same Salt Alternatives</h3>
+                <p style="font-size:12px; color:var(--gray-text); font-weight:500; margin:0 0 14px;">Choose the best option for your needs and budget.</p>
+                <div id="med-detail-alternatives"></div>
+            </div>
+
+            <!-- Add to Cart -->
+            <button class="pay-btn" onclick="addMedDetailToCart()" style="margin-top:6px; margin-bottom:30px;">
+                <i class="fa-solid fa-cart-plus" style="margin-right:10px;"></i> ADD TO CART
+            </button>
+        </div>
+    </div>
+
     <div id="screen-order-tracker" class="screen hidden">
 
         <!-- ── Gradient header ── -->

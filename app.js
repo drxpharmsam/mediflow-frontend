@@ -157,6 +157,9 @@ window.addEventListener('popstate', (e) => {
     if (!document.getElementById('payment-method-overlay').classList.contains('hidden')) { closePaymentMethod(); return; }
     if (!document.getElementById('rx-prompt-overlay').classList.contains('hidden')) { closeRxPrompt(); return; }
 
+    // Clean up med-detail auto-slide when navigating away
+    if (_medAutoSlideTimer) { clearInterval(_medAutoSlideTimer); _medAutoSlideTimer = null; }
+
     const activeScreen = Array.from(document.querySelectorAll('.screen')).find(s => !s.classList.contains('hidden'))?.id;
     if (activeScreen === 'screen-address' && window.currentAddresses.length === 0) {
         history.pushState({ screen: 'screen-address', tab: 'tab-home' }, "");
@@ -851,7 +854,7 @@ function updateCartUI() {
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
-    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload'];
+    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail'];
 
     if (stickyBar) {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
@@ -1191,6 +1194,193 @@ function renderPopularMeds() {
             <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
         </div>
     `;
+    renderDailyNeeds();
+}
+
+// --- DAILY NEEDS SECTION ---
+let _dailyNeedsActiveCat = null;
+
+function renderDailyNeeds() {
+    const tabsEl = document.getElementById('daily-needs-tabs');
+    const medsEl = document.getElementById('daily-needs-meds');
+    if (!tabsEl || !medsEl) return;
+    const categories = [...new Set(MEDICINE_DB.map(m => m.category))];
+    _dailyNeedsActiveCat = categories[0];
+    tabsEl.innerHTML = '';
+    categories.forEach((cat, i) => {
+        const example = MEDICINE_DB.find(m => m.category === cat);
+        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${cat}</span></div>`;
+    });
+    _renderDailyNeedsMeds(_dailyNeedsActiveCat);
+}
+
+function switchDailyNeedsTab(catName, el) {
+    _dailyNeedsActiveCat = catName;
+    document.querySelectorAll('#daily-needs-tabs .daily-needs-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+    _renderDailyNeedsMeds(catName);
+}
+
+function _renderDailyNeedsMeds(catName) {
+    const medsEl = document.getElementById('daily-needs-meds');
+    if (!medsEl) return;
+    const items = MEDICINE_DB.filter(m => m.category === catName);
+    medsEl.innerHTML = '';
+    items.forEach(item => {
+        medsEl.innerHTML += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+}
+
+// --- MEDICINE DETAIL PAGE ---
+let _currentMedDetail = null;
+let _medSliderIdx = 0;
+let _medSliderTotal = 3;
+let _medAutoSlideTimer = null;
+
+const _MED_SLIDE_BGSM = [
+    'linear-gradient(135deg,#055C61 0%,#0A858C 100%)',
+    'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
+    'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
+];
+const _MED_SLIDE_LABELS = ['Product View', 'Manufacturer', 'Category'];
+
+function openMedicineDetail(itemName) {
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+    _currentMedDetail = item;
+    _medSliderIdx = 0;
+
+    // Build slider slides
+    const slider = document.getElementById('med-slider');
+    const dots = document.getElementById('med-dots');
+    if (!slider || !dots) return;
+    _medSliderTotal = _MED_SLIDE_BGSM.length;
+    const subLabels = [item.name, item.company || item.category, item.category];
+    slider.innerHTML = '';
+    dots.innerHTML = '';
+    _MED_SLIDE_BGSM.forEach((bg, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'med-slide';
+        slide.style.background = bg;
+        slide.innerHTML = `
+            <div class="med-slide-icon"><i class="fa-solid ${item.icon}"></i></div>
+            <div class="med-slide-sublabel">${_MED_SLIDE_LABELS[i]}</div>
+            <div class="med-slide-label">${subLabels[i]}</div>`;
+        slide.style.transform = `translateX(${i * 100}%)`;
+        slider.appendChild(slide);
+        const dot = document.createElement('div');
+        dot.className = 'med-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('onclick', `medGoTo(${i})`);
+        dots.appendChild(dot);
+    });
+
+    // Fill Rx badge
+    const rxBadge = document.getElementById('med-rx-badge-top');
+    if (rxBadge) { item.isRx ? rxBadge.classList.remove('hidden') : rxBadge.classList.add('hidden'); }
+
+    // Fill name/price
+    document.getElementById('med-detail-name').textContent = item.name;
+    document.getElementById('med-detail-price').textContent = '₹' + item.price;
+
+    // Tags
+    const tagsDiv = document.getElementById('med-detail-tags');
+    if (tagsDiv) {
+        tagsDiv.innerHTML =
+            `<span class="med-tag-chip chip-cat">${item.category}</span>` +
+            `<span class="med-tag-chip chip-type">${_typeLabel(item.type)}</span>` +
+            (item.isRx ? '<span class="med-tag-chip chip-rx">Rx Required</span>' : '<span class="med-tag-chip chip-otc">OTC</span>');
+    }
+
+    // Info grid
+    document.getElementById('med-detail-company').textContent = item.company || 'N/A';
+    document.getElementById('med-detail-category').textContent = item.category;
+    document.getElementById('med-detail-salt').textContent = item.salt || item.category;
+    document.getElementById('med-detail-type').textContent = _typeLabel(item.type);
+
+    // Description
+    const descEl = document.getElementById('med-detail-desc');
+    if (descEl) descEl.textContent = item.description || 'No description available.';
+
+    // Side effects
+    const seDiv = document.getElementById('med-detail-side-effects');
+    if (seDiv) {
+        if (item.sideEffects && item.sideEffects.length > 0) {
+            seDiv.innerHTML = item.sideEffects.map(se => `<span class="med-side-effect-chip">${se}</span>`).join('');
+        } else {
+            seDiv.innerHTML = '<span style="font-size:13px;color:var(--gray-text);font-weight:500;">No known side effects listed.</span>';
+        }
+    }
+
+    // Same-salt alternatives
+    const altSection = document.getElementById('med-alternatives-section');
+    const altDiv = document.getElementById('med-detail-alternatives');
+    if (altSection && altDiv && item.salt) {
+        const alts = MEDICINE_DB.filter(m => m.salt === item.salt && m.name !== item.name);
+        if (alts.length > 0) {
+            altSection.style.display = '';
+            altDiv.innerHTML = alts.map(alt => `
+                <div class="med-alt-card" onclick='openMedicineDetail(${JSON.stringify(alt.name)})'>
+                    <div class="icon-orb orb-1" style="width:44px;height:44px;font-size:18px;margin:0 14px 0 0;flex-shrink:0;"><i class="fa-solid ${alt.icon}"></i></div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:800;font-size:14px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${alt.name}</div>
+                        <div style="font-size:12px;color:var(--gray-text);font-weight:500;margin-top:3px;">${alt.company || alt.category}</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:17px;font-weight:800;color:var(--c4);">₹${alt.price}</div>
+                        <button class="add-btn" style="margin-top:6px;padding:7px 14px;font-size:12px;width:auto;" onclick='event.stopPropagation();addToCart(${JSON.stringify(alt.name)})'>ADD</button>
+                    </div>
+                </div>`).join('');
+        } else {
+            altSection.style.display = 'none';
+        }
+    } else if (altSection) {
+        altSection.style.display = 'none';
+    }
+
+    // Auto-slide
+    if (_medAutoSlideTimer) clearInterval(_medAutoSlideTimer);
+    _medAutoSlideTimer = setInterval(() => medSlide(1), 3500);
+
+    showScreen('screen-med-detail');
+}
+
+function _typeLabel(type) {
+    const map = { Tab:'Tablet', Cap:'Capsule', Syr:'Syrup', Gel:'Gel', Liq:'Liquid',
+                  Inj:'Injection', Sachet:'Sachet', Chew:'Chewable', Cream:'Cream', Strip:'Strip' };
+    return map[type] || type;
+}
+
+function medSlide(dir) {
+    _medSliderIdx = (_medSliderIdx + dir + _medSliderTotal) % _medSliderTotal;
+    _updateMedSlider();
+}
+
+function medGoTo(idx) {
+    _medSliderIdx = idx;
+    _updateMedSlider();
+}
+
+function _updateMedSlider() {
+    const slider = document.getElementById('med-slider');
+    if (slider) {
+        Array.from(slider.children).forEach((slide, i) => {
+            slide.style.transform = `translateX(${(i - _medSliderIdx) * 100}%)`;
+        });
+    }
+    document.querySelectorAll('#med-dots .med-dot').forEach((d, i) => d.classList.toggle('active', i === _medSliderIdx));
+}
+
+function addMedDetailToCart() {
+    if (_currentMedDetail) addToCart(_currentMedDetail.name);
 }
 
 function clearSearch() {
