@@ -856,7 +856,7 @@ function updateCartUI() {
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
-    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail', 'screen-reminders'];
+    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-reminders'];
 
     if (stickyBar) {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
