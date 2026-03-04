@@ -907,7 +907,7 @@ function updateCartUI() {
     const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-reminders'];
 
     if (stickyBar) {
-        if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
+        if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders' || activeTab === 'tab-wishlist' || activeTab === 'tab-refunds' || activeTab === 'tab-payments') {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
             if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px';
@@ -1161,10 +1161,239 @@ function renderHistoryUI(orders, container) {
                 <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 12px; line-height:1.4;">${itemsSummary}</p>
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #E5E7EB; padding-top:12px;">
                     <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Order Total</span>
-                    <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button style="background:#FEF3C7; border:none; border-radius:10px; color:#D97706; font-size:12px; font-weight:700; padding:7px 12px; cursor:pointer;" onclick="requestRefund('${order.orderId}', ${order.totalAmount})">Refund</button>
+                        <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                    </div>
                 </div>
             </div>
         `;
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// WISHLIST
+// ─────────────────────────────────────────────────────────────
+function _getWishlist() {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return [];
+    return JSON.parse(localStorage.getItem('mediflow_wishlist_' + s.id) || '[]');
+}
+function _saveWishlist(list) {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return;
+    localStorage.setItem('mediflow_wishlist_' + s.id, JSON.stringify(list));
+}
+function isInWishlist(itemName) { return _getWishlist().includes(itemName); }
+
+function toggleWishlist(itemName) {
+    const list = _getWishlist();
+    const idx = list.indexOf(itemName);
+    if (idx >= 0) { list.splice(idx, 1); showToast('Removed from Wishlist'); }
+    else           { list.push(itemName);  showToast('Added to Wishlist ❤️'); }
+    _saveWishlist(list);
+    document.querySelectorAll('[data-wish]').forEach(btn => {
+        if (btn.getAttribute('data-wish') === itemName) {
+            const inW = list.includes(itemName);
+            btn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+            btn.style.color = inW ? '#EF4444' : '#D1D5DB';
+        }
+    });
+    if (document.querySelector('#tab-wishlist.active-view')) renderWishlistTab();
+}
+
+function openWishlist() { switchTab(null, 'tab-wishlist'); renderWishlistTab(); }
+
+function renderWishlistTab() {
+    const c = document.getElementById('wishlist-container');
+    if (!c) return;
+    const list = _getWishlist();
+    if (list.length === 0) {
+        c.innerHTML = `
+            <div style="text-align:center; padding:40px 20px;">
+                <div class="icon-orb" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px; background:#FEE2E2; color:#EF4444;"><i class="fa-regular fa-heart"></i></div>
+                <h3 style="font-size:16px;">Your Wishlist is Empty</h3>
+                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Heart any medicine to save it here.</p>
+            </div>`; return;
+    }
+    c.innerHTML = '';
+    list.forEach(name => {
+        const item = MEDICINE_DB.find(m => m.name === name);
+        if (!item) return;
+        c.innerHTML += `
+            <div class="glass-card wide" style="margin-bottom:10px; flex-direction:column; align-items:flex-start; min-height:auto; padding:16px;">
+                <div style="display:flex; align-items:center; width:100%; gap:12px; margin-bottom:10px;">
+                    <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0;"><i class="fa-solid ${item.icon}"></i></div>
+                    <div style="flex:1; min-width:0; cursor:pointer;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                        <b style="font-size:14px; color:#111827; display:block;">${item.name}</b>
+                        <span style="font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</span>
+                    </div>
+                    <span style="font-size:15px; font-weight:800; color:var(--c4); white-space:nowrap;">₹${item.price}</span>
+                </div>
+                <div style="display:flex; gap:8px; width:100%;">
+                    <button class="add-btn" style="flex:1; margin:0; padding:10px;" onclick="addToCart(${JSON.stringify(item.name)})">ADD TO CART</button>
+                    <button class="wish-btn" onclick="toggleWishlist(${JSON.stringify(item.name)})" style="width:44px; height:44px; background:#FEF2F2; border:none; border-radius:12px; color:#EF4444; font-size:16px; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>`;
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// REFUNDS
+// ─────────────────────────────────────────────────────────────
+function openRefunds() { switchTab(null, 'tab-refunds'); renderRefundsTab(); }
+
+function renderRefundsTab() {
+    const c = document.getElementById('refunds-container');
+    if (!c) return;
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    const refunds = s ? JSON.parse(localStorage.getItem('mediflow_refunds_' + s.id) || '[]') : [];
+    if (refunds.length === 0) {
+        c.innerHTML = `
+            <div style="text-align:center; padding:40px 20px;">
+                <div class="icon-orb orb-2" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-solid fa-rotate-left"></i></div>
+                <h3 style="font-size:16px;">No Refund Requests</h3>
+                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
+            </div>`; return;
+    }
+    c.innerHTML = '';
+    refunds.forEach(r => {
+        const colMap = { 'Approved': ['#F0FDF4','#16A34A'], 'Rejected': ['#FEF2F2','#DC2626'], 'Pending': ['#FFFBEB','#D97706'] };
+        const [bg, fg] = colMap[r.status] || colMap['Pending'];
+        c.innerHTML += `
+            <div class="order-history-card" style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                    <div><b style="font-size:14px; color:#111827;">${r.orderId}</b><div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
+                    <span style="font-size:11px; font-weight:800; padding:4px 10px; border-radius:8px; background:${bg}; color:${fg};">${r.status}</span>
+                </div>
+                <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 8px;">${r.reason}</p>
+                <div style="display:flex; justify-content:space-between; border-top:1px dashed #E5E7EB; padding-top:10px;">
+                    <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Refund Amount</span>
+                    <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${r.amount}</span>
+                </div>
+            </div>`;
+    });
+}
+
+function requestRefund(orderId, amount) {
+    if (!confirm('Request a refund for order ' + orderId + '?')) return;
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return showToast('Please log in first.');
+    const key = 'mediflow_refunds_' + s.id;
+    const refunds = JSON.parse(localStorage.getItem(key) || '[]');
+    const reason = prompt('Reason for refund (optional):') || 'Requested by user';
+    if (reason === null) return; // user pressed Cancel on prompt
+    refunds.unshift({ orderId, amount, reason, date: new Date().toLocaleDateString(), status: 'Pending' });
+    localStorage.setItem(key, JSON.stringify(refunds));
+    showToast('Refund request submitted!');
+}
+
+// ─────────────────────────────────────────────────────────────
+// PAYMENT MANAGEMENT
+// ─────────────────────────────────────────────────────────────
+let _selPayType = 'card';
+
+function openPayments() { switchTab(null, 'tab-payments'); renderPaymentsTab(); }
+
+function _getPaymentMethods() {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return [];
+    return JSON.parse(localStorage.getItem('mediflow_payments_' + s.id) || '[]');
+}
+function _savePaymentMethods(list) {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return;
+    localStorage.setItem('mediflow_payments_' + s.id, JSON.stringify(list));
+}
+
+function renderPaymentsTab() {
+    const c = document.getElementById('payments-container');
+    if (!c) return;
+    const methods = _getPaymentMethods();
+    const typeIcon = { card: 'fa-credit-card', upi: 'fa-mobile-screen-button', netbanking: 'fa-building-columns' };
+    let html = '';
+    if (methods.length === 0) {
+        html = `<div style="text-align:center; padding:30px 20px;">
+            <div class="icon-orb orb-3" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-regular fa-credit-card"></i></div>
+            <h3 style="font-size:16px;">No Saved Methods</h3>
+            <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Add a card or UPI ID for faster checkout.</p>
+        </div>`;
+    } else {
+        methods.forEach((m, i) => {
+            html += `
+            <div class="glass-card wide" style="margin-bottom:10px; min-height:auto; padding:16px;">
+                <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0 14px 0 0;"><i class="fa-solid ${typeIcon[m.type] || 'fa-credit-card'}"></i></div>
+                <div style="flex:1;">
+                    <b style="font-size:14px; color:#111827; display:block;">${m.label}</b>
+                    <span style="font-size:11px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">${m.type}</span>
+                </div>
+                <button style="background:#FEE2E2; border:none; border-radius:10px; color:#DC2626; font-size:12px; font-weight:700; padding:8px 12px; cursor:pointer;" onclick="removePaymentMethod(${i})">Remove</button>
+            </div>`;
+        });
+    }
+    c.innerHTML = html + `
+        <div style="margin-top:20px;">
+            <p class="profile-section-label" style="margin-bottom:12px;">Add Payment Method</p>
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+                <div class="select-chip active pay-type-chip" onclick="selPayType(this,'card')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">💳 Card</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'upi')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">📱 UPI</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'netbanking')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">🏦 Bank</div>
+            </div>
+            <div class="input-group" style="margin-bottom:12px;">
+                <input type="text" id="pay-input" placeholder="Card no. / UPI ID / Bank name" style="height:50px;">
+            </div>
+            <button class="pay-btn" style="height:50px; margin-top:0;" onclick="savePaymentMethod()">Save Method</button>
+        </div>`;
+    _selPayType = 'card';
+}
+
+function selPayType(el, type) {
+    _selPayType = type;
+    document.querySelectorAll('.pay-type-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function savePaymentMethod() {
+    const val = document.getElementById('pay-input')?.value?.trim();
+    if (!val) return showToast('Please enter a value.');
+    const methods = _getPaymentMethods();
+    methods.push({ type: _selPayType, label: val });
+    _savePaymentMethods(methods);
+    showToast('Payment method saved!');
+    renderPaymentsTab();
+}
+
+function removePaymentMethod(idx) {
+    if (!confirm('Remove this payment method?')) return;
+    const methods = _getPaymentMethods();
+    methods.splice(idx, 1);
+    _savePaymentMethods(methods);
+    renderPaymentsTab();
+}
+
+// ─────────────────────────────────────────────────────────────
+// SUGGESTED PRODUCTS (inline in profile)
+// ─────────────────────────────────────────────────────────────
+function renderSuggestedProducts() {
+    const el = document.getElementById('suggested-products-slider');
+    if (!el) return;
+    const otc = MEDICINE_DB.filter(m => !m.isRx);
+    // Fisher-Yates shuffle on a copy, then take first 6
+    const shuffled = [...otc];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const picks = shuffled.slice(0, 6);
+    el.innerHTML = '';
+    picks.forEach(item => {
+        el.innerHTML += `
+            <div class="glass-card" style="min-width:140px; flex-shrink:0; padding:15px; min-height:165px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                <div class="icon-orb orb-2" style="width:40px; height:40px; font-size:17px; margin-bottom:10px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:13px; line-height:1.3; flex:1;">${item.name}</h3>
+                <p style="margin:4px 0 8px; font-size:14px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin:0; padding:8px; font-size:11px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>`;
     });
 }
 
@@ -1205,13 +1434,15 @@ function handleGlobalSearch(el) {
 }
 
 function renderItemCard(item) {
+    const inW = isInWishlist(item.name);
     return `
-        <div class="glass-card" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+        <div class="glass-card" style="position:relative;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
             ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
+            <button data-wish="${item.name}" class="wish-btn" onclick='event.stopPropagation(); toggleWishlist(${JSON.stringify(item.name)})' style="position:absolute; top:10px; ${item.isRx ? 'right:52px' : 'right:10px'}; background:none; border:none; cursor:pointer; font-size:18px; color:${inW ? '#EF4444' : '#D1D5DB'}; padding:4px; z-index:2; line-height:1;" aria-label="${inW ? 'Remove from wishlist' : 'Add to wishlist'}"><i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i></button>
             <div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>
             <div>
                 <h3 style="margin:0; font-size:15px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p>
+                <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</p>
                 <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
             </div>
             <button class="add-btn" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
@@ -1406,7 +1637,26 @@ function openMedicineDetail(itemName) {
     if (_medAutoSlideTimer) clearInterval(_medAutoSlideTimer);
     _medAutoSlideTimer = setInterval(() => medSlide(1), 3500);
 
+    // Wishlist heart button state
+    const wishBtn = document.getElementById('med-detail-wish-btn');
+    if (wishBtn) {
+        const inW = isInWishlist(item.name);
+        wishBtn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+        wishBtn.style.color = inW ? '#EF4444' : '';
+    }
+
     showScreen('screen-med-detail');
+}
+
+function toggleWishlistDetail() {
+    if (!_currentMedDetail) return;
+    toggleWishlist(_currentMedDetail.name);
+    const wishBtn = document.getElementById('med-detail-wish-btn');
+    if (wishBtn) {
+        const inW = isInWishlist(_currentMedDetail.name);
+        wishBtn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+        wishBtn.style.color = inW ? '#EF4444' : '';
+    }
 }
 
 function _typeLabel(type) {
@@ -2014,6 +2264,7 @@ function updateDash(user) {
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
     document.getElementById('profile-email').value = user.email || '';
     setHomeGreeting();
+    renderSuggestedProducts();
 }
 
 // ── Push Notifications ───────────────────────────────────────────────────────
@@ -2208,7 +2459,7 @@ function switchTab(el, tabId, pushHistory = true) {
         if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
         else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
         else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; }
-        else if (tabId === 'tab-profile' || tabId === 'tab-orders') { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
+        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments'].includes(tabId)) { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
     }
 
     updateCartUI();
