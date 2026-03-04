@@ -101,34 +101,62 @@ let MEDICINE_DB = [
       salt: "Atorvastatin Calcium", strength: "10 mg", company: "Zydus Cadila",
       description: "Atorva 10 (Atorvastatin 10 mg) is a statin that lowers LDL cholesterol and triglycerides while raising HDL cholesterol, reducing the risk of heart attack and stroke.",
       sideEffects: ["Muscle pain (myalgia)", "Liver enzyme elevation", "Headache", "Nausea", "Rhabdomyolysis (rare)"] },
-    { name: "Limcee (Vit C)", price: 25, category: "Vitamins", type: "Chew", icon: "fa-lemon", isRx: false,
+    { name: "Limcee (Vit C)", price: 25, category: "Vitamins & Supplements", type: "Chew", icon: "fa-lemon", isRx: false,
       salt: "Ascorbic Acid (Vitamin C)", strength: "500 mg", company: "Abbott India",
       description: "Limcee is a chewable Vitamin C (500 mg) tablet that supports immune function, collagen synthesis, and acts as an antioxidant. Orange-flavoured for pleasant consumption.",
       sideEffects: ["Stomach upset (high doses)", "Diarrhoea (high doses)", "Kidney stones (very high doses)"] },
-    { name: "Zincovit", price: 105, category: "Vitamins", type: "Tab", icon: "fa-shield-virus", isRx: false,
+    { name: "Zincovit", price: 105, category: "Vitamins & Supplements", type: "Tab", icon: "fa-shield-virus", isRx: false,
       salt: "Zinc + Multivitamins + Minerals", strength: "—", company: "Apex Laboratories",
       description: "Zincovit is a comprehensive multivitamin and mineral supplement with Zinc, Vitamins A, B-complex, C, D, and E. It boosts immunity, supports growth, and aids in recovery.",
       sideEffects: ["Nausea (on empty stomach)", "Metallic taste", "Stomach upset"] },
-    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins", type: "Tab", icon: "fa-bone", isRx: false,
+    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bone", isRx: false,
       salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg/250 IU", company: "Sun Pharma",
       description: "Shelcal 500 provides Calcium Carbonate (500 mg) with Vitamin D3 to prevent and treat calcium deficiency, osteoporosis, and rickets. Vitamin D3 enhances calcium absorption.",
       sideEffects: ["Constipation", "Bloating", "Kidney stones (high doses)", "Hypercalcaemia (overdose)"] },
-    { name: "Evion 400 (Vit E)", price: 35, category: "Skin & Hair", type: "Cap", icon: "fa-sparkles", isRx: false,
+    { name: "Evion 400 (Vit E)", price: 35, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sparkles", isRx: false,
       salt: "Tocopheryl Acetate (Vitamin E)", strength: "400 IU", company: "Merck (India)",
       description: "Evion 400 is a Vitamin E supplement used for skin health, hair growth, and as an antioxidant. It is also applied topically for wound healing and stretch marks.",
       sideEffects: ["Nausea (high doses)", "Headache (high doses)", "Blurred vision (very high doses)", "Fatigue"] },
-    { name: "Dettol Liquid", price: 65, category: "First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
+    { name: "Omega-3 Fish Oil", price: 249, category: "Vitamins & Supplements", type: "Cap", icon: "fa-fish", isRx: false,
+      salt: "Omega-3 Fatty Acids (EPA + DHA)", strength: "1000 mg", company: "HealthKart",
+      description: "Omega-3 Fish Oil provides essential EPA and DHA fatty acids that support heart health, brain function, and help reduce inflammation. Take 1 capsule daily with meals.",
+      sideEffects: ["Fishy breath", "Stomach upset", "Loose stools (high doses)"] },
+    { name: "Iron + Folic Acid", price: 85, category: "Vitamins & Supplements", type: "Tab", icon: "fa-droplet", isRx: false,
+      salt: "Ferrous Sulfate + Folic Acid", strength: "150 mg/0.5 mg", company: "Abbott India",
+      description: "Iron + Folic Acid tablet prevents and treats anaemia. Essential for women of childbearing age, pregnant women, and those with iron-deficiency anaemia.",
+      sideEffects: ["Constipation", "Nausea", "Dark stools", "Stomach cramps"] },
+    { name: "Vitamin D3 (60,000 IU)", price: 130, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sun", isRx: false,
+      salt: "Cholecalciferol (Vitamin D3)", strength: "60,000 IU", company: "Sun Pharma",
+      description: "Vitamin D3 60,000 IU is taken once weekly to correct Vitamin D deficiency, supporting bone health, immune function, and muscle strength.",
+      sideEffects: ["Nausea (overdose)", "Fatigue (overdose)", "Hypercalcaemia (very high doses)"] },
+    { name: "Neurobion Forte", price: 90, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bolt", isRx: false,
+      salt: "Vitamin B1 + B6 + B12", strength: "10 mg/100 mg/15 mcg", company: "Merck (India)",
+      description: "Neurobion Forte contains Vitamins B1, B6, and B12 to support nerve health, reduce tiredness, and boost energy. Recommended for B-vitamin deficiency and neuropathy.",
+      sideEffects: ["Nausea (rare)", "Skin rash (rare)"] },
+    { name: "Dettol Liquid", price: 65, category: "Home First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
       salt: "Chloroxylenol (PCMX)", strength: "4.8% w/v", company: "Reckitt Benckiser",
       description: "Dettol Antiseptic Liquid containing Chloroxylenol is used for wound cleansing, skin disinfection, and general hygiene. Dilute before applying to skin.",
       sideEffects: ["Skin irritation (undiluted)", "Allergic contact dermatitis (rare)", "Toxic if swallowed"] },
-    { name: "Hansaplast Strips", price: 20, category: "First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
+    { name: "Hansaplast Strips", price: 20, category: "Home First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
       salt: "N/A (Medical Device)", strength: "N/A", company: "Beiersdorf India",
       description: "Hansaplast adhesive wound strips protect minor cuts, scrapes, and blisters from dirt and germs. The breathable wound pad promotes faster healing and stays in place even when wet.",
       sideEffects: ["Skin irritation (sensitive skin)", "Adhesive allergy (rare)"] },
-    { name: "Betadine Ointment", price: 95, category: "First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
+    { name: "Betadine Ointment", price: 95, category: "Home First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
       salt: "Povidone-Iodine", strength: "5% w/w", company: "Win-Medicare Pvt. Ltd.",
       description: "Betadine Ointment is a broad-spectrum antiseptic containing Povidone-Iodine, effective against bacteria, viruses, and fungi. Used for wound care, minor burns, and skin infections.",
       sideEffects: ["Skin staining (brown)", "Skin irritation", "Iodine sensitivity reaction (rare)", "Avoid on large wounds"] },
+    { name: "Electral ORS", price: 35, category: "Home First Aid", type: "Sachet", icon: "fa-glass-water-droplet", isRx: false,
+      salt: "Sodium Chloride + Potassium Chloride + Sodium Citrate + Glucose", strength: "Per sachet (21.8 g)", company: "FDC Ltd.",
+      description: "Electral ORS (Oral Rehydration Salts) is essential for treating dehydration caused by diarrhoea, vomiting, fever, or heat exhaustion. Dissolve one sachet in 1 litre of clean drinking water.",
+      sideEffects: ["Nausea (rare)", "Elevated sodium in large doses"] },
+    { name: "Burnol Cream", price: 70, category: "Home First Aid", type: "Cream", icon: "fa-fire-flame-curved", isRx: false,
+      salt: "Cetrimide + Chlorhexidine", strength: "0.5% / 0.025% w/w", company: "Dr. Morepen",
+      description: "Burnol is a trusted antiseptic cream for minor burns, scalds, and skin wounds. It relieves pain, prevents infection, and aids healing. Apply a thin layer on the affected area.",
+      sideEffects: ["Mild skin irritation", "Burning sensation on open wounds", "Allergy (rare)"] },
+    { name: "Calpol Paediatric", price: 45, category: "Home First Aid", type: "Syr", icon: "fa-child", isRx: false,
+      salt: "Paracetamol", strength: "120 mg/5 ml", company: "GlaxoSmithKline",
+      description: "Calpol Paediatric Suspension is a children's fever and pain relief syrup, gentle on young stomachs. Indicated for fever, teething pain, and post-vaccination discomfort.",
+      sideEffects: ["Nausea (rare)", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false,
       salt: "Cetirizine Hydrochloride", strength: "10 mg", company: "Unbranded / Generic",
       description: "Cetirizine is a second-generation antihistamine with minimal sedation, used to treat allergic rhinitis, hives, hay fever, and other allergic conditions. Effective for 24 hours.",
@@ -138,6 +166,23 @@ let MEDICINE_DB = [
       description: "Allegra 120 (Fexofenadine 120 mg) is a non-drowsy antihistamine for seasonal allergic rhinitis and chronic idiopathic urticaria. It does not cross the blood-brain barrier, ensuring no sedation.",
       sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] }
 ];
+
+// Plain-language display names for medicine therapeutic categories
+const CATEGORY_DISPLAY_NAMES = {
+    "Fever & Flu": "Fever & Flu",
+    "Cough & Cold": "Cough & Cold",
+    "Pain Relief": "Pain & Aches",
+    "Headache": "Headache",
+    "Digestion": "Tummy Trouble",
+    "Stomach Gas": "Acidity & Gas",
+    "Diabetes": "Sugar (Diabetes)",
+    "Blood Pressure": "Blood Pressure",
+    "Cholesterol": "Cholesterol",
+    "Allergy": "Allergy Relief",
+    "Vitamins & Supplements": "Vitamins & Supplements",
+    "Home First Aid": "Home First Aid",
+};
+function _catDisplayName(cat) { return CATEGORY_DISPLAY_NAMES[cat] || cat; }
 
 let currentPhoneRaw = ""; let currentPhoneClean = ""; let gender = ""; let cart = [];
 let selectedAddress = null; let map = null; window.currentAddresses = [];
@@ -236,6 +281,9 @@ window.onload = async () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+
+    // Zepto-style: wire up scroll-based header collapse for the home tab
+    _initHomeScrollHeader();
 };
 
 // ==========================================
@@ -1212,7 +1260,7 @@ function renderDailyNeeds() {
     tabsEl.innerHTML = '';
     categories.forEach((cat, i) => {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${cat}</span></div>`;
+        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
     });
     _renderDailyNeedsMeds(_dailyNeedsActiveCat);
 }
@@ -1614,20 +1662,87 @@ function renderCategoriesTab() {
     const grid = document.getElementById('all-cats-grid');
     if (!grid) return;
     grid.innerHTML = "";
-    const categories = [...new Set(MEDICINE_DB.map(item => item.category))];
-    const colors = ['orb-1', 'orb-2', 'orb-3'];
 
-    categories.forEach((cat, idx) => {
+    const ACUTE_CATS    = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
+    const CHRONIC_CATS  = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
+    const SPECIAL_CATS  = ["Vitamins & Supplements", "Home First Aid"];
+    const allMapped     = [...SPECIAL_CATS, ...ACUTE_CATS, ...CHRONIC_CATS];
+    const colors        = ['orb-1', 'orb-2', 'orb-3'];
+
+    function catCard(cat, idx) {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        const colorClass = colors[idx % colors.length];
+        if (!example) return '';
+        return `
+            <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
+                <div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${example.icon}"></i></div>
+                <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
+            </div>`;
+    }
 
+    // ── Featured banner: Vitamins & Supplements ──
+    if (MEDICINE_DB.some(m => m.category === "Vitamins & Supplements")) {
         grid.innerHTML += `
-            <div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick='openCategoryView(${JSON.stringify(cat)})'>
-                <div class="icon-orb ${colorClass}" style="margin:0 0 15px; width:55px; height:55px; font-size:24px;"><i class="fa-solid ${example.icon}"></i></div>
-                <h3 style="margin:0; font-size:15px;">${cat}</h3>
-            </div>
-        `;
-    });
+            <div class="cat-banner-card cat-banner-vitamins" onclick='openCategoryView("Vitamins &amp; Supplements")'>
+                <div style="flex:1;">
+                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">New Section</div>
+                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">💊 Vitamins &amp; Supplements</h3>
+                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Boost immunity, energy &amp; everyday health</p>
+                </div>
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-leaf"></i></div>
+            </div>`;
+    }
+
+    // ── Featured banner: Home First Aid ──
+    if (MEDICINE_DB.some(m => m.category === "Home First Aid")) {
+        grid.innerHTML += `
+            <div class="cat-banner-card cat-banner-firstaid" onclick='openCategoryView("Home First Aid")'>
+                <div style="flex:1;">
+                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">Home Essentials</div>
+                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">🩺 Home First Aid</h3>
+                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Must-have kit for every household</p>
+                </div>
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-kit-medical"></i></div>
+            </div>`;
+    }
+
+    // ── Acute / Everyday conditions ──
+    const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+    if (acuteCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
+        acuteCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+
+    // ── Chronic / Long-term conditions ──
+    const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+    if (chronicCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
+        chronicCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+
+    // ── Any remaining unmapped categories ──
+    const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
+    if (otherCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
+        otherCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+}
+
+// Zepto-style: collapse/expand the home header based on scroll position
+function _initHomeScrollHeader() {
+    const scroll = document.getElementById('main-scroll');
+    const header = document.getElementById('main-dash-header');
+    if (!scroll || !header) return;
+    scroll.addEventListener('scroll', function () {
+        const activeTab = document.querySelector('.content-view.active-view');
+        if (!activeTab || activeTab.id !== 'tab-home') return;
+        if (this.scrollTop > 60) {
+            header.classList.add('compact');
+            this.style.paddingTop = '150px';
+        } else {
+            header.classList.remove('compact');
+            this.style.paddingTop = '230px';
+        }
+    }, { passive: true });
 }
 
 function openCategoryView(catName) {
@@ -2077,8 +2192,14 @@ function switchTab(el, tabId, pushHistory = true) {
     const dashHeader = document.getElementById('main-dash-header');
 
     if (tabId === 'tab-home') {
-        dashHeader.classList.remove('compact');
-        mainScroll.style.paddingTop = '230px';
+        const scrollTop = mainScroll ? mainScroll.scrollTop : 0;
+        if (scrollTop > 60) {
+            dashHeader.classList.add('compact');
+            if (mainScroll) mainScroll.style.paddingTop = '150px';
+        } else {
+            dashHeader.classList.remove('compact');
+            if (mainScroll) mainScroll.style.paddingTop = '230px';
+        }
         setHomeGreeting();
     } else {
         dashHeader.classList.add('compact');
