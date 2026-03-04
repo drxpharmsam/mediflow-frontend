@@ -101,34 +101,62 @@ let MEDICINE_DB = [
       salt: "Atorvastatin Calcium", strength: "10 mg", company: "Zydus Cadila",
       description: "Atorva 10 (Atorvastatin 10 mg) is a statin that lowers LDL cholesterol and triglycerides while raising HDL cholesterol, reducing the risk of heart attack and stroke.",
       sideEffects: ["Muscle pain (myalgia)", "Liver enzyme elevation", "Headache", "Nausea", "Rhabdomyolysis (rare)"] },
-    { name: "Limcee (Vit C)", price: 25, category: "Vitamins", type: "Chew", icon: "fa-lemon", isRx: false,
+    { name: "Limcee (Vit C)", price: 25, category: "Vitamins & Supplements", type: "Chew", icon: "fa-lemon", isRx: false,
       salt: "Ascorbic Acid (Vitamin C)", strength: "500 mg", company: "Abbott India",
       description: "Limcee is a chewable Vitamin C (500 mg) tablet that supports immune function, collagen synthesis, and acts as an antioxidant. Orange-flavoured for pleasant consumption.",
       sideEffects: ["Stomach upset (high doses)", "Diarrhoea (high doses)", "Kidney stones (very high doses)"] },
-    { name: "Zincovit", price: 105, category: "Vitamins", type: "Tab", icon: "fa-shield-virus", isRx: false,
+    { name: "Zincovit", price: 105, category: "Vitamins & Supplements", type: "Tab", icon: "fa-shield-virus", isRx: false,
       salt: "Zinc + Multivitamins + Minerals", strength: "—", company: "Apex Laboratories",
       description: "Zincovit is a comprehensive multivitamin and mineral supplement with Zinc, Vitamins A, B-complex, C, D, and E. It boosts immunity, supports growth, and aids in recovery.",
       sideEffects: ["Nausea (on empty stomach)", "Metallic taste", "Stomach upset"] },
-    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins", type: "Tab", icon: "fa-bone", isRx: false,
+    { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bone", isRx: false,
       salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg/250 IU", company: "Sun Pharma",
       description: "Shelcal 500 provides Calcium Carbonate (500 mg) with Vitamin D3 to prevent and treat calcium deficiency, osteoporosis, and rickets. Vitamin D3 enhances calcium absorption.",
       sideEffects: ["Constipation", "Bloating", "Kidney stones (high doses)", "Hypercalcaemia (overdose)"] },
-    { name: "Evion 400 (Vit E)", price: 35, category: "Skin & Hair", type: "Cap", icon: "fa-sparkles", isRx: false,
+    { name: "Evion 400 (Vit E)", price: 35, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sparkles", isRx: false,
       salt: "Tocopheryl Acetate (Vitamin E)", strength: "400 IU", company: "Merck (India)",
       description: "Evion 400 is a Vitamin E supplement used for skin health, hair growth, and as an antioxidant. It is also applied topically for wound healing and stretch marks.",
       sideEffects: ["Nausea (high doses)", "Headache (high doses)", "Blurred vision (very high doses)", "Fatigue"] },
-    { name: "Dettol Liquid", price: 65, category: "First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
+    { name: "Omega-3 Fish Oil", price: 249, category: "Vitamins & Supplements", type: "Cap", icon: "fa-fish", isRx: false,
+      salt: "Omega-3 Fatty Acids (EPA + DHA)", strength: "1000 mg", company: "HealthKart",
+      description: "Omega-3 Fish Oil provides essential EPA and DHA fatty acids that support heart health, brain function, and help reduce inflammation. Take 1 capsule daily with meals.",
+      sideEffects: ["Fishy breath", "Stomach upset", "Loose stools (high doses)"] },
+    { name: "Iron + Folic Acid", price: 85, category: "Vitamins & Supplements", type: "Tab", icon: "fa-droplet", isRx: false,
+      salt: "Ferrous Sulfate + Folic Acid", strength: "150 mg/0.5 mg", company: "Abbott India",
+      description: "Iron + Folic Acid tablet prevents and treats anaemia. Essential for women of childbearing age, pregnant women, and those with iron-deficiency anaemia.",
+      sideEffects: ["Constipation", "Nausea", "Dark stools", "Stomach cramps"] },
+    { name: "Vitamin D3 (60,000 IU)", price: 130, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sun", isRx: false,
+      salt: "Cholecalciferol (Vitamin D3)", strength: "60,000 IU", company: "Sun Pharma",
+      description: "Vitamin D3 60,000 IU is taken once weekly to correct Vitamin D deficiency, supporting bone health, immune function, and muscle strength.",
+      sideEffects: ["Nausea (overdose)", "Fatigue (overdose)", "Hypercalcaemia (very high doses)"] },
+    { name: "Neurobion Forte", price: 90, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bolt", isRx: false,
+      salt: "Vitamin B1 + B6 + B12", strength: "10 mg/100 mg/15 mcg", company: "Merck (India)",
+      description: "Neurobion Forte contains Vitamins B1, B6, and B12 to support nerve health, reduce tiredness, and boost energy. Recommended for B-vitamin deficiency and neuropathy.",
+      sideEffects: ["Nausea (rare)", "Skin rash (rare)"] },
+    { name: "Dettol Liquid", price: 65, category: "Home First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
       salt: "Chloroxylenol (PCMX)", strength: "4.8% w/v", company: "Reckitt Benckiser",
       description: "Dettol Antiseptic Liquid containing Chloroxylenol is used for wound cleansing, skin disinfection, and general hygiene. Dilute before applying to skin.",
       sideEffects: ["Skin irritation (undiluted)", "Allergic contact dermatitis (rare)", "Toxic if swallowed"] },
-    { name: "Hansaplast Strips", price: 20, category: "First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
+    { name: "Hansaplast Strips", price: 20, category: "Home First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
       salt: "N/A (Medical Device)", strength: "N/A", company: "Beiersdorf India",
       description: "Hansaplast adhesive wound strips protect minor cuts, scrapes, and blisters from dirt and germs. The breathable wound pad promotes faster healing and stays in place even when wet.",
       sideEffects: ["Skin irritation (sensitive skin)", "Adhesive allergy (rare)"] },
-    { name: "Betadine Ointment", price: 95, category: "First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
+    { name: "Betadine Ointment", price: 95, category: "Home First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
       salt: "Povidone-Iodine", strength: "5% w/w", company: "Win-Medicare Pvt. Ltd.",
       description: "Betadine Ointment is a broad-spectrum antiseptic containing Povidone-Iodine, effective against bacteria, viruses, and fungi. Used for wound care, minor burns, and skin infections.",
       sideEffects: ["Skin staining (brown)", "Skin irritation", "Iodine sensitivity reaction (rare)", "Avoid on large wounds"] },
+    { name: "Electral ORS", price: 35, category: "Home First Aid", type: "Sachet", icon: "fa-glass-water-droplet", isRx: false,
+      salt: "Sodium Chloride + Potassium Chloride + Sodium Citrate + Glucose", strength: "Per sachet (21.8 g)", company: "FDC Ltd.",
+      description: "Electral ORS (Oral Rehydration Salts) is essential for treating dehydration caused by diarrhoea, vomiting, fever, or heat exhaustion. Dissolve one sachet in 1 litre of clean drinking water.",
+      sideEffects: ["Nausea (rare)", "Elevated sodium in large doses"] },
+    { name: "Burnol Cream", price: 70, category: "Home First Aid", type: "Cream", icon: "fa-fire-flame-curved", isRx: false,
+      salt: "Cetrimide + Chlorhexidine", strength: "0.5% / 0.025% w/w", company: "Dr. Morepen",
+      description: "Burnol is a trusted antiseptic cream for minor burns, scalds, and skin wounds. It relieves pain, prevents infection, and aids healing. Apply a thin layer on the affected area.",
+      sideEffects: ["Mild skin irritation", "Burning sensation on open wounds", "Allergy (rare)"] },
+    { name: "Calpol Paediatric", price: 45, category: "Home First Aid", type: "Syr", icon: "fa-child", isRx: false,
+      salt: "Paracetamol", strength: "120 mg/5 ml", company: "GlaxoSmithKline",
+      description: "Calpol Paediatric Suspension is a children's fever and pain relief syrup, gentle on young stomachs. Indicated for fever, teething pain, and post-vaccination discomfort.",
+      sideEffects: ["Nausea (rare)", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false,
       salt: "Cetirizine Hydrochloride", strength: "10 mg", company: "Unbranded / Generic",
       description: "Cetirizine is a second-generation antihistamine with minimal sedation, used to treat allergic rhinitis, hives, hay fever, and other allergic conditions. Effective for 24 hours.",
@@ -138,6 +166,23 @@ let MEDICINE_DB = [
       description: "Allegra 120 (Fexofenadine 120 mg) is a non-drowsy antihistamine for seasonal allergic rhinitis and chronic idiopathic urticaria. It does not cross the blood-brain barrier, ensuring no sedation.",
       sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] }
 ];
+
+// Plain-language display names for medicine therapeutic categories
+const CATEGORY_DISPLAY_NAMES = {
+    "Fever & Flu": "Fever & Flu",
+    "Cough & Cold": "Cough & Cold",
+    "Pain Relief": "Pain & Aches",
+    "Headache": "Headache",
+    "Digestion": "Tummy Trouble",
+    "Stomach Gas": "Acidity & Gas",
+    "Diabetes": "Sugar (Diabetes)",
+    "Blood Pressure": "Blood Pressure",
+    "Cholesterol": "Cholesterol",
+    "Allergy": "Allergy Relief",
+    "Vitamins & Supplements": "Vitamins & Supplements",
+    "Home First Aid": "Home First Aid",
+};
+function _catDisplayName(cat) { return CATEGORY_DISPLAY_NAMES[cat] || cat; }
 
 let currentPhoneRaw = ""; let currentPhoneClean = ""; let gender = ""; let cart = [];
 let selectedAddress = null; let map = null; window.currentAddresses = [];
@@ -236,6 +281,9 @@ window.onload = async () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+
+    // Zepto-style: wire up scroll-based header collapse for the home tab
+    _initHomeScrollHeader();
 };
 
 // ==========================================
@@ -856,10 +904,10 @@ function updateCartUI() {
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
-    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-med-detail', 'screen-reminders'];
+    const allowedScreens = ['screen-dash', 'screen-cat-items', 'screen-rx-upload', 'screen-reminders'];
 
     if (stickyBar) {
-        if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders') {
+        if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders' || activeTab === 'tab-wishlist' || activeTab === 'tab-refunds' || activeTab === 'tab-payments') {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
             if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px';
@@ -1113,10 +1161,239 @@ function renderHistoryUI(orders, container) {
                 <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 12px; line-height:1.4;">${itemsSummary}</p>
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #E5E7EB; padding-top:12px;">
                     <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Order Total</span>
-                    <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button style="background:#FEF3C7; border:none; border-radius:10px; color:#D97706; font-size:12px; font-weight:700; padding:7px 12px; cursor:pointer;" onclick="requestRefund('${order.orderId}', ${order.totalAmount})">Refund</button>
+                        <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                    </div>
                 </div>
             </div>
         `;
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// WISHLIST
+// ─────────────────────────────────────────────────────────────
+function _getWishlist() {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return [];
+    return JSON.parse(localStorage.getItem('mediflow_wishlist_' + s.id) || '[]');
+}
+function _saveWishlist(list) {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return;
+    localStorage.setItem('mediflow_wishlist_' + s.id, JSON.stringify(list));
+}
+function isInWishlist(itemName) { return _getWishlist().includes(itemName); }
+
+function toggleWishlist(itemName) {
+    const list = _getWishlist();
+    const idx = list.indexOf(itemName);
+    if (idx >= 0) { list.splice(idx, 1); showToast('Removed from Wishlist'); }
+    else           { list.push(itemName);  showToast('Added to Wishlist ❤️'); }
+    _saveWishlist(list);
+    document.querySelectorAll('[data-wish]').forEach(btn => {
+        if (btn.getAttribute('data-wish') === itemName) {
+            const inW = list.includes(itemName);
+            btn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+            btn.style.color = inW ? '#EF4444' : '#D1D5DB';
+        }
+    });
+    if (document.querySelector('#tab-wishlist.active-view')) renderWishlistTab();
+}
+
+function openWishlist() { switchTab(null, 'tab-wishlist'); renderWishlistTab(); }
+
+function renderWishlistTab() {
+    const c = document.getElementById('wishlist-container');
+    if (!c) return;
+    const list = _getWishlist();
+    if (list.length === 0) {
+        c.innerHTML = `
+            <div style="text-align:center; padding:40px 20px;">
+                <div class="icon-orb" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px; background:#FEE2E2; color:#EF4444;"><i class="fa-regular fa-heart"></i></div>
+                <h3 style="font-size:16px;">Your Wishlist is Empty</h3>
+                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Heart any medicine to save it here.</p>
+            </div>`; return;
+    }
+    c.innerHTML = '';
+    list.forEach(name => {
+        const item = MEDICINE_DB.find(m => m.name === name);
+        if (!item) return;
+        c.innerHTML += `
+            <div class="glass-card wide" style="margin-bottom:10px; flex-direction:column; align-items:flex-start; min-height:auto; padding:16px;">
+                <div style="display:flex; align-items:center; width:100%; gap:12px; margin-bottom:10px;">
+                    <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0;"><i class="fa-solid ${item.icon}"></i></div>
+                    <div style="flex:1; min-width:0; cursor:pointer;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                        <b style="font-size:14px; color:#111827; display:block;">${item.name}</b>
+                        <span style="font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</span>
+                    </div>
+                    <span style="font-size:15px; font-weight:800; color:var(--c4); white-space:nowrap;">₹${item.price}</span>
+                </div>
+                <div style="display:flex; gap:8px; width:100%;">
+                    <button class="add-btn" style="flex:1; margin:0; padding:10px;" onclick="addToCart(${JSON.stringify(item.name)})">ADD TO CART</button>
+                    <button class="wish-btn" onclick="toggleWishlist(${JSON.stringify(item.name)})" style="width:44px; height:44px; background:#FEF2F2; border:none; border-radius:12px; color:#EF4444; font-size:16px; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>`;
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// REFUNDS
+// ─────────────────────────────────────────────────────────────
+function openRefunds() { switchTab(null, 'tab-refunds'); renderRefundsTab(); }
+
+function renderRefundsTab() {
+    const c = document.getElementById('refunds-container');
+    if (!c) return;
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    const refunds = s ? JSON.parse(localStorage.getItem('mediflow_refunds_' + s.id) || '[]') : [];
+    if (refunds.length === 0) {
+        c.innerHTML = `
+            <div style="text-align:center; padding:40px 20px;">
+                <div class="icon-orb orb-2" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-solid fa-rotate-left"></i></div>
+                <h3 style="font-size:16px;">No Refund Requests</h3>
+                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
+            </div>`; return;
+    }
+    c.innerHTML = '';
+    refunds.forEach(r => {
+        const colMap = { 'Approved': ['#F0FDF4','#16A34A'], 'Rejected': ['#FEF2F2','#DC2626'], 'Pending': ['#FFFBEB','#D97706'] };
+        const [bg, fg] = colMap[r.status] || colMap['Pending'];
+        c.innerHTML += `
+            <div class="order-history-card" style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                    <div><b style="font-size:14px; color:#111827;">${r.orderId}</b><div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
+                    <span style="font-size:11px; font-weight:800; padding:4px 10px; border-radius:8px; background:${bg}; color:${fg};">${r.status}</span>
+                </div>
+                <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 8px;">${r.reason}</p>
+                <div style="display:flex; justify-content:space-between; border-top:1px dashed #E5E7EB; padding-top:10px;">
+                    <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Refund Amount</span>
+                    <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${r.amount}</span>
+                </div>
+            </div>`;
+    });
+}
+
+function requestRefund(orderId, amount) {
+    if (!confirm('Request a refund for order ' + orderId + '?')) return;
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return showToast('Please log in first.');
+    const key = 'mediflow_refunds_' + s.id;
+    const refunds = JSON.parse(localStorage.getItem(key) || '[]');
+    const reason = prompt('Reason for refund (optional):') || 'Requested by user';
+    if (reason === null) return; // user pressed Cancel on prompt
+    refunds.unshift({ orderId, amount, reason, date: new Date().toLocaleDateString(), status: 'Pending' });
+    localStorage.setItem(key, JSON.stringify(refunds));
+    showToast('Refund request submitted!');
+}
+
+// ─────────────────────────────────────────────────────────────
+// PAYMENT MANAGEMENT
+// ─────────────────────────────────────────────────────────────
+let _selPayType = 'card';
+
+function openPayments() { switchTab(null, 'tab-payments'); renderPaymentsTab(); }
+
+function _getPaymentMethods() {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return [];
+    return JSON.parse(localStorage.getItem('mediflow_payments_' + s.id) || '[]');
+}
+function _savePaymentMethods(list) {
+    const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+    if (!s) return;
+    localStorage.setItem('mediflow_payments_' + s.id, JSON.stringify(list));
+}
+
+function renderPaymentsTab() {
+    const c = document.getElementById('payments-container');
+    if (!c) return;
+    const methods = _getPaymentMethods();
+    const typeIcon = { card: 'fa-credit-card', upi: 'fa-mobile-screen-button', netbanking: 'fa-building-columns' };
+    let html = '';
+    if (methods.length === 0) {
+        html = `<div style="text-align:center; padding:30px 20px;">
+            <div class="icon-orb orb-3" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-regular fa-credit-card"></i></div>
+            <h3 style="font-size:16px;">No Saved Methods</h3>
+            <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Add a card or UPI ID for faster checkout.</p>
+        </div>`;
+    } else {
+        methods.forEach((m, i) => {
+            html += `
+            <div class="glass-card wide" style="margin-bottom:10px; min-height:auto; padding:16px;">
+                <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0 14px 0 0;"><i class="fa-solid ${typeIcon[m.type] || 'fa-credit-card'}"></i></div>
+                <div style="flex:1;">
+                    <b style="font-size:14px; color:#111827; display:block;">${m.label}</b>
+                    <span style="font-size:11px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">${m.type}</span>
+                </div>
+                <button style="background:#FEE2E2; border:none; border-radius:10px; color:#DC2626; font-size:12px; font-weight:700; padding:8px 12px; cursor:pointer;" onclick="removePaymentMethod(${i})">Remove</button>
+            </div>`;
+        });
+    }
+    c.innerHTML = html + `
+        <div style="margin-top:20px;">
+            <p class="profile-section-label" style="margin-bottom:12px;">Add Payment Method</p>
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+                <div class="select-chip active pay-type-chip" onclick="selPayType(this,'card')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">💳 Card</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'upi')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">📱 UPI</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'netbanking')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">🏦 Bank</div>
+            </div>
+            <div class="input-group" style="margin-bottom:12px;">
+                <input type="text" id="pay-input" placeholder="Card no. / UPI ID / Bank name" style="height:50px;">
+            </div>
+            <button class="pay-btn" style="height:50px; margin-top:0;" onclick="savePaymentMethod()">Save Method</button>
+        </div>`;
+    _selPayType = 'card';
+}
+
+function selPayType(el, type) {
+    _selPayType = type;
+    document.querySelectorAll('.pay-type-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function savePaymentMethod() {
+    const val = document.getElementById('pay-input')?.value?.trim();
+    if (!val) return showToast('Please enter a value.');
+    const methods = _getPaymentMethods();
+    methods.push({ type: _selPayType, label: val });
+    _savePaymentMethods(methods);
+    showToast('Payment method saved!');
+    renderPaymentsTab();
+}
+
+function removePaymentMethod(idx) {
+    if (!confirm('Remove this payment method?')) return;
+    const methods = _getPaymentMethods();
+    methods.splice(idx, 1);
+    _savePaymentMethods(methods);
+    renderPaymentsTab();
+}
+
+// ─────────────────────────────────────────────────────────────
+// SUGGESTED PRODUCTS (inline in profile)
+// ─────────────────────────────────────────────────────────────
+function renderSuggestedProducts() {
+    const el = document.getElementById('suggested-products-slider');
+    if (!el) return;
+    const otc = MEDICINE_DB.filter(m => !m.isRx);
+    // Fisher-Yates shuffle on a copy, then take first 6
+    const shuffled = [...otc];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const picks = shuffled.slice(0, 6);
+    el.innerHTML = '';
+    picks.forEach(item => {
+        el.innerHTML += `
+            <div class="glass-card" style="min-width:140px; flex-shrink:0; padding:15px; min-height:165px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                <div class="icon-orb orb-2" style="width:40px; height:40px; font-size:17px; margin-bottom:10px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:13px; line-height:1.3; flex:1;">${item.name}</h3>
+                <p style="margin:4px 0 8px; font-size:14px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin:0; padding:8px; font-size:11px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>`;
     });
 }
 
@@ -1157,13 +1434,15 @@ function handleGlobalSearch(el) {
 }
 
 function renderItemCard(item) {
+    const inW = isInWishlist(item.name);
     return `
-        <div class="glass-card" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+        <div class="glass-card" style="position:relative;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
             ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
+            <button data-wish="${item.name}" class="wish-btn" onclick='event.stopPropagation(); toggleWishlist(${JSON.stringify(item.name)})' style="position:absolute; top:10px; ${item.isRx ? 'right:52px' : 'right:10px'}; background:none; border:none; cursor:pointer; font-size:18px; color:${inW ? '#EF4444' : '#D1D5DB'}; padding:4px; z-index:2; line-height:1;" aria-label="${inW ? 'Remove from wishlist' : 'Add to wishlist'}"><i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i></button>
             <div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>
             <div>
                 <h3 style="margin:0; font-size:15px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${item.category}</p>
+                <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</p>
                 <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
             </div>
             <button class="add-btn" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
@@ -1212,7 +1491,7 @@ function renderDailyNeeds() {
     tabsEl.innerHTML = '';
     categories.forEach((cat, i) => {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${cat}</span></div>`;
+        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
     });
     _renderDailyNeedsMeds(_dailyNeedsActiveCat);
 }
@@ -1358,7 +1637,26 @@ function openMedicineDetail(itemName) {
     if (_medAutoSlideTimer) clearInterval(_medAutoSlideTimer);
     _medAutoSlideTimer = setInterval(() => medSlide(1), 3500);
 
+    // Wishlist heart button state
+    const wishBtn = document.getElementById('med-detail-wish-btn');
+    if (wishBtn) {
+        const inW = isInWishlist(item.name);
+        wishBtn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+        wishBtn.style.color = inW ? '#EF4444' : '';
+    }
+
     showScreen('screen-med-detail');
+}
+
+function toggleWishlistDetail() {
+    if (!_currentMedDetail) return;
+    toggleWishlist(_currentMedDetail.name);
+    const wishBtn = document.getElementById('med-detail-wish-btn');
+    if (wishBtn) {
+        const inW = isInWishlist(_currentMedDetail.name);
+        wishBtn.innerHTML = `<i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i>`;
+        wishBtn.style.color = inW ? '#EF4444' : '';
+    }
 }
 
 function _typeLabel(type) {
@@ -1614,20 +1912,87 @@ function renderCategoriesTab() {
     const grid = document.getElementById('all-cats-grid');
     if (!grid) return;
     grid.innerHTML = "";
-    const categories = [...new Set(MEDICINE_DB.map(item => item.category))];
-    const colors = ['orb-1', 'orb-2', 'orb-3'];
 
-    categories.forEach((cat, idx) => {
+    const ACUTE_CATS    = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
+    const CHRONIC_CATS  = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
+    const SPECIAL_CATS  = ["Vitamins & Supplements", "Home First Aid"];
+    const allMapped     = [...SPECIAL_CATS, ...ACUTE_CATS, ...CHRONIC_CATS];
+    const colors        = ['orb-1', 'orb-2', 'orb-3'];
+
+    function catCard(cat, idx) {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        const colorClass = colors[idx % colors.length];
+        if (!example) return '';
+        return `
+            <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
+                <div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${example.icon}"></i></div>
+                <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
+            </div>`;
+    }
 
+    // ── Featured banner: Vitamins & Supplements ──
+    if (MEDICINE_DB.some(m => m.category === "Vitamins & Supplements")) {
         grid.innerHTML += `
-            <div class="glass-card" style="min-height:130px; text-align:center; align-items:center; justify-content:center;" onclick='openCategoryView(${JSON.stringify(cat)})'>
-                <div class="icon-orb ${colorClass}" style="margin:0 0 15px; width:55px; height:55px; font-size:24px;"><i class="fa-solid ${example.icon}"></i></div>
-                <h3 style="margin:0; font-size:15px;">${cat}</h3>
-            </div>
-        `;
-    });
+            <div class="cat-banner-card cat-banner-vitamins" onclick='openCategoryView("Vitamins &amp; Supplements")'>
+                <div style="flex:1;">
+                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">New Section</div>
+                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">💊 Vitamins &amp; Supplements</h3>
+                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Boost immunity, energy &amp; everyday health</p>
+                </div>
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-leaf"></i></div>
+            </div>`;
+    }
+
+    // ── Featured banner: Home First Aid ──
+    if (MEDICINE_DB.some(m => m.category === "Home First Aid")) {
+        grid.innerHTML += `
+            <div class="cat-banner-card cat-banner-firstaid" onclick='openCategoryView("Home First Aid")'>
+                <div style="flex:1;">
+                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">Home Essentials</div>
+                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">🩺 Home First Aid</h3>
+                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Must-have kit for every household</p>
+                </div>
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-kit-medical"></i></div>
+            </div>`;
+    }
+
+    // ── Acute / Everyday conditions ──
+    const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+    if (acuteCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
+        acuteCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+
+    // ── Chronic / Long-term conditions ──
+    const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+    if (chronicCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
+        chronicCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+
+    // ── Any remaining unmapped categories ──
+    const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
+    if (otherCats.length) {
+        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
+        otherCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+    }
+}
+
+// Zepto-style: collapse/expand the home header based on scroll position
+function _initHomeScrollHeader() {
+    const scroll = document.getElementById('main-scroll');
+    const header = document.getElementById('main-dash-header');
+    if (!scroll || !header) return;
+    scroll.addEventListener('scroll', function () {
+        const activeTab = document.querySelector('.content-view.active-view');
+        if (!activeTab || activeTab.id !== 'tab-home') return;
+        if (this.scrollTop > 60) {
+            header.classList.add('compact');
+            this.style.paddingTop = '150px';
+        } else {
+            header.classList.remove('compact');
+            this.style.paddingTop = '230px';
+        }
+    }, { passive: true });
 }
 
 function openCategoryView(catName) {
@@ -1899,6 +2264,7 @@ function updateDash(user) {
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
     document.getElementById('profile-email').value = user.email || '';
     setHomeGreeting();
+    renderSuggestedProducts();
 }
 
 // ── Push Notifications ───────────────────────────────────────────────────────
@@ -2077,8 +2443,14 @@ function switchTab(el, tabId, pushHistory = true) {
     const dashHeader = document.getElementById('main-dash-header');
 
     if (tabId === 'tab-home') {
-        dashHeader.classList.remove('compact');
-        mainScroll.style.paddingTop = '230px';
+        const scrollTop = mainScroll ? mainScroll.scrollTop : 0;
+        if (scrollTop > 60) {
+            dashHeader.classList.add('compact');
+            if (mainScroll) mainScroll.style.paddingTop = '150px';
+        } else {
+            dashHeader.classList.remove('compact');
+            if (mainScroll) mainScroll.style.paddingTop = '230px';
+        }
         setHomeGreeting();
     } else {
         dashHeader.classList.add('compact');
@@ -2087,7 +2459,7 @@ function switchTab(el, tabId, pushHistory = true) {
         if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
         else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
         else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; }
-        else if (tabId === 'tab-profile' || tabId === 'tab-orders') { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
+        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments'].includes(tabId)) { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
     }
 
     updateCartUI();
