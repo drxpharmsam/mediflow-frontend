@@ -1141,7 +1141,7 @@ async function fetchOrderHistory() {
 }
 
 function renderHistoryUI(orders, container) {
-    container.innerHTML = "";
+    let html = '';
     orders.forEach(order => {
         const isPaid = order.status.includes('Paid');
         const statusClass = isPaid ? 'status-paid' : 'status-pending';
@@ -1149,7 +1149,7 @@ function renderHistoryUI(orders, container) {
         let itemsSummary = order.items.map(i => `${i.qty || 1}x ${i.name}`).join(', ');
         if (itemsSummary.length > 40) itemsSummary = itemsSummary.substring(0, 40) + '...';
 
-        container.innerHTML += `
+        html += `
             <div class="order-history-card">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                     <div>
@@ -1169,6 +1169,7 @@ function renderHistoryUI(orders, container) {
             </div>
         `;
     });
+    container.innerHTML = html;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1216,11 +1217,11 @@ function renderWishlistTab() {
                 <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Heart any medicine to save it here.</p>
             </div>`; return;
     }
-    c.innerHTML = '';
+    let html = '';
     list.forEach(name => {
         const item = MEDICINE_DB.find(m => m.name === name);
         if (!item) return;
-        c.innerHTML += `
+        html += `
             <div class="glass-card wide" style="margin-bottom:10px; flex-direction:column; align-items:flex-start; min-height:auto; padding:16px;">
                 <div style="display:flex; align-items:center; width:100%; gap:12px; margin-bottom:10px;">
                     <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0;"><i class="fa-solid ${item.icon}"></i></div>
@@ -1236,6 +1237,7 @@ function renderWishlistTab() {
                 </div>
             </div>`;
     });
+    c.innerHTML = html;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1256,11 +1258,11 @@ function renderRefundsTab() {
                 <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
             </div>`; return;
     }
-    c.innerHTML = '';
+    let html = '';
     refunds.forEach(r => {
         const colMap = { 'Approved': ['#F0FDF4','#16A34A'], 'Rejected': ['#FEF2F2','#DC2626'], 'Pending': ['#FFFBEB','#D97706'] };
         const [bg, fg] = colMap[r.status] || colMap['Pending'];
-        c.innerHTML += `
+        html += `
             <div class="order-history-card" style="margin-bottom:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
                     <div><b style="font-size:14px; color:#111827;">${r.orderId}</b><div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
@@ -1273,6 +1275,7 @@ function renderRefundsTab() {
                 </div>
             </div>`;
     });
+    c.innerHTML = html;
 }
 
 function requestRefund(orderId, amount) {
@@ -1385,9 +1388,9 @@ function renderSuggestedProducts() {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     const picks = shuffled.slice(0, 6);
-    el.innerHTML = '';
+    let html = '';
     picks.forEach(item => {
-        el.innerHTML += `
+        html += `
             <div class="glass-card" style="min-width:140px; flex-shrink:0; padding:15px; min-height:165px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 <div class="icon-orb orb-2" style="width:40px; height:40px; font-size:17px; margin-bottom:10px;"><i class="fa-solid ${item.icon}"></i></div>
                 <h3 style="margin:0; font-size:13px; line-height:1.3; flex:1;">${item.name}</h3>
@@ -1395,10 +1398,17 @@ function renderSuggestedProducts() {
                 <button class="add-btn" style="margin:0; padding:8px; font-size:11px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>`;
     });
+    el.innerHTML = html;
 }
 
+let _searchDebounceTimer = null;
 function handleGlobalSearch(el) {
-    const query = el.value.toLowerCase();
+    clearTimeout(_searchDebounceTimer);
+    _searchDebounceTimer = setTimeout(() => _runSearch(el.value), 200);
+}
+
+function _runSearch(rawQuery) {
+    const query = rawQuery.toLowerCase().trim();
     const homeNormal = document.getElementById('home-normal-content');
     const homeSearch = document.getElementById('home-search-content');
     const resultsGrid = document.getElementById('search-results-grid');
@@ -1419,7 +1429,6 @@ function handleGlobalSearch(el) {
 
     homeNormal.style.display = 'none';
     homeSearch.style.display = 'block';
-    resultsGrid.innerHTML = "";
 
     const matches = MEDICINE_DB.filter(item =>
         item.name.toLowerCase().includes(query) ||
@@ -1427,9 +1436,9 @@ function handleGlobalSearch(el) {
     );
 
     if (matches.length === 0) {
-        resultsGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px 20px; color:var(--gray-text); font-weight:600; background:white; border-radius:20px; border:1px dashed #E5E7EB;">No products found for "${query}"</div>`;
+        resultsGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:40px 20px; color:var(--gray-text); font-weight:600; background:white; border-radius:20px; border:1px dashed #E5E7EB;">No products found for "${rawQuery}"</div>`;
     } else {
-        matches.forEach(item => { resultsGrid.innerHTML += renderItemCard(item); });
+        resultsGrid.innerHTML = matches.map(item => renderItemCard(item)).join('');
     }
 }
 
@@ -1453,11 +1462,10 @@ function renderItemCard(item) {
 function renderPopularMeds() {
     const slider = document.getElementById('popular-meds-slider');
     if (!slider) return;
-    slider.innerHTML = "";
     const popular = MEDICINE_DB.slice(0, 4);
-
+    let html = '';
     popular.forEach(item => {
-        slider.innerHTML += `
+        html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
                 <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
@@ -1468,15 +1476,76 @@ function renderPopularMeds() {
             </div>
         `;
     });
-
-    slider.innerHTML += `
+    html += `
         <div class="glass-card" style="min-width:140px; flex-shrink:0; background:linear-gradient(135deg, var(--c5), var(--c4)); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="switchTab(document.querySelectorAll('.nav-dock .nav-item')[1], 'tab-category')">
             <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
             <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
         </div>
     `;
+    slider.innerHTML = html;
+    renderSuggestedProducts();
+    renderVitaminsSection();
+    renderFirstAidSection();
     renderDailyNeeds();
     _startReminderChecker();
+}
+
+// --- VITAMINS & SUPPLEMENTS SECTION ---
+function renderVitaminsSection() {
+    const slider = document.getElementById('vitamins-slider');
+    if (!slider) return;
+    const items = MEDICINE_DB.filter(m => m.category === 'Vitamins & Supplements');
+    let html = '';
+    items.forEach(item => {
+        html += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5); color:#065F46; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+    if (items.length > 0) {
+        html += `
+            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#065F46,#059669); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Vitamins &amp; Supplements')">
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
+                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
+            </div>
+        `;
+    }
+    slider.innerHTML = html;
+}
+
+// --- HOME FIRST AID SECTION ---
+function renderFirstAidSection() {
+    const slider = document.getElementById('firstaid-slider');
+    if (!slider) return;
+    const items = MEDICINE_DB.filter(m => m.category === 'Home First Aid');
+    let html = '';
+    items.forEach(item => {
+        html += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA); color:#92400E; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+    if (items.length > 0) {
+        html += `
+            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#92400E,#D97706); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Home First Aid')">
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
+                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
+            </div>
+        `;
+    }
+    slider.innerHTML = html;
 }
 
 // --- DAILY NEEDS SECTION ---
@@ -1488,11 +1557,12 @@ function renderDailyNeeds() {
     if (!tabsEl || !medsEl) return;
     const categories = [...new Set(MEDICINE_DB.map(m => m.category))];
     _dailyNeedsActiveCat = categories[0];
-    tabsEl.innerHTML = '';
+    let tabHtml = '';
     categories.forEach((cat, i) => {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        tabsEl.innerHTML += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
+        tabHtml += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
     });
+    tabsEl.innerHTML = tabHtml;
     _renderDailyNeedsMeds(_dailyNeedsActiveCat);
 }
 
@@ -1507,9 +1577,9 @@ function _renderDailyNeedsMeds(catName) {
     const medsEl = document.getElementById('daily-needs-meds');
     if (!medsEl) return;
     const items = MEDICINE_DB.filter(m => m.category === catName);
-    medsEl.innerHTML = '';
+    let html = '';
     items.forEach(item => {
-        medsEl.innerHTML += `
+        html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
                 <div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
@@ -1520,6 +1590,7 @@ function _renderDailyNeedsMeds(catName) {
             </div>
         `;
     });
+    medsEl.innerHTML = html;
 }
 
 // --- MEDICINE DETAIL PAGE ---
@@ -1911,7 +1982,6 @@ function clearSearch() {
 function renderCategoriesTab() {
     const grid = document.getElementById('all-cats-grid');
     if (!grid) return;
-    grid.innerHTML = "";
 
     const ACUTE_CATS    = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
     const CHRONIC_CATS  = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
@@ -1929,9 +1999,11 @@ function renderCategoriesTab() {
             </div>`;
     }
 
+    let html = '';
+
     // ── Featured banner: Vitamins & Supplements ──
     if (MEDICINE_DB.some(m => m.category === "Vitamins & Supplements")) {
-        grid.innerHTML += `
+        html += `
             <div class="cat-banner-card cat-banner-vitamins" onclick='openCategoryView("Vitamins &amp; Supplements")'>
                 <div style="flex:1;">
                     <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">New Section</div>
@@ -1944,7 +2016,7 @@ function renderCategoriesTab() {
 
     // ── Featured banner: Home First Aid ──
     if (MEDICINE_DB.some(m => m.category === "Home First Aid")) {
-        grid.innerHTML += `
+        html += `
             <div class="cat-banner-card cat-banner-firstaid" onclick='openCategoryView("Home First Aid")'>
                 <div style="flex:1;">
                     <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">Home Essentials</div>
@@ -1958,23 +2030,25 @@ function renderCategoriesTab() {
     // ── Acute / Everyday conditions ──
     const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
     if (acuteCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
-        acuteCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
+        html += acuteCats.map((c, i) => catCard(c, i)).join('');
     }
 
     // ── Chronic / Long-term conditions ──
     const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
     if (chronicCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
-        chronicCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
+        html += chronicCats.map((c, i) => catCard(c, i)).join('');
     }
 
     // ── Any remaining unmapped categories ──
     const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
     if (otherCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
-        otherCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
+        html += otherCats.map((c, i) => catCard(c, i)).join('');
     }
+
+    grid.innerHTML = html;
 }
 
 // Zepto-style: collapse/expand the home header based on scroll position
@@ -1982,25 +2056,31 @@ function _initHomeScrollHeader() {
     const scroll = document.getElementById('main-scroll');
     const header = document.getElementById('main-dash-header');
     if (!scroll || !header) return;
+    let _ticking = false;
     scroll.addEventListener('scroll', function () {
-        const activeTab = document.querySelector('.content-view.active-view');
-        if (!activeTab || activeTab.id !== 'tab-home') return;
-        if (this.scrollTop > 60) {
-            header.classList.add('compact');
-            this.style.paddingTop = '150px';
-        } else {
-            header.classList.remove('compact');
-            this.style.paddingTop = '230px';
-        }
+        if (_ticking) return;
+        _ticking = true;
+        requestAnimationFrame(() => {
+            const activeTab = document.querySelector('.content-view.active-view');
+            if (activeTab && activeTab.id === 'tab-home') {
+                if (scroll.scrollTop > 60) {
+                    header.classList.add('compact');
+                    scroll.style.paddingTop = '150px';
+                } else {
+                    header.classList.remove('compact');
+                    scroll.style.paddingTop = '230px';
+                }
+            }
+            _ticking = false;
+        });
     }, { passive: true });
 }
 
 function openCategoryView(catName) {
     document.getElementById('cat-title').innerText = catName;
     const grid = document.getElementById('cat-items-grid');
-    grid.innerHTML = "";
     const items = MEDICINE_DB.filter(m => m.category === catName);
-    items.forEach(item => { grid.innerHTML += renderItemCard(item); });
+    grid.innerHTML = items.map(item => renderItemCard(item)).join('');
     showScreen('screen-cat-items');
 }
 
@@ -2263,6 +2343,8 @@ function updateDash(user) {
     document.getElementById('db-name-disp').innerText = user.name;
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
     document.getElementById('profile-email').value = user.email || '';
+    const avatarEl = document.getElementById('profile-avatar-initials');
+    if (avatarEl) avatarEl.innerText = user.name.charAt(0).toUpperCase();
     setHomeGreeting();
     renderSuggestedProducts();
 }

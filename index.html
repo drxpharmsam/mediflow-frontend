@@ -163,6 +163,26 @@
                     </div>
                     <div class="category-slider" id="popular-meds-slider"></div>
 
+                    <!-- SUGGESTED FOR YOU SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Suggested for You</h3>
+                    </div>
+                    <div class="category-slider" id="suggested-products-slider" style="margin-bottom:6px;"></div>
+
+                    <!-- VITAMINS & SUPPLEMENTS SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Vitamins &amp; Supplements</h3>
+                        <span class="section-see-all" onclick="openCategoryView('Vitamins &amp; Supplements')">See All</span>
+                    </div>
+                    <div class="category-slider" id="vitamins-slider"></div>
+
+                    <!-- HOME FIRST AID SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Home First Aid</h3>
+                        <span class="section-see-all" onclick="openCategoryView('Home First Aid')">See All</span>
+                    </div>
+                    <div class="category-slider" id="firstaid-slider"></div>
+
                     <!-- DAILY NEEDS SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Daily Needs</h3>
@@ -226,98 +246,137 @@
             </div>
 
             <!-- PROFILE TAB -->
-            <div id="tab-profile" class="content-view">
-                <div style="margin-bottom:16px; margin-top:10px;"><h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">My Account</h3></div>
+            <div id="tab-profile" class="content-view profile-tab-view">
 
-                <!-- User identity card -->
-                <div class="glass-card wide" style="cursor:default; margin-bottom:8px;">
-                    <div class="icon-orb orb-1"><i class="fa-solid fa-user-shield"></i></div>
-                    <div style="margin-left:5px;"><h3 id="db-name-disp" style="font-size:18px;">User</h3><p id="db-info-disp" style="margin-top:4px; font-size:13px; color:var(--gray-text); font-weight:600;">Details</p></div>
+                <!-- ── Zepto-style Hero Header ── -->
+                <div class="profile-hero">
+                    <div class="profile-avatar-wrap">
+                        <div class="profile-avatar" id="profile-avatar-initials">U</div>
+                    </div>
+                    <div class="profile-hero-info">
+                        <h2 id="db-name-disp" class="profile-hero-name">User</h2>
+                        <p id="db-info-disp" class="profile-hero-sub">Details</p>
+                    </div>
                 </div>
 
-                <!-- Suggested for You -->
-                <p class="profile-section-label">Suggested for You</p>
-                <div class="category-slider" id="suggested-products-slider" style="margin-bottom:6px;"></div>
+                <!-- ── Quick Action Buttons ── -->
+                <div class="profile-quick-actions">
+                    <div class="profile-quick-btn" onclick="openOrderHistory()">
+                        <div class="profile-quick-icon" style="background:#E0EBFF; color:#2563EB;"><i class="fa-solid fa-box-open"></i></div>
+                        <span>Orders</span>
+                    </div>
+                    <div class="profile-quick-btn" onclick="openWishlist()">
+                        <div class="profile-quick-icon" style="background:#FEE2E2; color:#EF4444;"><i class="fa-solid fa-heart"></i></div>
+                        <span>Wishlist</span>
+                    </div>
+                    <div class="profile-quick-btn" onclick="openRefunds()">
+                        <div class="profile-quick-icon" style="background:#FEF3C7; color:#D97706;"><i class="fa-solid fa-rotate-left"></i></div>
+                        <span>Refunds</span>
+                    </div>
+                    <div class="profile-quick-btn" onclick="openRemindersScreen()">
+                        <div class="profile-quick-icon" style="background:#F0FDF4; color:#16A34A;"><i class="fa-solid fa-bell"></i></div>
+                        <span>Reminders</span>
+                    </div>
+                </div>
 
                 <!-- MY ACTIVITY -->
                 <p class="profile-section-label">My Activity</p>
-                <div class="glass-card wide" onclick="openOrderHistory()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb orb-3" style="background:#E0EBFF; color:#2563EB;"><i class="fa-solid fa-box-open"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Orders</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">View past orders &amp; status</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" onclick="openWishlist()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#FEE2E2; color:#EF4444;"><i class="fa-solid fa-heart"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Wishlist</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Your saved medicines</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" onclick="openRefunds()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#FEF3C7; color:#D97706;"><i class="fa-solid fa-rotate-left"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Refunds</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Track refund requests</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" onclick="openRemindersScreen()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#F0FDF4; color:#16A34A;"><i class="fa-solid fa-bell"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">My Reminders</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Manage medicine schedule &amp; alerts</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
+                <div class="profile-menu-card">
+                    <div class="profile-menu-item" onclick="openOrderHistory()">
+                        <div class="icon-orb" style="background:#E0EBFF; color:#2563EB; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-box-open"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">My Orders</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">View past orders &amp; status</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" onclick="openWishlist()">
+                        <div class="icon-orb" style="background:#FEE2E2; color:#EF4444; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-heart"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">My Wishlist</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Your saved medicines</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" onclick="openRefunds()">
+                        <div class="icon-orb" style="background:#FEF3C7; color:#D97706; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-rotate-left"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">My Refunds</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Track refund requests</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" onclick="openRemindersScreen()">
+                        <div class="icon-orb" style="background:#F0FDF4; color:#16A34A; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-bell"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">My Reminders</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Manage medicine schedule &amp; alerts</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
                 </div>
 
                 <!-- PAYMENTS & SETTINGS -->
                 <p class="profile-section-label">Payments &amp; Settings</p>
-                <div class="glass-card wide" onclick="openPayments()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#EFF6FF; color:#2563EB;"><i class="fa-solid fa-credit-card"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">Payment Methods</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Saved cards, UPI &amp; bank accounts</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" style="cursor:default; display:block; padding-bottom:18px; margin-bottom:8px;">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-                        <div class="icon-orb" style="background:#F0FDF4; color:#16A34A; margin-right:0;"><i class="fa-solid fa-envelope"></i></div>
-                        <h3 style="margin:0; font-size:15px;">Update Email</h3>
+                <div class="profile-menu-card">
+                    <div class="profile-menu-item" onclick="openPayments()">
+                        <div class="icon-orb" style="background:#EFF6FF; color:#2563EB; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-credit-card"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">Payment Methods</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Saved cards, UPI &amp; bank accounts</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
                     </div>
-                    <div class="input-group" style="margin-bottom:6px;">
-                        <input type="email" id="profile-email" placeholder="you@example.com" style="height:50px;" oninput="document.getElementById('profile-email-err').style.display='none'">
-                        <div id="profile-email-err" class="error-hint">Please enter a valid email address</div>
+                    <div class="profile-menu-divider"></div>
+                    <!-- Update Email inline card -->
+                    <div class="profile-menu-item" style="align-items:flex-start; flex-direction:column; cursor:default;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:12px;">
+                            <div class="icon-orb" style="background:#F0FDF4; color:#16A34A; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-envelope"></i></div>
+                            <h3 style="margin:0; font-size:15px; font-weight:700;">Update Email</h3>
+                        </div>
+                        <div class="input-group" style="margin-bottom:6px; width:100%;">
+                            <input type="email" id="profile-email" placeholder="you@example.com" style="height:48px;" oninput="document.getElementById('profile-email-err').style.display='none'">
+                            <div id="profile-email-err" class="error-hint">Please enter a valid email address</div>
+                        </div>
+                        <p style="font-size:11px; color:var(--gray-text); font-weight:500; margin:0 0 12px;">Email (optional, for updates and password recovery)</p>
+                        <button onclick="saveProfileEmail()" class="pay-btn-sml" style="width:100%;">Save Email</button>
                     </div>
-                    <p style="font-size:11px; color:var(--gray-text); font-weight:500; margin:0 0 12px;">Email (optional, for updates and password recovery)</p>
-                    <button onclick="saveProfileEmail()" class="pay-btn-sml" style="width:100%;">Save Email</button>
-                </div>
-                <!-- PUSH NOTIFICATIONS CARD -->
-                <div class="glass-card wide" id="push-notif-card" style="cursor:default; display:block; padding-bottom:18px; margin-bottom:8px;">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-                        <div class="icon-orb" style="background:#FFF7ED; color:#EA580C; margin-right:0;"><i class="fa-solid fa-bell"></i></div>
-                        <h3 style="margin:0; font-size:15px;">Push Notifications</h3>
+                    <div class="profile-menu-divider"></div>
+                    <!-- Push Notifications inline -->
+                    <div class="profile-menu-item" id="push-notif-card" style="align-items:flex-start; flex-direction:column; cursor:default;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:10px;">
+                            <div class="icon-orb" style="background:#FFF7ED; color:#EA580C; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-bell"></i></div>
+                            <h3 style="margin:0; font-size:15px; font-weight:700;">Push Notifications</h3>
+                        </div>
+                        <p id="push-status-text" style="font-size:12px; font-weight:600; color:#F59E0B; margin:0 0 12px;">Notifications not yet enabled</p>
+                        <button id="push-enable-btn" onclick="enablePushNotifications()" class="pay-btn-sml" style="width:100%; margin-bottom:8px;">Enable Notifications</button>
+                        <button id="push-test-btn" onclick="sendTestNotification()" class="pay-btn-sml" style="width:100%; display:none; background:#F0FDF4; color:#16A34A; border:1.5px solid #BBF7D0;">Send Test Notification</button>
                     </div>
-                    <p id="push-status-text" style="font-size:12px; font-weight:600; color:#F59E0B; margin:0 0 12px;">Notifications not yet enabled</p>
-                    <button id="push-enable-btn" onclick="enablePushNotifications()" class="pay-btn-sml" style="width:100%; margin-bottom:8px;">Enable Notifications</button>
-                    <button id="push-test-btn" onclick="sendTestNotification()" class="pay-btn-sml" style="width:100%; display:none; background:#F0FDF4; color:#16A34A; border:1.5px solid #BBF7D0;">Send Test Notification</button>
                 </div>
 
                 <!-- APP INFO & SUPPORT -->
                 <p class="profile-section-label">App Info &amp; Support</p>
-                <div class="glass-card wide" onclick="showToast('Our support team will reach you at your registered number.')" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#F0F9FF; color:#0369A1;"><i class="fa-solid fa-headset"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">Help &amp; Support</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Contact us or report an issue</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" onclick="showToast('Terms of Service and Privacy Policy — mediflow.app/legal')" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#F5F3FF; color:#7C3AED;"><i class="fa-solid fa-scale-balanced"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">Terms &amp; Privacy</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Legal information &amp; privacy policy</p></div>
-                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; margin-left:auto;"></i>
-                </div>
-                <div class="glass-card wide" style="cursor:default; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#F3F4F6; color:#6B7280;"><i class="fa-solid fa-circle-info"></i></div>
-                    <div style="margin-left:5px;"><h3 style="margin:0; font-size:16px;">App Version</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">MediFlow v1.0.0 &mdash; Your Digital Pharmacy</p></div>
+                <div class="profile-menu-card">
+                    <div class="profile-menu-item" onclick="showToast('Our support team will reach you at your registered number.')">
+                        <div class="icon-orb" style="background:#F0F9FF; color:#0369A1; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-headset"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">Help &amp; Support</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Contact us or report an issue</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" onclick="showToast('Terms of Service and Privacy Policy — mediflow.app/legal')">
+                        <div class="icon-orb" style="background:#F5F3FF; color:#7C3AED; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">Terms &amp; Privacy</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Legal information &amp; privacy policy</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" style="cursor:default;">
+                        <div class="icon-orb" style="background:#F3F4F6; color:#6B7280; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-circle-info"></i></div>
+                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:700;">App Version</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">MediFlow v1.0.0 &mdash; Your Digital Pharmacy</p></div>
+                    </div>
                 </div>
 
                 <!-- ACCOUNT ACTIONS -->
                 <p class="profile-section-label">Account</p>
-                <div class="glass-card wide" onclick="dbLogout()" style="cursor:pointer; border:1.5px solid #E5E7EB; margin-bottom:8px;">
-                    <div class="icon-orb" style="background:#F3F4F6; color:#4B5563;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
-                    <div style="margin-left:5px;"><h3 style="color:#4B5563; margin:0; font-size:16px;">Logout</h3><p style="margin:4px 0 0; font-size:12px; color:#6B7280; font-weight:500;">Securely end session</p></div>
-                </div>
-                <div class="glass-card wide" onclick="deleteAccount()" onkeydown="if(event.key==='Enter'||event.key===' ')deleteAccount()" role="button" tabindex="0" aria-label="Delete account permanently" style="cursor:pointer; border:1.5px solid #FECACA; margin-bottom:30px;">
-                    <div class="icon-orb" style="background:#FEE2E2; color:#DC2626;"><i class="fa-solid fa-trash-can"></i></div>
-                    <div style="margin-left:5px;"><h3 style="color:#DC2626; margin:0; font-size:16px;">Delete Account</h3><p style="margin:4px 0 0; font-size:12px; color:#EF4444; font-weight:500;">Permanently remove your data</p></div>
+                <div class="profile-menu-card" style="margin-bottom:30px;">
+                    <div class="profile-menu-item" onclick="dbLogout()">
+                        <div class="icon-orb" style="background:#F3F4F6; color:#4B5563; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+                        <div style="flex:1;"><h3 style="color:#4B5563; margin:0; font-size:15px; font-weight:700;">Logout</h3><p style="margin:3px 0 0; font-size:12px; color:#6B7280; font-weight:500;">Securely end session</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
+                    </div>
+                    <div class="profile-menu-divider"></div>
+                    <div class="profile-menu-item" onclick="deleteAccount()" onkeydown="if(event.key==='Enter'||event.key===' ')deleteAccount()" role="button" tabindex="0" aria-label="Delete account permanently">
+                        <div class="icon-orb" style="background:#FEE2E2; color:#DC2626; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-trash-can"></i></div>
+                        <div style="flex:1;"><h3 style="color:#DC2626; margin:0; font-size:15px; font-weight:700;">Delete Account</h3><p style="margin:3px 0 0; font-size:12px; color:#EF4444; font-weight:500;">Permanently remove your data</p></div>
+                        <i class="fa-solid fa-chevron-right" style="color:#FECACA; font-size:13px;"></i>
+                    </div>
                 </div>
             </div>
 
