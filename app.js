@@ -1483,6 +1483,7 @@ function renderPopularMeds() {
         </div>
     `;
     slider.innerHTML = html;
+    renderSuggestedProducts();
     renderVitaminsSection();
     renderFirstAidSection();
     renderDailyNeeds();
