@@ -1258,11 +1258,11 @@ function renderRefundsTab() {
                 <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
             </div>`; return;
     }
-    c.innerHTML = '';
+    let html = '';
     refunds.forEach(r => {
         const colMap = { 'Approved': ['#F0FDF4','#16A34A'], 'Rejected': ['#FEF2F2','#DC2626'], 'Pending': ['#FFFBEB','#D97706'] };
         const [bg, fg] = colMap[r.status] || colMap['Pending'];
-        c.innerHTML += `
+        html += `
             <div class="order-history-card" style="margin-bottom:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
                     <div><b style="font-size:14px; color:#111827;">${r.orderId}</b><div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
@@ -1275,6 +1275,7 @@ function renderRefundsTab() {
                 </div>
             </div>`;
     });
+    c.innerHTML = html;
 }
 
 function requestRefund(orderId, amount) {
@@ -1980,7 +1981,6 @@ function clearSearch() {
 function renderCategoriesTab() {
     const grid = document.getElementById('all-cats-grid');
     if (!grid) return;
-    grid.innerHTML = "";
 
     const ACUTE_CATS    = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
     const CHRONIC_CATS  = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
@@ -1998,9 +1998,11 @@ function renderCategoriesTab() {
             </div>`;
     }
 
+    let html = '';
+
     // ── Featured banner: Vitamins & Supplements ──
     if (MEDICINE_DB.some(m => m.category === "Vitamins & Supplements")) {
-        grid.innerHTML += `
+        html += `
             <div class="cat-banner-card cat-banner-vitamins" onclick='openCategoryView("Vitamins &amp; Supplements")'>
                 <div style="flex:1;">
                     <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">New Section</div>
@@ -2013,7 +2015,7 @@ function renderCategoriesTab() {
 
     // ── Featured banner: Home First Aid ──
     if (MEDICINE_DB.some(m => m.category === "Home First Aid")) {
-        grid.innerHTML += `
+        html += `
             <div class="cat-banner-card cat-banner-firstaid" onclick='openCategoryView("Home First Aid")'>
                 <div style="flex:1;">
                     <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">Home Essentials</div>
@@ -2027,23 +2029,25 @@ function renderCategoriesTab() {
     // ── Acute / Everyday conditions ──
     const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
     if (acuteCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
-        acuteCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
+        html += acuteCats.map((c, i) => catCard(c, i)).join('');
     }
 
     // ── Chronic / Long-term conditions ──
     const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
     if (chronicCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
-        chronicCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
+        html += chronicCats.map((c, i) => catCard(c, i)).join('');
     }
 
     // ── Any remaining unmapped categories ──
     const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
     if (otherCats.length) {
-        grid.innerHTML += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
-        otherCats.forEach((c, i) => { grid.innerHTML += catCard(c, i); });
+        html += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
+        html += otherCats.map((c, i) => catCard(c, i)).join('');
     }
+
+    grid.innerHTML = html;
 }
 
 // Zepto-style: collapse/expand the home header based on scroll position
@@ -2074,9 +2078,8 @@ function _initHomeScrollHeader() {
 function openCategoryView(catName) {
     document.getElementById('cat-title').innerText = catName;
     const grid = document.getElementById('cat-items-grid');
-    grid.innerHTML = "";
     const items = MEDICINE_DB.filter(m => m.category === catName);
-    items.forEach(item => { grid.innerHTML += renderItemCard(item); });
+    grid.innerHTML = items.map(item => renderItemCard(item)).join('');
     showScreen('screen-cat-items');
 }
 
