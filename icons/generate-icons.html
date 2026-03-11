@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediFlow — Generate PWA Icons</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+    h1 { color: #0A858C; }
+    button { background: #0A858C; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 8px 4px; }
+    button:hover { background: #055C61; }
+    canvas { display: none; }
+    .status { margin-top: 16px; color: #055C61; font-weight: 600; }
+    .instructions { background: #f0fafa; border-left: 4px solid #0A858C; padding: 16px; border-radius: 4px; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>MediFlow PWA Icon Generator</h1>
+  <div class="instructions">
+    <p>Click the buttons below to generate and download the PNG icons required for the PWA. Place the downloaded files in the <code>icons/</code> folder alongside this file.</p>
+    <p>Required files: <code>icon-192.png</code>, <code>icon-512.png</code>, <code>icon-512-maskable.png</code></p>
+  </div>
+
+  <button onclick="generateAll()">⬇️ Download All Icons</button>
+  <button onclick="generateIcon(192, 'icon-192.png', false)">Download icon-192.png</button>
+  <button onclick="generateIcon(512, 'icon-512.png', false)">Download icon-512.png</button>
+  <button onclick="generateIcon(512, 'icon-512-maskable.png', true)">Download icon-512-maskable.png</button>
+
+  <div class="status" id="status"></div>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    // Polyfill for CanvasRenderingContext2D.roundRect (Chrome < 99, Firefox < 112, Safari < 16)
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        this.beginPath();
+        this.moveTo(x + radius, y);
+        this.lineTo(x + w - radius, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + radius);
+        this.lineTo(x + w, y + h - radius);
+        this.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        this.lineTo(x + radius, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - radius);
+        this.lineTo(x, y + radius);
+        this.quadraticCurveTo(x, y, x + radius, y);
+        this.closePath();
+        return this;
+      };
+    }
+
+    const BG_COLOR = '#0A858C';
+    const FG_COLOR = '#FFFFFF';
+
+    function drawIcon(ctx, size, maskable) {
+      ctx.clearRect(0, 0, size, size);
+
+      // Background
+      if (maskable) {
+        // Maskable icons use full bleed (no rounded corners)
+        ctx.fillStyle = BG_COLOR;
+        ctx.fillRect(0, 0, size, size);
+      } else {
+        const radius = size * 0.208; // ~40px for 192, ~108px for 512
+        ctx.fillStyle = BG_COLOR;
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(size - radius, 0);
+        ctx.quadraticCurveTo(size, 0, size, radius);
+        ctx.lineTo(size, size - radius);
+        ctx.quadraticCurveTo(size, size, size - radius, size);
+        ctx.lineTo(radius, size);
+        ctx.quadraticCurveTo(0, size, 0, size - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Cross / plus symbol (pill cross)
+      ctx.fillStyle = FG_COLOR;
+      const armWidth = size * 0.27;
+      const armLength = size * 0.56;
+      const cx = size / 2;
+      const cy = size / 2;
+
+      // Horizontal bar
+      ctx.beginPath();
+      const hRadius = armWidth / 2;
+      ctx.roundRect(cx - armLength / 2, cy - armWidth / 2, armLength, armWidth, hRadius);
+      ctx.fill();
+
+      // Vertical bar
+      ctx.beginPath();
+      ctx.roundRect(cx - armWidth / 2, cy - armLength / 2, armWidth, armLength, hRadius);
+      ctx.fill();
+    }
+
+    function generateIcon(size, filename, maskable) {
+      const canvas = document.getElementById('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      drawIcon(ctx, size, maskable);
+
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        document.getElementById('status').textContent = `✅ Downloaded ${filename}`;
+      }, 'image/png');
+    }
+
+    function generateAll() {
+      const icons = [
+        { size: 192, filename: 'icon-192.png', maskable: false },
+        { size: 512, filename: 'icon-512.png', maskable: false },
+        { size: 512, filename: 'icon-512-maskable.png', maskable: true },
+      ];
+      let i = 0;
+      function next() {
+        if (i >= icons.length) {
+          document.getElementById('status').textContent = '✅ All icons downloaded! Place them in the icons/ folder.';
+          return;
+        }
+        const { size, filename, maskable } = icons[i++];
+        const canvas = document.getElementById('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        drawIcon(ctx, size, maskable);
+        canvas.toBlob(blob => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          setTimeout(next, 500);
+        }, 'image/png');
+      }
+      next();
+    }
+  </script>
+</body>
+</html>
