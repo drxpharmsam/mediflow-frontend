@@ -1,146 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>MediFlow — Generate PWA Icons</title>
-  <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-    h1 { color: #0A858C; }
-    button { background: #0A858C; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 8px 4px; }
-    button:hover { background: #055C61; }
-    canvas { display: none; }
-    .status { margin-top: 16px; color: #055C61; font-weight: 600; }
-    .instructions { background: #f0fafa; border-left: 4px solid #0A858C; padding: 16px; border-radius: 4px; margin: 20px 0; }
-  </style>
+<meta charset="UTF-8">
+<title>MediFlow Icon Generator</title>
+<style>
+  body { font-family: sans-serif; background: #f0f4f4; padding: 20px; }
+  h1 { color: #055C61; }
+  .grid { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; }
+  .item { background: white; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  canvas { border-radius: 8px; display: block; margin: 0 auto 8px; }
+  button { background: #0A858C; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 13px; }
+  button:hover { background: #055C61; }
+  #download-all { background: #2e7d32; color: white; border: none; border-radius: 12px; padding: 14px 28px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 20px; }
+</style>
 </head>
 <body>
-  <h1>MediFlow PWA Icon Generator</h1>
-  <div class="instructions">
-    <p>Click the buttons below to generate and download the PNG icons required for the PWA. Place the downloaded files in the <code>icons/</code> folder alongside this file.</p>
-    <p>Required files: <code>icon-192.png</code>, <code>icon-512.png</code>, <code>icon-512-maskable.png</code></p>
-  </div>
+<h1>🏥 MediFlow PWA Icon Generator</h1>
+<p>Click "Download All Icons" then place the PNG files in your <code>icons/</code> folder.</p>
+<button id="download-all" onclick="downloadAll()">⬇️ Download All Icons</button>
+<div class="grid" id="grid"></div>
 
-  <button onclick="generateAll()">⬇️ Download All Icons</button>
-  <button onclick="generateIcon(192, 'icon-192.png', false)">Download icon-192.png</button>
-  <button onclick="generateIcon(512, 'icon-512.png', false)">Download icon-512.png</button>
-  <button onclick="generateIcon(512, 'icon-512-maskable.png', true)">Download icon-512-maskable.png</button>
+<script>
+const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
 
-  <div class="status" id="status"></div>
-  <canvas id="canvas"></canvas>
+function drawIcon(canvas, size, maskable) {
+  const ctx = canvas.getContext('2d');
+  const s = size;
+  canvas.width = s;
+  canvas.height = s;
 
-  <script>
-    // Polyfill for CanvasRenderingContext2D.roundRect (Chrome < 99, Firefox < 112, Safari < 16)
-    if (!CanvasRenderingContext2D.prototype.roundRect) {
-      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-        const radius = Math.min(r, w / 2, h / 2);
-        this.beginPath();
-        this.moveTo(x + radius, y);
-        this.lineTo(x + w - radius, y);
-        this.quadraticCurveTo(x + w, y, x + w, y + radius);
-        this.lineTo(x + w, y + h - radius);
-        this.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
-        this.lineTo(x + radius, y + h);
-        this.quadraticCurveTo(x, y + h, x, y + h - radius);
-        this.lineTo(x, y + radius);
-        this.quadraticCurveTo(x, y, x + radius, y);
-        this.closePath();
-        return this;
-      };
-    }
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, s, s);
+  grad.addColorStop(0, '#055C61');
+  grad.addColorStop(1, '#0A858C');
 
-    const BG_COLOR = '#0A858C';
-    const FG_COLOR = '#FFFFFF';
+  // Rounded rect background
+  const r = s * 0.2;
+  ctx.beginPath();
+  ctx.moveTo(r, 0); ctx.lineTo(s - r, 0);
+  ctx.quadraticCurveTo(s, 0, s, r);
+  ctx.lineTo(s, s - r);
+  ctx.quadraticCurveTo(s, s, s - r, s);
+  ctx.lineTo(r, s);
+  ctx.quadraticCurveTo(0, s, 0, s - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
 
-    function drawIcon(ctx, size, maskable) {
-      ctx.clearRect(0, 0, size, size);
+  // White circle
+  ctx.beginPath();
+  ctx.arc(s / 2, s * 0.42, s * 0.28, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.fill();
 
-      // Background
-      if (maskable) {
-        // Maskable icons use full bleed (no rounded corners)
-        ctx.fillStyle = BG_COLOR;
-        ctx.fillRect(0, 0, size, size);
-      } else {
-        const radius = size * 0.208; // ~40px for 192, ~108px for 512
-        ctx.fillStyle = BG_COLOR;
-        ctx.beginPath();
-        ctx.moveTo(radius, 0);
-        ctx.lineTo(size - radius, 0);
-        ctx.quadraticCurveTo(size, 0, size, radius);
-        ctx.lineTo(size, size - radius);
-        ctx.quadraticCurveTo(size, size, size - radius, size);
-        ctx.lineTo(radius, size);
-        ctx.quadraticCurveTo(0, size, 0, size - radius);
-        ctx.lineTo(0, radius);
-        ctx.quadraticCurveTo(0, 0, radius, 0);
-        ctx.closePath();
-        ctx.fill();
-      }
+  // Draw "Rx" text
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `bold ${s * 0.32}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Rx', s / 2, s * 0.42);
 
-      // Cross / plus symbol (pill cross)
-      ctx.fillStyle = FG_COLOR;
-      const armWidth = size * 0.27;
-      const armLength = size * 0.56;
-      const cx = size / 2;
-      const cy = size / 2;
+  // Green leaf dot accent
+  ctx.beginPath();
+  ctx.arc(s * 0.65, s * 0.28, s * 0.07, 0, Math.PI * 2);
+  ctx.fillStyle = '#4CAF50';
+  ctx.fill();
 
-      // Horizontal bar
-      ctx.beginPath();
-      const hRadius = armWidth / 2;
-      ctx.roundRect(cx - armLength / 2, cy - armWidth / 2, armLength, armWidth, hRadius);
-      ctx.fill();
+  // Bottom label
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = `600 ${s * 0.1}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('MediFlow', s / 2, s * 0.76);
 
-      // Vertical bar
-      ctx.beginPath();
-      ctx.roundRect(cx - armWidth / 2, cy - armLength / 2, armWidth, armLength, hRadius);
-      ctx.fill();
-    }
+  // Thin underline
+  ctx.beginPath();
+  ctx.moveTo(s * 0.25, s * 0.83);
+  ctx.lineTo(s * 0.75, s * 0.83);
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = s * 0.015;
+  ctx.stroke();
+}
 
-    function generateIcon(size, filename, maskable) {
-      const canvas = document.getElementById('canvas');
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      drawIcon(ctx, size, maskable);
+function downloadCanvas(canvas, filename) {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
 
-      canvas.toBlob(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        document.getElementById('status').textContent = `✅ Downloaded ${filename}`;
-      }, 'image/png');
-    }
+function downloadAll() {
+  sizes.forEach((size, i) => {
+    setTimeout(() => {
+      const canvas = document.createElement('canvas');
+      drawIcon(canvas, size, false);
+      downloadCanvas(canvas, `icon-${size}.png`);
+    }, i * 200);
+  });
+  // Also download maskable
+  setTimeout(() => {
+    const canvas = document.createElement('canvas');
+    drawIcon(canvas, 512, true);
+    downloadCanvas(canvas, 'icon-512-maskable.png');
+  }, sizes.length * 200 + 200);
+}
 
-    function generateAll() {
-      const icons = [
-        { size: 192, filename: 'icon-192.png', maskable: false },
-        { size: 512, filename: 'icon-512.png', maskable: false },
-        { size: 512, filename: 'icon-512-maskable.png', maskable: true },
-      ];
-      let i = 0;
-      function next() {
-        if (i >= icons.length) {
-          document.getElementById('status').textContent = '✅ All icons downloaded! Place them in the icons/ folder.';
-          return;
-        }
-        const { size, filename, maskable } = icons[i++];
-        const canvas = document.getElementById('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        drawIcon(ctx, size, maskable);
-        canvas.toBlob(blob => {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = filename;
-          a.click();
-          URL.revokeObjectURL(a.href);
-          setTimeout(next, 500);
-        }, 'image/png');
-      }
-      next();
-    }
-  </script>
+// Render previews
+const grid = document.getElementById('grid');
+[...sizes, 'maskable'].forEach(size => {
+  const isMaskable = size === 'maskable';
+  const s = isMaskable ? 512 : size;
+  const preview = Math.min(s, 96);
+
+  const div = document.createElement('div');
+  div.className = 'item';
+
+  const canvas = document.createElement('canvas');
+  canvas.style.width = preview + 'px';
+  canvas.style.height = preview + 'px';
+  drawIcon(canvas, s, isMaskable);
+
+  const label = document.createElement('div');
+  label.style.fontSize = '12px';
+  label.style.color = '#555';
+  label.style.marginBottom = '8px';
+  label.textContent = isMaskable ? '512×512 (maskable)' : `${s}×${s}`;
+
+  const btn = document.createElement('button');
+  btn.textContent = '⬇️ Download';
+  btn.onclick = () => downloadCanvas(canvas, isMaskable ? 'icon-512-maskable.png' : `icon-${s}.png`);
+
+  div.appendChild(canvas);
+  div.appendChild(label);
+  div.appendChild(btn);
+  grid.appendChild(div);
+});
+</script>
 </body>
 </html>
