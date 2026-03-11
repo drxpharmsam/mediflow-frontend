@@ -1475,8 +1475,66 @@ function renderPopularMeds() {
             <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
         </div>
     `;
+    renderVitaminsSection();
+    renderFirstAidSection();
     renderDailyNeeds();
     _startReminderChecker();
+}
+
+// --- VITAMINS & SUPPLEMENTS SECTION ---
+function renderVitaminsSection() {
+    const slider = document.getElementById('vitamins-slider');
+    if (!slider) return;
+    slider.innerHTML = '';
+    const items = MEDICINE_DB.filter(m => m.category === 'Vitamins & Supplements');
+    items.forEach(item => {
+        slider.innerHTML += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5); color:#065F46; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+    if (items.length > 0) {
+        slider.innerHTML += `
+            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#065F46,#059669); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Vitamins &amp; Supplements')">
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
+                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
+            </div>
+        `;
+    }
+}
+
+// --- HOME FIRST AID SECTION ---
+function renderFirstAidSection() {
+    const slider = document.getElementById('firstaid-slider');
+    if (!slider) return;
+    slider.innerHTML = '';
+    const items = MEDICINE_DB.filter(m => m.category === 'Home First Aid');
+    items.forEach(item => {
+        slider.innerHTML += `
+            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
+                <div class="icon-orb" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA); color:#92400E; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+            </div>
+        `;
+    });
+    if (items.length > 0) {
+        slider.innerHTML += `
+            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#92400E,#D97706); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Home First Aid')">
+                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
+                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
+            </div>
+        `;
+    }
 }
 
 // --- DAILY NEEDS SECTION ---
@@ -2263,6 +2321,8 @@ function updateDash(user) {
     document.getElementById('db-name-disp').innerText = user.name;
     document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
     document.getElementById('profile-email').value = user.email || '';
+    const avatarEl = document.getElementById('profile-avatar-initials');
+    if (avatarEl) avatarEl.innerText = user.name.charAt(0).toUpperCase();
     setHomeGreeting();
     renderSuggestedProducts();
 }
