@@ -6,6 +6,7 @@
     <title>MediFlow — Your Digital Pharmacy</title>
     <meta name="description" content="MediFlow: Order medicines online, consult doctors, set medication reminders, and track deliveries — all in one app.">
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <meta name="theme-color" content="#0A858C">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="MediFlow">
@@ -978,5 +979,14 @@
 </div>
 
 <script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('MediFlow SW registered:', reg.scope))
+        .catch(err => console.error('SW registration failed:', err));
+    });
+  }
+</script>
 </body>
 </html>
