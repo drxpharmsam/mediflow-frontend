@@ -642,15 +642,21 @@ async function loadAddresses(userId) {
             console.warn('Failed to parse stored addresses; resetting.', e);
             window.currentAddresses = [];
         }
-        return;
+    } else {
+        try {
+            const res = await fetch(`${API_BASE}/addresses/${userId}`);
+            const data = await res.json();
+            if (data.success) {
+                window.currentAddresses = data.data;
+            }
+        } catch (e) { window.currentAddresses = []; }
     }
-    try {
-        const res = await fetch(`${API_BASE}/addresses/${userId}`);
-        const data = await res.json();
-        if (data.success) {
-            window.currentAddresses = data.data;
-        }
-    } catch (e) { window.currentAddresses = []; }
+    // Refresh address count on the profile tab
+    const addrCountEl = document.getElementById('saved-addresses-count');
+    if (addrCountEl) {
+        const cnt = (window.currentAddresses || []).length;
+        addrCountEl.innerText = cnt > 0 ? `${cnt} Address${cnt !== 1 ? 'es' : ''}` : 'No addresses saved';
+    }
 }
 
 async function saveNewAddress() {
@@ -2341,10 +2347,16 @@ function updateDash(user) {
     window.currentUser = user;
     document.getElementById('initial-box').innerText = user.name.charAt(0).toUpperCase();
     document.getElementById('db-name-disp').innerText = user.name;
-    document.getElementById('db-info-disp').innerText = `${user.age} Yrs • ${user.phone}`;
+    document.getElementById('db-info-disp').innerText = user.phone;
     document.getElementById('profile-email').value = user.email || '';
     const avatarEl = document.getElementById('profile-avatar-initials');
     if (avatarEl) avatarEl.innerText = user.name.charAt(0).toUpperCase();
+    // Update address count subtitle
+    const addrCountEl = document.getElementById('saved-addresses-count');
+    if (addrCountEl) {
+        const cnt = (window.currentAddresses || []).length;
+        addrCountEl.innerText = cnt > 0 ? `${cnt} Address${cnt !== 1 ? 'es' : ''}` : 'No addresses saved';
+    }
     setHomeGreeting();
     renderSuggestedProducts();
 }
