@@ -1,10 +1,14 @@
 const CACHE_NAME = 'mediflow-v1';
+
+// Build pre-cache URLs relative to the service-worker's own scope so the PWA
+// works both at the root ("/") and on a sub-path (e.g. GitHub Pages at
+// "/mediflow-frontend/") without any hard-coded path assumptions.
 const PRECACHE_URLS = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/manifest.json'
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './manifest.json'
 ];
 
 self.addEventListener('install', event => {
