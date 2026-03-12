@@ -279,7 +279,7 @@ window.onload = async () => {
 
     // Register service worker for PWA + push notifications
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
     // Zepto-style: wire up scroll-based header collapse for the home tab

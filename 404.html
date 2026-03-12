@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediFlow</title>
+  <!--
+    GitHub Pages serves this file for any path that doesn't match a real file.
+    The script below redirects the browser to the SPA root (index.html) while
+    preserving the original path in sessionStorage so the app can restore it.
+    Technique: https://github.com/rafgraph/spa-github-pages
+  -->
+  <script>
+    (function () {
+      var l = window.location;
+      // Don't redirect if we're already at the root index
+      if (l.pathname === '/' || l.pathname.endsWith('/index.html')) return;
+      // Store the full URL so the SPA can restore it after load
+      sessionStorage.setItem('spa_redirect', l.pathname + l.search + l.hash);
+      // Redirect to the repository root (works for both user-site and project-site)
+      // For a GitHub Pages project-site the URL is /<repo-name>/..., so the
+      // first non-empty path segment is the repo name.  For a user/org site
+      // the URL starts directly at /, so we fall back to '/'.
+      var segments = l.pathname.split('/').filter(Boolean);
+      var repoRoot = segments.length > 1 ? '/' + segments[0] + '/' : '/';
+      l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoRoot);
+    }());
+  </script>
+</head>
+<body></body>
+</html>
