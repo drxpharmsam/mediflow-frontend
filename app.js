@@ -4,13 +4,6 @@ const SOCKET_URL = 'http://localhost:3000';
 // Set to false (and start your local server on port 3000) to reconnect.
 const LOCAL_MODE = true;
 
-// ── Push Notifications — VAPID Configuration ────────────────────────────────
-// 🔔 PUSH EDIT: Replace the placeholder below with your real VAPID public key.
-//   Generate a key pair on the backend: `npx web-push generate-vapid-keys`
-//   Set VAPID_PUBLIC_KEY in your backend .env, then copy the public key here
-//   (or load it from a meta tag / API endpoint if you prefer not to hard-code).
-//   See .env.example for the full setup checklist.
-const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const socket = LOCAL_MODE ? { on: () => {}, emit: () => {}, off: () => {} } : io(SOCKET_URL);
@@ -275,14 +268,12 @@ window.onload = async () => {
             history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
             showScreen('screen-dash');
         }
-        // Re-subscribe to push on session restore (subscription may have expired)
-        initPushNotifications();
     } else {
         loading(false);
         showScreen('screen-login', false);
     }
 
-    // Register service worker for PWA + push notifications
+    // Register service worker for PWA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     }
@@ -1564,64 +1555,6 @@ function renderPopularMeds() {
     _startReminderChecker();
 }
 
-// --- VITAMINS & SUPPLEMENTS SECTION ---
-function renderVitaminsSection() {
-    const slider = document.getElementById('vitamins-slider');
-    if (!slider) return;
-    const items = MEDICINE_DB.filter(m => m.category === 'Vitamins & Supplements');
-    let html = '';
-    items.forEach(item => {
-        html += `
-            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
-                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
-                <div class="icon-orb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5); color:#065F46; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
-                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
-                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
-            </div>
-        `;
-    });
-    if (items.length > 0) {
-        html += `
-            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#065F46,#059669); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Vitamins &amp; Supplements')">
-                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
-                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
-            </div>
-        `;
-    }
-    slider.innerHTML = html;
-}
-
-// --- HOME FIRST AID SECTION ---
-function renderFirstAidSection() {
-    const slider = document.getElementById('firstaid-slider');
-    if (!slider) return;
-    const items = MEDICINE_DB.filter(m => m.category === 'Home First Aid');
-    let html = '';
-    items.forEach(item => {
-        html += `
-            <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
-                ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
-                <div class="icon-orb" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA); color:#92400E; width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
-                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
-                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
-            </div>
-        `;
-    });
-    if (items.length > 0) {
-        html += `
-            <div class="glass-card" style="min-width:130px; flex-shrink:0; background:linear-gradient(135deg,#92400E,#D97706); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="openCategoryView('Home First Aid')">
-                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
-                <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All</h4>
-            </div>
-        `;
-    }
-    slider.innerHTML = html;
-}
-
 // --- DAILY NEEDS SECTION ---
 let _dailyNeedsActiveCat = null;
 
@@ -2075,32 +2008,6 @@ function renderCategoriesTab() {
 
     let html = '';
 
-    // ── Featured banner: Vitamins & Supplements ──
-    if (MEDICINE_DB.some(m => m.category === "Vitamins & Supplements")) {
-        html += `
-            <div class="cat-banner-card cat-banner-vitamins" onclick='openCategoryView("Vitamins &amp; Supplements")'>
-                <div style="flex:1;">
-                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">New Section</div>
-                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">💊 Vitamins &amp; Supplements</h3>
-                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Boost immunity, energy &amp; everyday health</p>
-                </div>
-                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-leaf"></i></div>
-            </div>`;
-    }
-
-    // ── Featured banner: Home First Aid ──
-    if (MEDICINE_DB.some(m => m.category === "Home First Aid")) {
-        html += `
-            <div class="cat-banner-card cat-banner-firstaid" onclick='openCategoryView("Home First Aid")'>
-                <div style="flex:1;">
-                    <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; opacity:0.8; margin-bottom:4px;">Home Essentials</div>
-                    <h3 style="margin:0; font-size:17px; font-weight:800; color:white;">🩺 Home First Aid</h3>
-                    <p style="margin:5px 0 0; font-size:12px; opacity:0.85; font-weight:500; color:white;">Must-have kit for every household</p>
-                </div>
-                <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; flex-shrink:0; margin:0; width:48px; height:48px;"><i class="fa-solid fa-kit-medical"></i></div>
-            </div>`;
-    }
-
     // ── Acute / Everyday conditions ──
     const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
     if (acuteCats.length) {
@@ -2313,7 +2220,6 @@ async function checkLocalLogin(otpCode) {
             } else {
                 showScreen('screen-dash');
             }
-            initPushNotifications();
         } else {
             showScreen('screen-profile');
         }
@@ -2347,8 +2253,6 @@ async function checkLocalLogin(otpCode) {
                 await loadAddresses(data.user.id);
                 loading(false);
                 openAddressManager(true);
-                // Request push permission and subscribe after login
-                initPushNotifications();
             }
         } else {
             loading(false);
@@ -2384,7 +2288,6 @@ async function saveProfileToLocal() {
         renderPopularMeds();
         loading(false);
         openAddressManager(true);
-        initPushNotifications();
         return;
     }
     try {
@@ -2405,8 +2308,6 @@ async function saveProfileToLocal() {
             renderPopularMeds();
             loading(false);
             openAddressManager(true);
-            // Request push permission and subscribe for new users
-            initPushNotifications();
         } else { loading(false); alert("Failed to create profile: " + data.message); }
     } catch (e) { loading(false); alert("API connection failed."); }
 }
@@ -2427,123 +2328,6 @@ function updateDash(user) {
     }
     setHomeGreeting();
     renderSuggestedProducts();
-}
-
-// ── Push Notifications ───────────────────────────────────────────────────────
-// Converts a URL-safe base64 VAPID public key to a Uint8Array for pushManager.
-function _urlBase64ToUint8Array(base64String) {
-    // Compute the number of '=' characters needed to make the length a multiple of 4
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const rawData = atob(base64);
-    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
-}
-
-// Updates the push-notification card in the Profile tab to reflect current state.
-// States: 'unsupported' | 'default' | 'denied' | 'granted'
-function _updatePushUI(state) {
-    const card = document.getElementById('push-notif-card');
-    if (!card) return;
-    const statusEl = document.getElementById('push-status-text');
-    const enableBtn = document.getElementById('push-enable-btn');
-    const testBtn = document.getElementById('push-test-btn');
-    const stateMap = {
-        unsupported: { text: 'Not supported in this browser', color: '#9CA3AF', enableShow: false, testShow: false },
-        default:     { text: 'Notifications not yet enabled', color: '#F59E0B', enableShow: true,  testShow: false },
-        denied:      { text: 'Blocked — allow in browser settings', color: '#EF4444', enableShow: false, testShow: false },
-        granted:     { text: 'Notifications enabled ✓', color: '#16A34A', enableShow: false, testShow: true }
-    };
-    const s = stateMap[state] || stateMap.default;
-    if (statusEl) { statusEl.textContent = s.text; statusEl.style.color = s.color; }
-    if (enableBtn) enableBtn.style.display = s.enableShow ? 'block' : 'none';
-    if (testBtn)   testBtn.style.display   = s.testShow   ? 'block' : 'none';
-}
-
-// Requests Notification permission, subscribes via pushManager, and sends the
-// subscription to the backend at POST /api/notifications/subscribe.
-// 🔔 PUSH EDIT: Make sure VAPID_PUBLIC_KEY at the top of this file matches the
-//   key used by your backend (VAPID_PUBLIC_KEY in backend .env).
-async function initPushNotifications() {
-    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-        _updatePushUI('unsupported');
-        return;
-    }
-
-    // Don't re-prompt if the user has already blocked notifications.
-    if (Notification.permission === 'denied') {
-        _updatePushUI('denied');
-        return;
-    }
-
-    // If already granted, subscribe silently (handles page reloads / session restore).
-    if (Notification.permission === 'granted') {
-        await _subscribePush();
-        return;
-    }
-
-    // 'default' — update UI so the user can tap "Enable" to trigger the browser prompt.
-    _updatePushUI('default');
-}
-
-// Called when the user explicitly taps the "Enable Notifications" button.
-async function enablePushNotifications() {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-        await _subscribePush();
-    } else {
-        _updatePushUI(permission === 'denied' ? 'denied' : 'default');
-    }
-}
-
-// Subscribes this device via pushManager and registers the subscription with
-// the backend (POST /api/notifications/subscribe).
-async function _subscribePush() {
-    try {
-        const reg = await navigator.serviceWorker.ready;
-        // Skip if already subscribed to avoid duplicate backend calls.
-        let sub = await reg.pushManager.getSubscription();
-        if (!sub) {
-            if (VAPID_PUBLIC_KEY === 'YOUR_VAPID_PUBLIC_KEY_HERE') {
-                // VAPID key not configured — log a reminder and update UI.
-                console.warn('[MediFlow Push] Set VAPID_PUBLIC_KEY in app.js to enable push notifications.');
-                _updatePushUI('default');
-                return;
-            }
-            sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-            });
-        }
-        // Send subscription to backend; treat non-2xx responses as errors.
-        const userId = window.currentUser ? window.currentUser.id : null;
-        const res = await fetch(`${API_BASE}/notifications/subscribe`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subscription: sub, userId })
-        });
-        if (!res.ok) throw new Error(`Subscribe endpoint returned ${res.status}`);
-        _updatePushUI('granted');
-    } catch (e) {
-        console.warn('[MediFlow Push] Subscription failed:', e);
-        _updatePushUI(Notification.permission === 'denied' ? 'denied' : 'default');
-    }
-}
-
-// Triggers a test push notification via the backend (POST /api/notifications/test).
-// Useful for verifying the end-to-end push pipeline during development.
-async function sendTestNotification() {
-    if (!window.currentUser) { showToast("Please log in first."); return; }
-    try {
-        const res = await fetch(`${API_BASE}/notifications/test`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: window.currentUser.id })
-        });
-        const data = await res.json().catch(() => ({}));
-        showToast(data.message || "Test notification sent!");
-    } catch (e) {
-        showToast("Could not reach backend to send test notification.");
-    }
 }
 
 async function saveProfileEmail() {
@@ -2608,15 +2392,15 @@ function switchTab(el, tabId, pushHistory = true) {
         const scrollTop = mainScroll ? mainScroll.scrollTop : 0;
         if (scrollTop > 60) {
             dashHeader.classList.add('compact');
-            if (mainScroll) mainScroll.style.paddingTop = '150px';
+            if (mainScroll) mainScroll.style.paddingTop = '122px';
         } else {
             dashHeader.classList.remove('compact');
-            if (mainScroll) mainScroll.style.paddingTop = '230px';
+            if (mainScroll) mainScroll.style.paddingTop = '196px';
         }
         setHomeGreeting();
     } else {
         dashHeader.classList.add('compact');
-        mainScroll.style.paddingTop = '150px';
+        mainScroll.style.paddingTop = '122px';
 
         if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
         else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
