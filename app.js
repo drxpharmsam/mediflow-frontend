@@ -268,7 +268,7 @@ window.onload = async () => {
             showLocationAskPage();
         } else {
             // Auto-select the first saved address if none is selected
-            if (!selectedAddress && window.currentAddresses.length > 0) {
+            if (!selectedAddress) {
                 selectAddress(window.currentAddresses[0]);
             }
             updateHeaderLocation();
@@ -453,19 +453,23 @@ function showLocationAskPage() {
     const savedList = document.getElementById('loc-ask-saved-list');
     if (savedSection && savedList && window.currentAddresses && window.currentAddresses.length > 0) {
         savedSection.classList.remove('hidden');
-        let html = '';
+        savedList.innerHTML = '';
+        const iconMap = { Home: 'fa-house', Work: 'fa-briefcase' };
         window.currentAddresses.forEach(addr => {
-            const icon = addr.tag === 'Home' ? 'fa-house' : addr.tag === 'Work' ? 'fa-briefcase' : 'fa-location-dot';
-            html += `<div class="loc-ask-addr-card" onclick="locAskSelectAddress('${addr.id}')">
-                <div class="loc-ask-addr-icon"><i class="fa-solid ${icon}"></i></div>
+            const icon = iconMap[addr.tag] || 'fa-location-dot';
+            const card = document.createElement('div');
+            card.className = 'loc-ask-addr-card';
+            card.onclick = () => locAskSelectAddress(addr.id);
+            card.innerHTML = `<div class="loc-ask-addr-icon"><i class="fa-solid ${icon}"></i></div>
                 <div class="loc-ask-addr-info">
-                    <span class="loc-ask-addr-tag">${addr.tag}</span>
-                    <span class="loc-ask-addr-line">${addr.line1}, ${addr.line2}</span>
+                    <span class="loc-ask-addr-tag"></span>
+                    <span class="loc-ask-addr-line"></span>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:12px;"></i>
-            </div>`;
+                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:12px;"></i>`;
+            card.querySelector('.loc-ask-addr-tag').textContent = addr.tag;
+            card.querySelector('.loc-ask-addr-line').textContent = addr.line1 + ', ' + addr.line2;
+            savedList.appendChild(card);
         });
-        savedList.innerHTML = html;
     } else if (savedSection) {
         savedSection.classList.add('hidden');
     }
