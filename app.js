@@ -824,7 +824,7 @@ function updateCartUI() {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
         }
-        if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px';
+        if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '90px';
         return;
     }
 
@@ -916,14 +916,14 @@ function updateCartUI() {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders' || activeTab === 'tab-wishlist' || activeTab === 'tab-refunds' || activeTab === 'tab-payments') {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
-            if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '110px';
+            if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '90px';
         } else {
             stickyBar.style.display = 'flex';
             stickyBar.classList.add('show');
 
             if (activeScreen === 'screen-dash') {
-                if (mainScroll) mainScroll.style.paddingBottom = '190px';
-                stickyBar.style.bottom = '85px';
+                if (mainScroll) mainScroll.style.paddingBottom = '170px';
+                stickyBar.style.bottom = '62px';
             } else {
                 stickyBar.style.bottom = '20px';
             }
@@ -2071,10 +2071,10 @@ function _initHomeScrollHeader() {
             if (activeTab && activeTab.id === 'tab-home') {
                 if (scroll.scrollTop > 60) {
                     header.classList.add('compact');
-                    scroll.style.paddingTop = '150px';
+                    scroll.style.paddingTop = '122px';
                 } else {
                     header.classList.remove('compact');
-                    scroll.style.paddingTop = '230px';
+                    scroll.style.paddingTop = '196px';
                 }
             }
             _ticking = false;
