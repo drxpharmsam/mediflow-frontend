@@ -2636,6 +2636,13 @@ function switchTab(el, tabId, pushHistory = true) {
         }
     }
 
+    // Hide bottom nav dock on account/profile pages
+    const navDock = document.querySelector('.nav-dock');
+    if (navDock) {
+        const accountTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
+        navDock.style.display = accountTabs.includes(tabId) ? 'none' : '';
+    }
+
     updateCartUI();
 }
 
