@@ -80,6 +80,11 @@ self.addEventListener('fetch', event => {
                 caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
             }
             return response;
-        }).catch(() => caches.match(event.request))
+        }).catch(() => caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            // Main app pages are always pre-cached during install, so this
+            // fallback only triggers for non-pre-cached resources while offline.
+            if (event.request.mode === 'navigate') return caches.match('./index.html');
+        }))
     );
 });
