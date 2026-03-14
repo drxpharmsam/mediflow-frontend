@@ -264,9 +264,14 @@ window.onload = async () => {
         loading(false);
 
         if (window.currentAddresses.length === 0) {
-            history.replaceState({ screen: 'screen-address', tab: 'tab-home' }, "");
-            openAddressManager(true);
+            history.replaceState({ screen: 'screen-location', tab: 'tab-home' }, "");
+            showLocationAskPage();
         } else {
+            // Auto-select the first saved address if none is selected
+            if (!selectedAddress && window.currentAddresses.length > 0) {
+                selectAddress(window.currentAddresses[0]);
+            }
+            updateHeaderLocation();
             history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
             showScreen('screen-dash');
         }
@@ -424,6 +429,64 @@ function requestLocationPermission() {
     window._locationPermGranted = true;
     // Proceed immediately — the browser will now show its native prompt.
     _doGetCurrentPosition();
+}
+
+// ── Header Location Display ─────────────────────────────────────────────────
+// Updates the small location row in the top header bar (Blinkit-style).
+function updateHeaderLocation() {
+    const el = document.getElementById('header-loc-text');
+    if (!el) return;
+    if (selectedAddress) {
+        el.innerText = selectedAddress.tag + ' — ' + selectedAddress.line1;
+    } else {
+        el.innerText = 'Set delivery location';
+    }
+}
+
+// ── Zepto-style Location Ask Page ───────────────────────────────────────────
+// Shown before the dashboard when the user has no saved address.
+
+function showLocationAskPage() {
+    showScreen('screen-location', false);
+    // Show saved addresses if any
+    const savedSection = document.getElementById('loc-ask-saved');
+    const savedList = document.getElementById('loc-ask-saved-list');
+    if (savedSection && savedList && window.currentAddresses && window.currentAddresses.length > 0) {
+        savedSection.classList.remove('hidden');
+        let html = '';
+        window.currentAddresses.forEach(addr => {
+            const icon = addr.tag === 'Home' ? 'fa-house' : addr.tag === 'Work' ? 'fa-briefcase' : 'fa-location-dot';
+            html += `<div class="loc-ask-addr-card" onclick="locAskSelectAddress('${addr.id}')">
+                <div class="loc-ask-addr-icon"><i class="fa-solid ${icon}"></i></div>
+                <div class="loc-ask-addr-info">
+                    <span class="loc-ask-addr-tag">${addr.tag}</span>
+                    <span class="loc-ask-addr-line">${addr.line1}, ${addr.line2}</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:12px;"></i>
+            </div>`;
+        });
+        savedList.innerHTML = html;
+    } else if (savedSection) {
+        savedSection.classList.add('hidden');
+    }
+}
+
+function locAskDetect() {
+    // Open the full address manager (map screen) and auto-detect location
+    openAddressManager(true);
+}
+
+function locAskManual() {
+    // Open the full address manager for manual location entry
+    openAddressManager(true);
+}
+
+function locAskSelectAddress(addrId) {
+    const addr = (window.currentAddresses || []).find(a => a.id === addrId);
+    if (addr) {
+        selectAddress(addr);
+        showScreen('screen-dash');
+    }
 }
 
 // Core geolocation call, shared by detectLocation() and requestLocationPermission().
@@ -621,6 +684,8 @@ function closeAddressManager() {
         return;
     }
 
+    updateHeaderLocation();
+
     if (history.state && history.state.screen !== 'screen-address') {
         history.back();
     } else {
@@ -767,6 +832,7 @@ function selectAddress(addr) {
     selectedAddress = addr;
     document.getElementById('curr-addr-tag').innerText = "Delivery to " + addr.tag;
     document.getElementById('curr-addr-text').innerText = addr.line1 + ", " + addr.line2;
+    updateHeaderLocation();
 
     if (!document.getElementById('screen-address').classList.contains('hidden')) {
         renderAddressList();
@@ -1490,8 +1556,6 @@ function renderPopularMeds() {
     `;
     slider.innerHTML = html;
     renderSuggestedProducts();
-    renderVitaminsSection();
-    renderFirstAidSection();
     renderDailyNeeds();
     _startReminderChecker();
 }

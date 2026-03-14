@@ -117,11 +117,42 @@
         </div>
     </div>
 
+    <!-- ZEPTO-STYLE LOCATION ASK SCREEN — shown before dashboard when no address is set -->
+    <div id="screen-location" class="screen hidden" style="z-index:200; background:white;">
+        <div class="loc-ask-page">
+            <div class="loc-ask-top">
+                <div class="loc-ask-icon-wrap">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <h1 class="loc-ask-title">Where should we<br>deliver your order?</h1>
+                <p class="loc-ask-subtitle">Select your delivery location to see medicines &amp; health products available near you.</p>
+            </div>
+            <div class="loc-ask-actions">
+                <button class="loc-ask-detect-btn" onclick="locAskDetect()">
+                    <i class="fa-solid fa-crosshairs"></i> Use Current Location
+                </button>
+                <div class="loc-ask-divider"><span>or</span></div>
+                <button class="loc-ask-manual-btn" onclick="locAskManual()">
+                    <i class="fa-solid fa-magnifying-glass-location"></i> Enter Location Manually
+                </button>
+                <div id="loc-ask-saved" class="loc-ask-saved hidden">
+                    <p class="loc-ask-saved-title">Your Saved Addresses</p>
+                    <div id="loc-ask-saved-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MAIN DASHBOARD SCREEN -->
     <div id="screen-dash" class="screen hidden">
         <div class="header-aura" id="main-dash-header">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
+                <div style="flex:1; min-width:0;">
+                    <div id="header-location-row" class="header-location-row" onclick="openAddressManager()">
+                        <i class="fa-solid fa-location-dot" style="color:#A7F3D0; font-size:13px; margin-right:5px;"></i>
+                        <span id="header-loc-text" style="font-size:12px; font-weight:700; color:#E0F7F6; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Set delivery location</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:9px; color:#A7F3D0; margin-left:4px;"></i>
+                    </div>
                     <p id="greeting-text" style="margin:0; opacity:0.8; font-size:13px; font-weight:600; color:#E0F7F6;">Good morning,</p>
                     <h2 id="dash-user" style="margin:0; font-size:24px; font-weight:800;">User</h2>
                 </div>
@@ -151,14 +182,6 @@
                             <div class="icon-orb orb-3"><i class="fa-solid fa-pills"></i></div>
                             <div><h3 style="margin:0; font-size:15px;">Pharmacy<br>Store</h3></div>
                         </div>
-                        <div class="glass-card searchable" onclick="openCategoryView('Vitamins &amp; Supplements')">
-                            <div class="icon-orb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5); color:#065F46;"><i class="fa-solid fa-leaf"></i></div>
-                            <div><h3 style="margin:0; font-size:15px;">Vitamins &amp;<br>Supplements</h3></div>
-                        </div>
-                        <div class="glass-card searchable" onclick="openCategoryView('Home First Aid')">
-                            <div class="icon-orb" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA); color:#92400E;"><i class="fa-solid fa-kit-medical"></i></div>
-                            <div><h3 style="margin:0; font-size:15px;">Home<br>First Aid</h3></div>
-                        </div>
                     </div>
                     <div style="margin-top: 35px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;">
                         <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Popular Medicines</h3>
@@ -170,20 +193,6 @@
                         <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Suggested for You</h3>
                     </div>
                     <div class="category-slider" id="suggested-products-slider" style="margin-bottom:6px;"></div>
-
-                    <!-- VITAMINS & SUPPLEMENTS SECTION -->
-                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Vitamins &amp; Supplements</h3>
-                        <span class="section-see-all" onclick="openCategoryView('Vitamins &amp; Supplements')">See All</span>
-                    </div>
-                    <div class="category-slider" id="vitamins-slider"></div>
-
-                    <!-- HOME FIRST AID SECTION -->
-                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Home First Aid</h3>
-                        <span class="section-see-all" onclick="openCategoryView('Home First Aid')">See All</span>
-                    </div>
-                    <div class="category-slider" id="firstaid-slider"></div>
 
                     <!-- DAILY NEEDS SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">

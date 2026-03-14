@@ -780,3 +780,96 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 .rem-toggle.active .rem-toggle-knob { transform: translateX(18px); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   HEADER LOCATION ROW — Blinkit-style delivery location in the top bar
+   ───────────────────────────────────────────────────────────────────────── */
+.header-location-row {
+    display: inline-flex; align-items: center; cursor: pointer;
+    margin-bottom: 4px; padding: 3px 10px 3px 6px;
+    background: rgba(255,255,255,0.12); border-radius: 20px;
+    transition: background 0.2s;
+}
+.header-location-row:active { background: rgba(255,255,255,0.22); }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ZEPTO-STYLE LOCATION ASK PAGE
+   ───────────────────────────────────────────────────────────────────────── */
+.loc-ask-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; padding: 40px 24px 30px; text-align: center;
+    background: linear-gradient(180deg, #F0FDFA 0%, #FFFFFF 50%);
+}
+.loc-ask-top { margin-bottom: 40px; }
+.loc-ask-icon-wrap {
+    width: 100px; height: 100px; border-radius: 30px;
+    background: linear-gradient(135deg, var(--c1), #C1F0ED);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; box-shadow: 0 12px 30px rgba(54,184,183,0.2);
+    animation: locAskPulse 2.5s ease-in-out infinite;
+}
+.loc-ask-icon-wrap i { font-size: 42px; color: var(--c5); }
+@keyframes locAskPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 12px 30px rgba(54,184,183,0.2); }
+    50% { transform: scale(1.05); box-shadow: 0 16px 40px rgba(54,184,183,0.35); }
+}
+.loc-ask-title {
+    font-size: 26px; font-weight: 800; color: #111827;
+    margin: 0 0 12px; line-height: 1.3;
+}
+.loc-ask-subtitle {
+    font-size: 14px; color: var(--gray-text); font-weight: 500;
+    line-height: 1.6; max-width: 300px; margin: 0 auto;
+}
+.loc-ask-actions { width: 100%; max-width: 340px; }
+.loc-ask-detect-btn {
+    width: 100%; height: 58px; border: none; border-radius: 20px;
+    background: linear-gradient(135deg, var(--c3), var(--c4));
+    color: white; font-size: 16px; font-weight: 800;
+    box-shadow: 0 10px 24px rgba(5,92,97,0.28);
+    cursor: pointer; transition: transform 0.18s, box-shadow 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.loc-ask-detect-btn:active { transform: scale(0.96); box-shadow: 0 6px 12px rgba(5,92,97,0.18); }
+.loc-ask-detect-btn i { font-size: 18px; }
+.loc-ask-divider {
+    display: flex; align-items: center; gap: 14px; margin: 18px 0;
+    color: #9CA3AF; font-size: 13px; font-weight: 600;
+}
+.loc-ask-divider::before, .loc-ask-divider::after {
+    content: ''; flex: 1; height: 1px; background: #E5E7EB;
+}
+.loc-ask-manual-btn {
+    width: 100%; height: 54px; border: 1.5px solid var(--c2); border-radius: 18px;
+    background: white; color: var(--c5); font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: transform 0.18s, background 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.loc-ask-manual-btn:active { transform: scale(0.97); background: var(--c1); }
+.loc-ask-manual-btn i { font-size: 16px; }
+
+/* Saved addresses section */
+.loc-ask-saved { margin-top: 28px; text-align: left; width: 100%; }
+.loc-ask-saved-title {
+    font-size: 12px; font-weight: 800; color: var(--gray-text);
+    text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 4px;
+}
+.loc-ask-addr-card {
+    display: flex; align-items: center; gap: 14px;
+    background: white; padding: 16px; border-radius: 18px;
+    border: 1.5px solid #F0F0F0; margin-bottom: 10px;
+    cursor: pointer; transition: transform 0.18s, border-color 0.18s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.loc-ask-addr-card:active { transform: scale(0.97); border-color: var(--c3); }
+.loc-ask-addr-icon {
+    width: 40px; height: 40px; border-radius: 13px; flex-shrink: 0;
+    background: var(--c1); color: var(--c4);
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.loc-ask-addr-info { flex: 1; min-width: 0; }
+.loc-ask-addr-tag { display: block; font-size: 14px; font-weight: 800; color: #111827; }
+.loc-ask-addr-line {
+    display: block; font-size: 12px; color: var(--gray-text); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
+}
