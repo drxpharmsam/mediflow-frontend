@@ -264,9 +264,14 @@ window.onload = async () => {
         loading(false);
 
         if (window.currentAddresses.length === 0) {
-            history.replaceState({ screen: 'screen-address', tab: 'tab-home' }, "");
-            openAddressManager(true);
+            history.replaceState({ screen: 'screen-location', tab: 'tab-home' }, "");
+            showLocationAskPage();
         } else {
+            // Auto-select the first saved address if none is selected
+            if (!selectedAddress) {
+                selectAddress(window.currentAddresses[0]);
+            }
+            updateHeaderLocation();
             history.replaceState({ screen: 'screen-dash', tab: 'tab-home' }, "");
             showScreen('screen-dash');
         }
@@ -424,6 +429,68 @@ function requestLocationPermission() {
     window._locationPermGranted = true;
     // Proceed immediately — the browser will now show its native prompt.
     _doGetCurrentPosition();
+}
+
+// ── Header Location Display ─────────────────────────────────────────────────
+// Updates the small location row in the top header bar (Blinkit-style).
+function updateHeaderLocation() {
+    const el = document.getElementById('header-loc-text');
+    if (!el) return;
+    if (selectedAddress) {
+        el.innerText = selectedAddress.tag + ' — ' + selectedAddress.line1;
+    } else {
+        el.innerText = 'Set delivery location';
+    }
+}
+
+// ── Zepto-style Location Ask Page ───────────────────────────────────────────
+// Shown before the dashboard when the user has no saved address.
+
+function showLocationAskPage() {
+    showScreen('screen-location', false);
+    // Show saved addresses if any
+    const savedSection = document.getElementById('loc-ask-saved');
+    const savedList = document.getElementById('loc-ask-saved-list');
+    if (savedSection && savedList && window.currentAddresses && window.currentAddresses.length > 0) {
+        savedSection.classList.remove('hidden');
+        savedList.innerHTML = '';
+        const iconMap = { Home: 'fa-house', Work: 'fa-briefcase' };
+        window.currentAddresses.forEach(addr => {
+            const icon = iconMap[addr.tag] || 'fa-location-dot';
+            const card = document.createElement('div');
+            card.className = 'loc-ask-addr-card';
+            card.onclick = () => locAskSelectAddress(addr.id);
+            card.innerHTML = `<div class="loc-ask-addr-icon"><i class="fa-solid ${icon}"></i></div>
+                <div class="loc-ask-addr-info">
+                    <span class="loc-ask-addr-tag"></span>
+                    <span class="loc-ask-addr-line"></span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:12px;"></i>`;
+            card.querySelector('.loc-ask-addr-tag').textContent = addr.tag;
+            card.querySelector('.loc-ask-addr-line').textContent = addr.line1 + ', ' + addr.line2;
+            savedList.appendChild(card);
+        });
+    } else if (savedSection) {
+        savedSection.classList.add('hidden');
+    }
+}
+
+function locAskDetect() {
+    // Open the full address manager (map screen) and auto-detect location
+    openAddressManager(true);
+}
+
+function locAskManual() {
+    // Open the full address manager for manual location entry
+    openAddressManager(true);
+}
+
+function locAskSelectAddress(addrId) {
+    const addr = (window.currentAddresses || []).find(a => a.id === addrId);
+    if (addr) {
+        selectAddress(addr);
+        showScreen('screen-dash');
+    }
 }
 
 // Core geolocation call, shared by detectLocation() and requestLocationPermission().
@@ -621,6 +688,8 @@ function closeAddressManager() {
         return;
     }
 
+    updateHeaderLocation();
+
     if (history.state && history.state.screen !== 'screen-address') {
         history.back();
     } else {
@@ -767,6 +836,7 @@ function selectAddress(addr) {
     selectedAddress = addr;
     document.getElementById('curr-addr-tag').innerText = "Delivery to " + addr.tag;
     document.getElementById('curr-addr-text').innerText = addr.line1 + ", " + addr.line2;
+    updateHeaderLocation();
 
     if (!document.getElementById('screen-address').classList.contains('hidden')) {
         renderAddressList();
@@ -1490,8 +1560,6 @@ function renderPopularMeds() {
     `;
     slider.innerHTML = html;
     renderSuggestedProducts();
-    renderVitaminsSection();
-    renderFirstAidSection();
     renderDailyNeeds();
     _startReminderChecker();
 }
@@ -2553,7 +2621,26 @@ function switchTab(el, tabId, pushHistory = true) {
         if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
         else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
         else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; }
-        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments'].includes(tabId)) { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
+        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'].includes(tabId)) {
+            document.getElementById('greeting-text').innerText = "Manage";
+            document.getElementById('dash-user').innerText = "Account";
+            if (tabId === 'tab-profile-settings') {
+                // Populate profile settings sub-page with current user data
+                const psName = document.getElementById('ps-name-disp');
+                const psPhone = document.getElementById('ps-phone-disp');
+                if (window.currentUser) {
+                    if (psName) psName.innerText = window.currentUser.name;
+                    if (psPhone) psPhone.innerText = window.currentUser.phone;
+                }
+            }
+        }
+    }
+
+    // Hide bottom nav dock on account/profile pages
+    const navDock = document.querySelector('.nav-dock');
+    if (navDock) {
+        const accountTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
+        navDock.style.display = accountTabs.includes(tabId) ? 'none' : '';
     }
 
     updateCartUI();
