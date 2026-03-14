@@ -1986,6 +1986,35 @@ function clearSearch() {
     document.getElementById('home-search-content').style.display = 'none';
 }
 
+// Browse-only categories (no medicines in DB yet) with icons for the category page
+const BROWSE_CATEGORIES = [
+    { name: "Skin Care", icon: "fa-hand-sparkles", section: "wellness" },
+    { name: "Eye Care", icon: "fa-eye", section: "wellness" },
+    { name: "Ear Care", icon: "fa-ear-listen", section: "wellness" },
+    { name: "Dental Care", icon: "fa-tooth", section: "wellness" },
+    { name: "Hair Care", icon: "fa-wand-magic-sparkles", section: "wellness" },
+    { name: "Women's Health", icon: "fa-venus", section: "wellness" },
+    { name: "Men's Health", icon: "fa-mars", section: "wellness" },
+    { name: "Baby & Mother Care", icon: "fa-baby", section: "wellness" },
+    { name: "Elderly Care", icon: "fa-person-cane", section: "wellness" },
+    { name: "Antibiotics", icon: "fa-shield-virus", section: "prescription" },
+    { name: "Liver Care", icon: "fa-lungs", section: "organ" },
+    { name: "Kidney Care", icon: "fa-droplet", section: "organ" },
+    { name: "Bone & Joint", icon: "fa-bone", section: "organ" },
+    { name: "Heart Care", icon: "fa-heart", section: "organ" },
+    { name: "Lungs & Respiratory", icon: "fa-lungs", section: "organ" },
+    { name: "Thyroid Care", icon: "fa-syringe", section: "organ" },
+    { name: "Stomach & Gut", icon: "fa-stomach", section: "organ" },
+    { name: "Mental Wellness", icon: "fa-brain", section: "lifestyle" },
+    { name: "Sleep & Stress", icon: "fa-moon", section: "lifestyle" },
+    { name: "Weight Management", icon: "fa-weight-scale", section: "lifestyle" },
+    { name: "Sexual Wellness", icon: "fa-shield-heart", section: "lifestyle" },
+    { name: "Immunity Boosters", icon: "fa-shield", section: "lifestyle" },
+    { name: "Protein & Fitness", icon: "fa-dumbbell", section: "lifestyle" },
+    { name: "Ayurvedic", icon: "fa-leaf", section: "alternative" },
+    { name: "Homeopathy", icon: "fa-mortar-pestle", section: "alternative" },
+];
+
 function renderCategoriesTab() {
     const grid = document.getElementById('all-cats-grid');
     if (!grid) return;
@@ -1996,12 +2025,12 @@ function renderCategoriesTab() {
     const allMapped     = [...SPECIAL_CATS, ...ACUTE_CATS, ...CHRONIC_CATS];
     const colors        = ['orb-1', 'orb-2', 'orb-3'];
 
-    function catCard(cat, idx) {
+    function catCard(cat, idx, icon) {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        if (!example) return '';
+        const iconClass = icon || (example ? example.icon : 'fa-capsules');
         return `
             <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
-                <div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${example.icon}"></i></div>
+                <div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${iconClass}"></i></div>
                 <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
             </div>`;
     }
@@ -2022,7 +2051,49 @@ function renderCategoriesTab() {
         html += chronicCats.map((c, i) => catCard(c, i)).join('');
     }
 
-    // ── Any remaining unmapped categories ──
+    // ── Vitamins, First Aid & Supplements ──
+    const specialCats = SPECIAL_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+    if (specialCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-kit-medical" style="color:#16A34A; margin-right:6px;"></i>Vitamins, Supplements & First Aid</div>`;
+        html += specialCats.map((c, i) => catCard(c, i)).join('');
+    }
+
+    // ── Wellness & Personal Care (browse-only) ──
+    const wellnessCats = BROWSE_CATEGORIES.filter(c => c.section === 'wellness');
+    if (wellnessCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-spa" style="color:#8B5CF6; margin-right:6px;"></i>Wellness & Personal Care</div>`;
+        html += wellnessCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
+    }
+
+    // ── Organ & Body Care (browse-only) ──
+    const organCats = BROWSE_CATEGORIES.filter(c => c.section === 'organ');
+    if (organCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EC4899; margin-right:6px;"></i>Organ & Body Care</div>`;
+        html += organCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
+    }
+
+    // ── Lifestyle & Nutrition (browse-only) ──
+    const lifestyleCats = BROWSE_CATEGORIES.filter(c => c.section === 'lifestyle');
+    if (lifestyleCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-seedling" style="color:#059669; margin-right:6px;"></i>Lifestyle & Nutrition</div>`;
+        html += lifestyleCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
+    }
+
+    // ── Prescription & Specialist (browse-only) ──
+    const rxCats = BROWSE_CATEGORIES.filter(c => c.section === 'prescription');
+    if (rxCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-file-prescription" style="color:#DC2626; margin-right:6px;"></i>Prescription Medicines</div>`;
+        html += rxCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
+    }
+
+    // ── Alternative Medicine (browse-only) ──
+    const altCats = BROWSE_CATEGORIES.filter(c => c.section === 'alternative');
+    if (altCats.length) {
+        html += `<div class="cat-section-label"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-right:6px;"></i>Alternative Medicine</div>`;
+        html += altCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
+    }
+
+    // ── Any remaining unmapped categories from MEDICINE_DB ──
     const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
     if (otherCats.length) {
         html += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
@@ -2061,7 +2132,16 @@ function openCategoryView(catName) {
     document.getElementById('cat-title').innerText = catName;
     const grid = document.getElementById('cat-items-grid');
     const items = MEDICINE_DB.filter(m => m.category === catName);
-    grid.innerHTML = items.map(item => renderItemCard(item)).join('');
+    if (items.length) {
+        grid.innerHTML = items.map(item => renderItemCard(item)).join('');
+    } else {
+        grid.innerHTML = `
+            <div style="grid-column: span 2; text-align:center; padding:40px 20px;">
+                <div style="font-size:48px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
+                <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
+                <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Medicines for this category will be available shortly.</p>
+            </div>`;
+    }
     showScreen('screen-cat-items');
 }
 
@@ -2387,6 +2467,10 @@ function switchTab(el, tabId, pushHistory = true) {
 
     const mainScroll = document.getElementById('main-scroll');
     const dashHeader = document.getElementById('main-dash-header');
+
+    // Show location row only on the home/dashboard tab
+    const locRow = document.getElementById('header-location-row');
+    if (locRow) locRow.style.display = (tabId === 'tab-home') ? '' : 'none';
 
     if (tabId === 'tab-home') {
         const scrollTop = mainScroll ? mainScroll.scrollTop : 0;
