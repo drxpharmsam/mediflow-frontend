@@ -29,7 +29,7 @@
 .wish-btn:active { transform: scale(0.85); }
 
 /* ── Profile tab: hero header (white background, clean) ── */
-.profile-tab-view { padding-top: 0 !important; }
+.profile-tab-view { padding-top: 0 !important; padding-bottom: 0 !important; }
 .profile-hero { margin: 0 -20px 0; padding: 22px 22px 20px; background: white; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #F3F4F6; }
 .profile-avatar-wrap { flex-shrink: 0; }
 .profile-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--c3); border: none; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: white; letter-spacing: 0; }
@@ -103,6 +103,7 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
 
 .header-aura { position: absolute; top: 0; left: 0; right: 0; height: 178px; background: linear-gradient(135deg, var(--c5) 0%, var(--c4) 100%); border-bottom-left-radius: 36px; border-bottom-right-radius: 36px; padding: 44px 22px 0; color: white; z-index: 50; box-shadow: 0 8px 20px rgba(5, 92, 97, 0.18); transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; will-change: height; }
 .header-aura.compact { height: 108px; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; }
+.header-aura.compact #header-location-row { display: none; }
 .search-container { margin-top: 22px; position: relative; z-index: 100; transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 .header-aura.compact .search-container { opacity: 0; transform: translateY(-20px); pointer-events: none; }
 .search-container:focus-within { transform: translateY(-2px) scale(1.02); }
@@ -156,7 +157,7 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
 
 .nav-dock { position: absolute; bottom: 0; left: 0; width: 100%; height: 68px; background: rgba(255, 255, 255, 0.95); border-top-left-radius: 26px; border-top-right-radius: 26px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100; border-top: 1px solid rgba(255,255,255,0.8); padding-bottom: 6px; }
 .nav-item { color: #9CA3AF; font-size: 19px; cursor: pointer; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s, background 0.25s, box-shadow 0.25s; position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 15px; will-change: transform; }
-.nav-item.active { background: linear-gradient(135deg, var(--c1), white); color: var(--c4); transform: translateY(-8px); box-shadow: 0 8px 18px rgba(54, 184, 183, 0.18); border: 1px solid var(--c2); }
+.nav-item.active { background: var(--c4); color: var(--white); transform: translateY(-8px); box-shadow: 0 8px 18px rgba(10, 133, 140, 0.25); border: 1px solid var(--c4); }
 
 /* ─────────────────────────────────────────────────────────────────────────
    ADDRESS / MAP SCREEN  — Full-screen Mapbox + animated bottom sheet
