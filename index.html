@@ -259,15 +259,16 @@
             <!-- PROFILE TAB -->
             <div id="tab-profile" class="content-view profile-tab-view">
 
-                <!-- ── Profile Header ── -->
-                <div class="profile-hero">
+                <!-- ── Profile Header (clickable → opens profile settings sub-page) ── -->
+                <div class="profile-hero" onclick="switchTab(null, 'tab-profile-settings')" style="cursor:pointer;">
                     <div class="profile-avatar-wrap">
                         <div class="profile-avatar" id="profile-avatar-initials">U</div>
                     </div>
-                    <div class="profile-hero-info">
+                    <div class="profile-hero-info" style="flex:1;">
                         <h2 id="db-name-disp" class="profile-hero-name">User</h2>
                         <p id="db-info-disp" class="profile-hero-sub">Details</p>
                     </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:14px;"></i>
                 </div>
 
                 <!-- ── Three Quick Action Cards ── -->
@@ -286,14 +287,14 @@
                     </div>
                 </div>
 
-                <!-- ── MediFlow Cash & Gift Card ── -->
+                <!-- ── MediFlow Cash ── -->
                 <div class="profile-cash-card">
                     <div class="profile-cash-top">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <div style="background:var(--c4); color:white; width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;">
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
-                            <span style="font-weight:800; font-size:15px; color:#111827;">MediFlow Cash &amp; Gift Card</span>
+                            <span style="font-weight:800; font-size:15px; color:#111827;">MediFlow Cash</span>
                         </div>
                         <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:14px;"></i>
                     </div>
@@ -312,24 +313,6 @@
                         <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
                     </div>
                     <div class="profile-menu-divider"></div>
-                    <div class="profile-menu-item" onclick="openWishlist()">
-                        <div class="icon-orb" style="background:#FEE2E2; color:#EF4444; margin-bottom:0; margin-right:14px;"><i class="fa-regular fa-heart"></i></div>
-                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">Your Wishlist</h3></div>
-                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
-                    </div>
-                    <div class="profile-menu-divider"></div>
-                    <div class="profile-menu-item" onclick="showToast('E-Gift Cards feature coming soon!')">
-                        <div class="icon-orb" style="background:#EFF6FF; color:#2563EB; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-credit-card"></i></div>
-                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">E-Gift Cards</h3></div>
-                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
-                    </div>
-                    <div class="profile-menu-divider"></div>
-                    <div class="profile-menu-item" onclick="showToast('Our support team will reach you at your registered number.')">
-                        <div class="icon-orb" style="background:#F0F9FF; color:#0369A1; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-comment-dots"></i></div>
-                        <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">Help &amp; Support</h3></div>
-                        <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
-                    </div>
-                    <div class="profile-menu-divider"></div>
                     <div class="profile-menu-item" onclick="openAddressManager()">
                         <div class="icon-orb" style="background:#F0FDF4; color:#16A34A; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-location-dot"></i></div>
                         <div style="flex:1;">
@@ -337,23 +320,6 @@
                             <p id="saved-addresses-count" style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">No addresses saved</p>
                         </div>
                         <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
-                    </div>
-                    <div class="profile-menu-divider"></div>
-                    <!-- Profile / Update Email inline -->
-                    <div class="profile-menu-item" style="align-items:flex-start; flex-direction:column; cursor:default;">
-                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:12px;">
-                            <div class="icon-orb" style="background:#F5F3FF; color:#7C3AED; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-user-pen"></i></div>
-                            <div style="flex:1;">
-                                <h3 style="margin:0; font-size:15px; font-weight:600;">Profile</h3>
-                                <p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Update your email address</p>
-                            </div>
-                        </div>
-                        <div class="input-group" style="margin-bottom:6px; width:100%;">
-                            <input type="email" id="profile-email" placeholder="you@example.com" style="height:48px;" oninput="document.getElementById('profile-email-err').style.display='none'">
-                            <div id="profile-email-err" class="error-hint">Please enter a valid email address</div>
-                        </div>
-                        <p style="font-size:11px; color:var(--gray-text); font-weight:500; margin:0 0 12px;">Email is optional and used for updates &amp; password recovery</p>
-                        <button onclick="saveProfileEmail()" class="pay-btn-sml" style="width:100%;">Save Email</button>
                     </div>
                     <div class="profile-menu-divider"></div>
                     <div class="profile-menu-item" onclick="openRemindersScreen()">
@@ -378,17 +344,6 @@
                         <i class="fa-solid fa-chevron-right" style="color:#D1D5DB; font-size:13px;"></i>
                     </div>
                     <div class="profile-menu-divider"></div>
-                    <!-- Push Notifications inline -->
-                    <div class="profile-menu-item" id="push-notif-card" style="align-items:flex-start; flex-direction:column; cursor:default;">
-                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:10px;">
-                            <div class="icon-orb" style="background:#F0F9FF; color:#0369A1; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-bell"></i></div>
-                            <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">Notifications</h3></div>
-                        </div>
-                        <p id="push-status-text" style="font-size:12px; font-weight:600; color:#F59E0B; margin:0 0 12px;">Notifications not yet enabled</p>
-                        <button id="push-enable-btn" onclick="enablePushNotifications()" class="pay-btn-sml" style="width:100%; margin-bottom:8px;">Enable Notifications</button>
-                        <button id="push-test-btn" onclick="sendTestNotification()" class="pay-btn-sml" style="width:100%; display:none; background:#F0FDF4; color:#16A34A; border:1.5px solid #BBF7D0;">Send Test Notification</button>
-                    </div>
-                    <div class="profile-menu-divider"></div>
                     <div class="profile-menu-item" onclick="showToast('Terms of Service and Privacy Policy — mediflow.app/legal')">
                         <div class="icon-orb" style="background:#F3F4F6; color:#6B7280; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-circle-info"></i></div>
                         <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">General Info</h3><p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">Terms, Privacy Policy &amp; app information</p></div>
@@ -403,18 +358,71 @@
                     </div>
                 </div>
 
-                <!-- ── Delete Account ── -->
-                <div class="profile-menu-card" style="margin-top:10px;">
+                <!-- ── App Version ── -->
+                <p style="text-align:center; font-size:12px; color:#9CA3AF; font-weight:500; margin:16px 0 32px; line-height:1.7;">MediFlow v1.0.0<br>Your Digital Pharmacy</p>
+
+            </div>
+
+            <!-- PROFILE SETTINGS SUB-PAGE — email, notifications, delete account -->
+            <div id="tab-profile-settings" class="content-view">
+                <div style="margin-bottom:20px; margin-top:10px; display:flex; align-items:center; gap:15px;">
+                    <div onclick="switchTab(null, 'tab-profile')" style="width:40px; height:40px; background:white; border-radius:12px; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 10px rgba(0,0,0,0.05); cursor:pointer;"><i class="fa-solid fa-arrow-left"></i></div>
+                    <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Profile Settings</h3>
+                </div>
+
+                <!-- Profile Name & Phone -->
+                <div class="profile-menu-card" style="margin-bottom:20px;">
+                    <div style="display:flex; align-items:center; gap:14px; padding:4px 0;">
+                        <div class="icon-orb" style="background:#F5F3FF; color:#7C3AED; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-user"></i></div>
+                        <div style="flex:1;">
+                            <h3 id="ps-name-disp" style="margin:0; font-size:16px; font-weight:700; color:#111827;">User</h3>
+                            <p id="ps-phone-disp" style="margin:3px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Phone</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Email -->
+                <p class="profile-section-label">Email Address</p>
+                <div class="profile-menu-card" style="margin-bottom:20px;">
+                    <div class="profile-menu-item" style="align-items:flex-start; flex-direction:column; cursor:default;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:12px;">
+                            <div class="icon-orb" style="background:#F5F3FF; color:#7C3AED; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-envelope"></i></div>
+                            <div style="flex:1;">
+                                <h3 style="margin:0; font-size:15px; font-weight:600;">Update Email</h3>
+                                <p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;">For updates &amp; password recovery</p>
+                            </div>
+                        </div>
+                        <div class="input-group" style="margin-bottom:6px; width:100%;">
+                            <input type="email" id="profile-email" placeholder="you@example.com" style="height:48px;" oninput="document.getElementById('profile-email-err').style.display='none'">
+                            <div id="profile-email-err" class="error-hint">Please enter a valid email address</div>
+                        </div>
+                        <button onclick="saveProfileEmail()" class="pay-btn-sml" style="width:100%;">Save Email</button>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <p class="profile-section-label">Notifications</p>
+                <div class="profile-menu-card" style="margin-bottom:20px;">
+                    <div class="profile-menu-item" id="push-notif-card" style="align-items:flex-start; flex-direction:column; cursor:default;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:10px;">
+                            <div class="icon-orb" style="background:#F0F9FF; color:#0369A1; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-bell"></i></div>
+                            <div style="flex:1;"><h3 style="margin:0; font-size:15px; font-weight:600;">Push Notifications</h3></div>
+                        </div>
+                        <p id="push-status-text" style="font-size:12px; font-weight:600; color:#F59E0B; margin:0 0 12px;">Notifications not yet enabled</p>
+                        <button id="push-enable-btn" onclick="enablePushNotifications()" class="pay-btn-sml" style="width:100%; margin-bottom:8px;">Enable Notifications</button>
+                        <button id="push-test-btn" onclick="sendTestNotification()" class="pay-btn-sml" style="width:100%; display:none; background:#F0FDF4; color:#16A34A; border:1.5px solid #BBF7D0;">Send Test Notification</button>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <p class="profile-section-label" style="color:#EF4444;">Danger Zone</p>
+                <div class="profile-menu-card" style="border:1.5px solid #FEE2E2;">
                     <div class="profile-menu-item" onclick="deleteAccount()" onkeydown="if(event.key==='Enter'||event.key===' ')deleteAccount()" role="button" tabindex="0" aria-label="Delete account permanently">
                         <div class="icon-orb" style="background:#FEE2E2; color:#DC2626; margin-bottom:0; margin-right:14px;"><i class="fa-solid fa-trash-can"></i></div>
                         <div style="flex:1;"><h3 style="color:#DC2626; margin:0; font-size:15px; font-weight:700;">Delete Account</h3><p style="margin:3px 0 0; font-size:12px; color:#EF4444; font-weight:500;">Permanently remove your data</p></div>
                         <i class="fa-solid fa-chevron-right" style="color:#FECACA; font-size:13px;"></i>
                     </div>
                 </div>
-
-                <!-- ── App Version ── -->
-                <p style="text-align:center; font-size:12px; color:#9CA3AF; font-weight:500; margin:16px 0 32px; line-height:1.7;">MediFlow v1.0.0<br>Your Digital Pharmacy</p>
-
             </div>
 
             <!-- ORDER HISTORY TAB -->

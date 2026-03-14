@@ -2617,7 +2617,19 @@ function switchTab(el, tabId, pushHistory = true) {
         if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
         else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
         else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; }
-        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments'].includes(tabId)) { document.getElementById('greeting-text').innerText = "Manage"; document.getElementById('dash-user').innerText = "Account"; }
+        else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'].includes(tabId)) {
+            document.getElementById('greeting-text').innerText = "Manage";
+            document.getElementById('dash-user').innerText = "Account";
+            if (tabId === 'tab-profile-settings') {
+                // Populate profile settings sub-page with current user data
+                const psName = document.getElementById('ps-name-disp');
+                const psPhone = document.getElementById('ps-phone-disp');
+                if (window.currentUser) {
+                    if (psName) psName.innerText = window.currentUser.name;
+                    if (psPhone) psPhone.innerText = window.currentUser.phone;
+                }
+            }
+        }
     }
 
     updateCartUI();
