@@ -1613,7 +1613,7 @@ let _medSliderTotal = 3;
 let _medAutoSlideTimer = null;
 
 const _MED_SLIDE_BGSM = [
-    'linear-gradient(135deg,#006064 0%,#0097A7 100%)',
+    'linear-gradient(135deg,#344E41 0%,#3A5A40 100%)',
     'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
     'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
 ];
