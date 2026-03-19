@@ -885,7 +885,10 @@ function updateCartUI() {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
         }
-        if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '90px';
+        if (activeScreen === 'screen-dash' && mainScroll) {
+            const _acctTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
+            mainScroll.style.paddingBottom = _acctTabs.includes(activeTab) ? '20px' : '90px';
+        }
         return;
     }
 
@@ -977,7 +980,10 @@ function updateCartUI() {
         if (!allowedScreens.includes(activeScreen) || activeTab === 'tab-profile' || activeTab === 'tab-orders' || activeTab === 'tab-wishlist' || activeTab === 'tab-refunds' || activeTab === 'tab-payments') {
             stickyBar.style.display = 'none';
             stickyBar.classList.remove('show');
-            if (activeScreen === 'screen-dash' && mainScroll) mainScroll.style.paddingBottom = '90px';
+            if (activeScreen === 'screen-dash' && mainScroll) {
+                const _acctTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
+                mainScroll.style.paddingBottom = _acctTabs.includes(activeTab) ? '20px' : '90px';
+            }
         } else {
             stickyBar.style.display = 'flex';
             stickyBar.classList.add('show');
@@ -1607,7 +1613,7 @@ let _medSliderTotal = 3;
 let _medAutoSlideTimer = null;
 
 const _MED_SLIDE_BGSM = [
-    'linear-gradient(135deg,#055C61 0%,#0A858C 100%)',
+    'linear-gradient(135deg,#312E81 0%,#4338CA 100%)',
     'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
     'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
 ];
@@ -2504,11 +2510,14 @@ function switchTab(el, tabId, pushHistory = true) {
         }
     }
 
-    // Hide bottom nav dock on account/profile pages
+    // Hide bottom nav dock on account/profile pages; reduce bottom padding since nav is gone
     const navDock = document.querySelector('.nav-dock');
+    const accountTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
     if (navDock) {
-        const accountTabs = ['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'];
         navDock.style.display = accountTabs.includes(tabId) ? 'none' : '';
+    }
+    if (mainScroll) {
+        mainScroll.style.paddingBottom = accountTabs.includes(tabId) ? '20px' : '';
     }
 
     updateCartUI();
