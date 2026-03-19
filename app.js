@@ -1613,7 +1613,7 @@ let _medSliderTotal = 3;
 let _medAutoSlideTimer = null;
 
 const _MED_SLIDE_BGSM = [
-    'linear-gradient(135deg,#312E81 0%,#4338CA 100%)',
+    'linear-gradient(135deg,#006064 0%,#0097A7 100%)',
     'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
     'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
 ];
@@ -2897,7 +2897,7 @@ function _placeTrackerMarkers() {
         width:42px; height:42px;
         background: linear-gradient(135deg, var(--c4), var(--c5));
         border-radius:50%; border:3px solid white;
-        box-shadow:0 0 0 0 rgba(10,133,140,0.5);
+        box-shadow:0 0 0 0 rgba(0,151,167,0.5);
         animation: trackerRiderPulse 2s ease-out infinite;
         display:flex; align-items:center; justify-content:center;
         font-size:20px; cursor:default;
