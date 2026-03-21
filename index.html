@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-    <meta name="theme-color" content="#0097A7">
+    <meta name="theme-color" content="#3A5A40">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="MediFlow">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -149,11 +149,11 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="flex:1; min-width:0;">
                     <div id="header-location-row" class="header-location-row" onclick="openAddressManager()">
-                        <i class="fa-solid fa-location-dot" style="color:#80DEEA; font-size:13px; margin-right:5px;"></i>
-                        <span id="header-loc-text" style="font-size:12px; font-weight:700; color:#E0F7FA; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Set delivery location</span>
-                        <i class="fa-solid fa-chevron-down" style="font-size:9px; color:#80DEEA; margin-left:4px;"></i>
+                        <i class="fa-solid fa-location-dot" style="color:#A3B18A; font-size:13px; margin-right:5px;"></i>
+                        <span id="header-loc-text" style="font-size:12px; font-weight:700; color:#DAD7CD; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Set delivery location</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:9px; color:#A3B18A; margin-left:4px;"></i>
                     </div>
-                    <p id="greeting-text" style="margin:0; opacity:0.8; font-size:13px; font-weight:600; color:#E0F7FA;">Good morning,</p>
+                    <p id="greeting-text" style="margin:0; opacity:0.8; font-size:13px; font-weight:600; color:#DAD7CD;">Good morning,</p>
                     <h2 id="dash-user" style="margin:0; font-size:24px; font-weight:800;">User</h2>
                 </div>
                 <div id="initial-box" onclick="switchTab(null, 'tab-profile')" style="width:44px; height:44px; background:var(--white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--c4); font-size:17px; font-weight:800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor:pointer;">U</div>
@@ -233,6 +233,20 @@
                     <div style="margin-left:5px; flex:1;"><h3 style="margin:0; font-size:16px;">Dr. Strange</h3><p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">Surgeon • ⭐ 4.9</p></div>
                     <div onclick="openConsultation()" style="background:var(--c1); color:var(--c4); border:1px solid var(--c2); padding:10px 20px; border-radius:14px; font-size:13px; font-weight:800; cursor:pointer; transition:0.2s;">Book</div>
                 </div>
+            </div>
+
+            <!-- HEALTH ENCYCLOPEDIA TAB -->
+            <div id="tab-health" class="content-view">
+                <div style="margin-bottom:16px; margin-top:10px;">
+                    <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;" data-i18n="health_title">Health Encyclopedia</h3>
+                    <p style="margin:6px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;" data-i18n="health_subtitle">Plain-language guides to common conditions</p>
+                </div>
+                <div class="disease-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="disease-search" class="disease-search-input" type="text" placeholder="Search a disease or condition…" oninput="filterDiseases(this.value)">
+                </div>
+                <div id="disease-category-pills" class="disease-category-pills"></div>
+                <div id="disease-list"></div>
             </div>
 
             <!-- CART / DELIVERY TAB -->
@@ -400,6 +414,21 @@
                     </div>
                 </div>
 
+                <!-- Language Preference -->
+                <p class="profile-section-label" style="margin-top:20px;" data-i18n="lang_pref_label">Language Preference</p>
+                <div class="profile-menu-card" style="margin-bottom:20px;">
+                    <div class="profile-menu-item" style="flex-direction:column; align-items:flex-start; cursor:default; padding-bottom:6px;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:14px;">
+                            <div class="icon-orb" style="background:#FFF7ED; color:#EA580C; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-language"></i></div>
+                            <div style="flex:1;">
+                                <h3 style="margin:0; font-size:15px; font-weight:600;" data-i18n="lang_choose_title">Choose Language</h3>
+                                <p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;" data-i18n="lang_choose_sub">App content will appear in selected language</p>
+                            </div>
+                        </div>
+                        <div class="lang-grid" id="lang-grid"></div>
+                    </div>
+                </div>
+
                 <!-- Delete Account -->
                 <p class="profile-section-label" style="color:#EF4444;">Danger Zone</p>
                 <div class="profile-menu-card" style="border:1.5px solid #FEE2E2;">
@@ -455,8 +484,9 @@
         <div class="nav-dock">
             <i class="fa-solid fa-house nav-item active" onclick="switchTab(this, 'tab-home')"></i>
             <i class="fa-solid fa-layer-group nav-item" onclick="switchTab(this, 'tab-category')"></i>
+            <i class="fa-solid fa-book-medical nav-item" onclick="switchTab(this, 'tab-health')"></i>
             <i id="nav-btn-doc" class="fa-solid fa-user-doctor nav-item" onclick="switchTab(this, 'tab-doctor')"></i>
-            <i id="nav-btn-cart" class="fa-solid fa-cart-shopping nav-item" onclick="switchTab(this, 'tab-delivery')"></i>
+            <span id="nav-btn-cart" class="nav-item" onclick="switchTab(this, 'tab-delivery')"><i class="fa-solid fa-cart-shopping"></i><span id="nav-cart-badge" class="nav-badge hidden">0</span></span>
         </div>
     </div>
 
@@ -724,7 +754,7 @@
                         <span style="font-size:11px; color:var(--gray-text); font-weight:500;">7:00 PM</span>
                     </div>
                     <div class="rem-time-chip" onclick="selRemTimeChip(this)" data-time="22:00">
-                        <i class="fa-solid fa-moon" style="color:#00BCD4; font-size:18px; margin-bottom:6px; display:block;"></i>
+                        <i class="fa-solid fa-moon" style="color:#588157; font-size:18px; margin-bottom:6px; display:block;"></i>
                         <span style="font-weight:800; font-size:13px; display:block;">Night</span>
                         <span style="font-size:11px; color:var(--gray-text); font-weight:500;">10:00 PM</span>
                     </div>
