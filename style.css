@@ -872,3 +872,46 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background-color:
     display: block; font-size: 12px; color: var(--gray-text); font-weight: 500;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CART BADGE — tiny item-count pill on the cart nav icon
+   ───────────────────────────────────────────────────────────────────────── */
+.nav-badge { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; background: var(--c3); color: #fff; border-radius: 8px; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 4px; pointer-events: none; border: 1.5px solid #fff; line-height: 1; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; transform-origin: center; }
+.nav-badge.hidden { transform: scale(0); opacity: 0; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   HEALTH ENCYCLOPEDIA TAB
+   ───────────────────────────────────────────────────────────────────────── */
+.disease-search-wrap { position: relative; margin-bottom: 20px; }
+.disease-search-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--c3); font-size: 15px; pointer-events: none; }
+.disease-search-input { width: 100%; height: 48px; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 18px; padding: 0 18px 0 44px; font-size: 14px; font-weight: 600; outline: none; color: #111827; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+.disease-search-input:focus { border-color: var(--c3); box-shadow: 0 0 0 3px rgba(88,129,87,0.12); }
+.disease-category-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.disease-category-pills::-webkit-scrollbar { display: none; }
+.disease-cat-pill { flex-shrink: 0; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; background: #F3F4F6; color: var(--gray-text); cursor: pointer; border: 1.5px solid transparent; transition: background 0.18s, color 0.18s, border-color 0.18s; white-space: nowrap; }
+.disease-cat-pill.active { background: var(--c1); color: var(--c4); border-color: var(--c3); }
+.disease-card { background: #fff; border: 1.5px solid #F0F0F0; border-radius: 22px; padding: 18px; margin-bottom: 12px; cursor: pointer; transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.disease-card:active { transform: scale(0.98); box-shadow: 0 6px 20px rgba(58,90,64,0.1); }
+.disease-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.disease-card-icon { width: 46px; height: 46px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.disease-card-title { font-size: 16px; font-weight: 800; color: #111827; }
+.disease-card-tag { font-size: 11px; font-weight: 700; color: var(--c3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+.disease-card-summary { font-size: 13px; color: #4B5563; font-weight: 500; line-height: 1.6; }
+.disease-card-footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.disease-symptom-chip { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 10px; background: var(--c1); color: var(--c4); }
+.disease-detail-sheet { background: #fff; border-radius: 26px; padding: 24px; margin-top: 14px; border: 1.5px solid #E5E7EB; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.disease-detail-section-title { font-size: 13px; font-weight: 800; color: var(--c4); text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 0 8px; }
+.disease-detail-list { list-style: none; padding: 0; margin: 0; }
+.disease-detail-list li { font-size: 13px; color: #4B5563; font-weight: 500; line-height: 1.6; padding: 4px 0 4px 22px; position: relative; }
+.disease-detail-list li::before { content: "•"; position: absolute; left: 6px; color: var(--c3); font-weight: 800; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LANGUAGE SELECTOR
+   ───────────────────────────────────────────────────────────────────────── */
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.lang-option { display: flex; align-items: center; gap: 10px; padding: 14px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 16px; cursor: pointer; transition: border-color 0.18s, background 0.18s; }
+.lang-option.selected { background: var(--c1); border-color: var(--c3); }
+.lang-option .lang-flag { font-size: 22px; line-height: 1; }
+.lang-option .lang-name { font-size: 14px; font-weight: 700; color: #111827; }
+.lang-option .lang-native { font-size: 11px; color: var(--gray-text); font-weight: 500; margin-top: 1px; }
+.lang-option.selected .lang-name, .lang-option.selected .lang-native { color: var(--c4); }

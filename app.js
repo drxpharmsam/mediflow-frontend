@@ -9,6 +9,355 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const socket = LOCAL_MODE ? { on: () => {}, emit: () => {}, off: () => {} } : io(SOCKET_URL);
 let driverMarker = null;
 
+// ─── TRANSLATIONS ──────────────────────────────────────────────────────────
+const SUPPORTED_LANGS = [
+    { code: 'en', flag: '🇬🇧', name: 'English',    native: 'English' },
+    { code: 'hi', flag: '🇮🇳', name: 'Hindi',      native: 'हिन्दी' },
+    { code: 'mr', flag: '🇮🇳', name: 'Marathi',    native: 'मराठी' },
+    { code: 'ta', flag: '🇮🇳', name: 'Tamil',      native: 'தமிழ்' },
+    { code: 'bn', flag: '🇮🇳', name: 'Bengali',    native: 'বাংলা' },
+    { code: 'te', flag: '🇮🇳', name: 'Telugu',     native: 'తెలుగు' },
+];
+
+const TRANSLATIONS = {
+    en: {
+        greeting_morning: 'Good morning,', greeting_afternoon: 'Good afternoon,', greeting_evening: 'Good evening,',
+        quick_services: 'Quick Services', popular_medicines: 'Popular Medicines', suggested: 'Suggested for You',
+        daily_needs: 'Daily Needs', by_category: 'By Category', search_placeholder: 'Search medicines or health products...',
+        cart_empty_title: 'Your Cart is Empty', cart_empty_sub: "Looks like you haven't added anything yet.",
+        cart_title: 'My Cart', bill_order_items: 'Order Items', bill_summary: 'Bill Summary',
+        bill_item_total: 'Item Total', bill_delivery: 'Delivery Fee', bill_platform: 'Platform Fee', bill_total: 'Amount to Pay',
+        checkout_btn: 'Place Order', view_cart_btn: 'View Cart',
+        health_title: 'Health Encyclopedia', health_subtitle: 'Plain-language guides to common conditions',
+        health_all: 'All',
+        lang_pref_label: 'Language Preference', lang_choose_title: 'Choose Language',
+        lang_choose_sub: 'App content will appear in selected language',
+        explore_pharmacy: 'Explore', explore_pharmacy_sub: 'Pharmacy',
+        consult: 'Consult', specialists: 'Specialists',
+        checkout_title: 'Secure', checkout_sub: 'Checkout',
+        manage: 'Manage', account: 'Account',
+        order_rx: 'Order via Prescription', order_rx_sub: 'Upload & let AI scan',
+        doctor_consult: 'Doctor\nConsult', pharmacy_store: 'Pharmacy\nStore',
+        see_all: 'See All\nMedicines',
+        add_to_cart: 'ADD TO CART', add_wishlist: 'Add to Wishlist', set_reminder: 'Set Reminder',
+    },
+    hi: {
+        greeting_morning: 'सुप्रभात,', greeting_afternoon: 'नमस्ते,', greeting_evening: 'शुभ संध्या,',
+        quick_services: 'त्वरित सेवाएं', popular_medicines: 'लोकप्रिय दवाएं', suggested: 'आपके लिए सुझाव',
+        daily_needs: 'दैनिक जरूरतें', by_category: 'श्रेणी अनुसार', search_placeholder: 'दवाएं या उत्पाद खोजें...',
+        cart_empty_title: 'आपकी कार्ट खाली है', cart_empty_sub: 'अभी तक कुछ भी नहीं जोड़ा।',
+        cart_title: 'मेरी कार्ट', bill_order_items: 'ऑर्डर आइटम', bill_summary: 'बिल सारांश',
+        bill_item_total: 'कुल राशि', bill_delivery: 'डिलीवरी शुल्क', bill_platform: 'प्लेटफ़ॉर्म शुल्क', bill_total: 'भुगतान राशि',
+        checkout_btn: 'ऑर्डर करें', view_cart_btn: 'कार्ट देखें',
+        health_title: 'स्वास्थ्य विश्वकोश', health_subtitle: 'सामान्य बीमारियों की सरल जानकारी',
+        health_all: 'सभी',
+        lang_pref_label: 'भाषा प्राथमिकता', lang_choose_title: 'भाषा चुनें',
+        lang_choose_sub: 'चुनी गई भाषा में सामग्री दिखाई देगी',
+        explore_pharmacy: 'एक्सप्लोर', explore_pharmacy_sub: 'फार्मेसी',
+        consult: 'परामर्श', specialists: 'विशेषज्ञ',
+        checkout_title: 'सुरक्षित', checkout_sub: 'चेकआउट',
+        manage: 'प्रबंधन', account: 'खाता',
+        order_rx: 'पर्चे से ऑर्डर करें', order_rx_sub: 'अपलोड करें और AI स्कैन करें',
+        doctor_consult: 'डॉक्टर\nपरामर्श', pharmacy_store: 'फार्मेसी\nस्टोर',
+        see_all: 'सभी दवाएं\nदेखें',
+        add_to_cart: 'कार्ट में जोड़ें', add_wishlist: 'विशलिस्ट में जोड़ें', set_reminder: 'रिमाइंडर सेट करें',
+    },
+    mr: {
+        greeting_morning: 'सुप्रभात,', greeting_afternoon: 'नमस्कार,', greeting_evening: 'शुभ संध्या,',
+        quick_services: 'त्वरित सेवा', popular_medicines: 'लोकप्रिय औषधे', suggested: 'तुमच्यासाठी सुचवलेले',
+        daily_needs: 'दैनंदिन गरजा', by_category: 'श्रेणीनुसार', search_placeholder: 'औषधे किंवा उत्पादने शोधा...',
+        cart_empty_title: 'तुमची कार्ट रिकामी आहे', cart_empty_sub: 'अजून काहीही जोडले नाही.',
+        cart_title: 'माझी कार्ट', bill_order_items: 'ऑर्डर आयटम', bill_summary: 'बिल सारांश',
+        bill_item_total: 'एकूण रक्कम', bill_delivery: 'डिलिव्हरी शुल्क', bill_platform: 'प्लॅटफॉर्म शुल्क', bill_total: 'देय रक्कम',
+        checkout_btn: 'ऑर्डर द्या', view_cart_btn: 'कार्ट पहा',
+        health_title: 'आरोग्य विश्वकोश', health_subtitle: 'सामान्य आजारांची साध्या भाषेत माहिती',
+        health_all: 'सर्व',
+        lang_pref_label: 'भाषा पसंती', lang_choose_title: 'भाषा निवडा',
+        lang_choose_sub: 'निवडलेल्या भाषेत माहिती दिसेल',
+        explore_pharmacy: 'एक्सप्लोर', explore_pharmacy_sub: 'फार्मसी',
+        consult: 'सल्लामसलत', specialists: 'तज्ज्ञ',
+        checkout_title: 'सुरक्षित', checkout_sub: 'चेकआउट',
+        manage: 'व्यवस्थापन', account: 'खाते',
+        order_rx: 'प्रिस्क्रिप्शनने ऑर्डर करा', order_rx_sub: 'अपलोड करा आणि AI स्कॅन करा',
+        doctor_consult: 'डॉक्टर\nसल्लामसलत', pharmacy_store: 'फार्मसी\nस्टोर',
+        see_all: 'सर्व औषधे\nपहा',
+        add_to_cart: 'कार्टमध्ये जोडा', add_wishlist: 'विशलिस्टमध्ये जोडा', set_reminder: 'रिमाइंडर लावा',
+    },
+    ta: {
+        greeting_morning: 'காலை வணக்கம்,', greeting_afternoon: 'மதிய வணக்கம்,', greeting_evening: 'மாலை வணக்கம்,',
+        quick_services: 'விரைவு சேவைகள்', popular_medicines: 'பிரபல மருந்துகள்', suggested: 'உங்களுக்கான பரிந்துரை',
+        daily_needs: 'தினசரி தேவைகள்', by_category: 'வகை வாரியாக', search_placeholder: 'மருந்துகள் தேடுங்கள்...',
+        cart_empty_title: 'உங்கள் கார்ட் காலியாக உள்ளது', cart_empty_sub: 'இதுவரை எதுவும் சேர்க்கவில்லை.',
+        cart_title: 'என் கார்ட்', bill_order_items: 'ஆர்டர் பொருட்கள்', bill_summary: 'பில் சுருக்கம்',
+        bill_item_total: 'மொத்த தொகை', bill_delivery: 'டெலிவரி கட்டணம்', bill_platform: 'தள கட்டணம்', bill_total: 'செலுத்த வேண்டிய தொகை',
+        checkout_btn: 'ஆர்டர் செய்', view_cart_btn: 'கார்ட் பார்',
+        health_title: 'சுகாதார கலைக்களஞ்சியம்', health_subtitle: 'பொதுவான நோய்களுக்கான எளிய வழிகாட்டி',
+        health_all: 'அனைத்தும்',
+        lang_pref_label: 'மொழி விருப்பம்', lang_choose_title: 'மொழி தேர்வு',
+        lang_choose_sub: 'தேர்ந்த மொழியில் உள்ளடக்கம் காட்டப்படும்',
+        explore_pharmacy: 'ஆராய்', explore_pharmacy_sub: 'மருந்தகம்',
+        consult: 'ஆலோசனை', specialists: 'நிபுணர்கள்',
+        checkout_title: 'பாதுகாப்பான', checkout_sub: 'செக்அவுட்',
+        manage: 'நிர்வகி', account: 'கணக்கு',
+        order_rx: 'மருந்துச்சீட்டால் ஆர்டர்', order_rx_sub: 'பதிவேற்றி AI ஸ்கேன் செய்',
+        doctor_consult: 'டாக்டர்\nஆலோசனை', pharmacy_store: 'மருந்தகம்\nஸ்டோர்',
+        see_all: 'அனைத்து மருந்துகளும்\nபார்க்க',
+        add_to_cart: 'கார்டில் சேர்', add_wishlist: 'விஷ்லிஸ்டில் சேர்', set_reminder: 'நினைவூட்டல் அமை',
+    },
+    bn: {
+        greeting_morning: 'শুভ সকাল,', greeting_afternoon: 'শুভ বিকেল,', greeting_evening: 'শুভ সন্ধ্যা,',
+        quick_services: 'দ্রুত সেবা', popular_medicines: 'জনপ্রিয় ওষুধ', suggested: 'আপনার জন্য পরামর্শ',
+        daily_needs: 'দৈনন্দিন প্রয়োজন', by_category: 'বিভাগ অনুযায়ী', search_placeholder: 'ওষুধ বা পণ্য খুঁজুন...',
+        cart_empty_title: 'আপনার কার্ট খালি', cart_empty_sub: 'এখনও কিছু যোগ করা হয়নি।',
+        cart_title: 'আমার কার্ট', bill_order_items: 'অর্ডার আইটেম', bill_summary: 'বিল সারসংক্ষেপ',
+        bill_item_total: 'মোট পরিমাণ', bill_delivery: 'ডেলিভারি ফি', bill_platform: 'প্ল্যাটফর্ম ফি', bill_total: 'পরিশোধযোগ্য পরিমাণ',
+        checkout_btn: 'অর্ডার করুন', view_cart_btn: 'কার্ট দেখুন',
+        health_title: 'স্বাস্থ্য বিশ্বকোষ', health_subtitle: 'সাধারণ রোগের সহজ গাইড',
+        health_all: 'সব',
+        lang_pref_label: 'ভাষা পছন্দ', lang_choose_title: 'ভাষা বেছে নিন',
+        lang_choose_sub: 'নির্বাচিত ভাষায় কন্টেন্ট দেখাবে',
+        explore_pharmacy: 'এক্সপ্লোর', explore_pharmacy_sub: 'ফার্মেসি',
+        consult: 'পরামর্শ', specialists: 'বিশেষজ্ঞ',
+        checkout_title: 'নিরাপদ', checkout_sub: 'চেকআউট',
+        manage: 'পরিচালনা', account: 'অ্যাকাউন্ট',
+        order_rx: 'প্রেসক্রিপশনে অর্ডার', order_rx_sub: 'আপলোড করুন ও AI স্ক্যান করুন',
+        doctor_consult: 'ডাক্তার\nপরামর্শ', pharmacy_store: 'ফার্মেসি\nস্টোর',
+        see_all: 'সব ওষুধ\nদেখুন',
+        add_to_cart: 'কার্টে যোগ করুন', add_wishlist: 'উইশলিস্টে যোগ করুন', set_reminder: 'রিমাইন্ডার সেট করুন',
+    },
+    te: {
+        greeting_morning: 'శుభోదయం,', greeting_afternoon: 'శుభ మధ్యాహ్నం,', greeting_evening: 'శుభ సాయంత్రం,',
+        quick_services: 'త్వరిత సేవలు', popular_medicines: 'ప్రసిద్ధ మందులు', suggested: 'మీకు సూచించినవి',
+        daily_needs: 'రోజువారీ అవసరాలు', by_category: 'వర్గం వారీగా', search_placeholder: 'మందులు లేదా ఉత్పత్తులు వెతకండి...',
+        cart_empty_title: 'మీ కార్ట్ ఖాళీగా ఉంది', cart_empty_sub: 'ఇంకా ఏమీ జోడించలేదు.',
+        cart_title: 'నా కార్ట్', bill_order_items: 'ఆర్డర్ వస్తువులు', bill_summary: 'బిల్ సారాంశం',
+        bill_item_total: 'మొత్తం', bill_delivery: 'డెలివరీ రుసుము', bill_platform: 'ప్లాట్‌ఫారమ్ రుసుము', bill_total: 'చెల్లించాల్సిన మొత్తం',
+        checkout_btn: 'ఆర్డర్ చేయండి', view_cart_btn: 'కార్ట్ చూడండి',
+        health_title: 'ఆరోగ్య విజ్ఞానకోశం', health_subtitle: 'సాధారణ వ్యాధులకు సరళమైన మార్గదర్శకాలు',
+        health_all: 'అన్నీ',
+        lang_pref_label: 'భాష ప్రాధాన్యత', lang_choose_title: 'భాష ఎంచుకోండి',
+        lang_choose_sub: 'ఎంచుకున్న భాషలో కంటెంట్ చూపబడుతుంది',
+        explore_pharmacy: 'అన్వేషించండి', explore_pharmacy_sub: 'ఫార్మసీ',
+        consult: 'సంప్రదింపు', specialists: 'నిపుణులు',
+        checkout_title: 'సురక్షిత', checkout_sub: 'చెక్‌అవుట్',
+        manage: 'నిర్వహణ', account: 'ఖాతా',
+        order_rx: 'ప్రిస్క్రిప్షన్ తో ఆర్డర్', order_rx_sub: 'అప్‌లోడ్ చేసి AI స్కాన్ చేయండి',
+        doctor_consult: 'డాక్టర్\nసంప్రదింపు', pharmacy_store: 'ఫార్మసీ\nస్టోర్',
+        see_all: 'అన్ని మందులు\nచూడండి',
+        add_to_cart: 'కార్ట్‌కు జోడించండి', add_wishlist: 'విష్‌లిస్ట్‌కు జోడించండి', set_reminder: 'రిమైండర్ సెట్ చేయండి',
+    },
+};
+
+let _currentLang = 'en';
+function t(key) { return (TRANSLATIONS[_currentLang] || TRANSLATIONS.en)[key] || TRANSLATIONS.en[key] || key; }
+
+// ─── DISEASE DATABASE ───────────────────────────────────────────────────────
+const DISEASE_DB = [
+    {
+        id: 'd1', name: 'Common Cold', category: 'Infections',
+        icon: 'fa-head-side-cough', iconBg: '#E0F0FF', iconColor: '#457B9D',
+        summary: 'A viral infection of the nose and throat. Very common and usually mild — most people recover in 7–10 days without any medicine.',
+        causes: ['Rhinovirus (most common cause)', 'Spread by touching infected surfaces then touching your face', 'Being in close contact with a sick person'],
+        symptoms: ['Runny or stuffy nose', 'Sneezing', 'Sore throat', 'Mild fever', 'Cough', 'Feeling tired'],
+        doThis: ['Drink plenty of fluids (water, warm soup)', 'Rest as much as you can', 'Use saline nose drops for congestion', 'Gargle warm salt water for sore throat'],
+        avoid: ['Antibiotics — they don\'t help against viruses', 'Sharing utensils or towels'],
+        whenToSee: 'High fever above 39°C, symptoms lasting more than 10 days, or chest pain',
+    },
+    {
+        id: 'd2', name: 'Fever', category: 'Common Symptoms',
+        icon: 'fa-temperature-high', iconBg: '#FFF0E5', iconColor: '#E07B39',
+        summary: 'Fever is your body\'s way of fighting infection. It is not a disease itself — it\'s a sign something is going on (usually an infection).',
+        causes: ['Bacterial or viral infection (cold, flu, typhoid)', 'Heat exhaustion', 'Vaccination reaction', 'Inflammatory conditions'],
+        symptoms: ['Body temperature above 38°C (100.4°F)', 'Sweating and chills', 'Headache', 'Muscle aches', 'Loss of appetite'],
+        doThis: ['Rest and drink lots of fluids', 'Paracetamol or ibuprofen can reduce fever', 'Light clothing and cool room', 'Sponge with lukewarm water if very high'],
+        avoid: ['Cold baths — they cause shivering which raises temperature', 'Aspirin in children under 16'],
+        whenToSee: 'Temperature above 40°C, fever lasting more than 3 days, or a child under 3 months with any fever',
+    },
+    {
+        id: 'd3', name: 'Headache', category: 'Common Symptoms',
+        icon: 'fa-head-side', iconBg: '#F3E8FF', iconColor: '#7C3AED',
+        summary: 'A pain or discomfort in the head or neck area. Most headaches are tension-type — not dangerous — and go away with rest or a mild painkiller.',
+        causes: ['Stress or muscle tension', 'Dehydration', 'Lack of sleep', 'Eye strain (too much screen time)', 'Sinus congestion'],
+        symptoms: ['Dull pressure or aching around the head', 'Pain on one or both sides', 'Sensitivity to light or sound (migraine)', 'Tight feeling in neck or shoulders'],
+        doThis: ['Drink a glass of water first — dehydration is a top cause', 'Rest in a quiet, dark room', 'Paracetamol or ibuprofen as directed', 'Gentle neck stretches'],
+        avoid: ['Taking too many painkillers — overuse causes rebound headaches', 'Skipping meals'],
+        whenToSee: 'Sudden severe "thunderclap" headache, headache with stiff neck and fever, or headache after a head injury',
+    },
+    {
+        id: 'd4', name: 'Diarrhoea', category: 'Digestive',
+        icon: 'fa-toilet', iconBg: '#FEF3C7', iconColor: '#D97706',
+        summary: 'Loose or watery stools, usually 3 or more times a day. Most cases are caused by infections and clear up in 2–3 days. The biggest risk is dehydration.',
+        causes: ['Viral (stomach flu — most common)', 'Bacterial (contaminated food or water)', 'Antibiotic side-effects', 'Food intolerance'],
+        symptoms: ['Frequent loose or watery stools', 'Stomach cramps', 'Nausea', 'Mild fever'],
+        doThis: ['Drink ORS (oral rehydration salts) or coconut water to replace lost fluids', 'Eat plain foods — rice, bananas, toast', 'Wash hands thoroughly after every toilet visit'],
+        avoid: ['Dairy, fatty, spicy, or sugary foods', 'Stopping fluids — dehydration is the main danger'],
+        whenToSee: 'Blood in stools, signs of dehydration (dry mouth, no urination), fever above 38.5°C, or lasting more than 3 days',
+    },
+    {
+        id: 'd5', name: 'Acidity / Heartburn', category: 'Digestive',
+        icon: 'fa-fire-flame-curved', iconBg: '#FEE2E2', iconColor: '#DC2626',
+        summary: 'A burning feeling in the chest or throat caused by stomach acid coming back up. Very common and usually relieved by simple lifestyle changes or antacids.',
+        causes: ['Heavy or spicy meals', 'Lying down right after eating', 'Obesity', 'Smoking or alcohol', 'Stress'],
+        symptoms: ['Burning sensation in chest (heartburn)', 'Sour taste in mouth', 'Bloating', 'Belching', 'Feeling full quickly'],
+        doThis: ['Eat smaller, more frequent meals', 'Stay upright for 2–3 hours after eating', 'Antacids (like ENO) give quick relief', 'Raise head of bed slightly when sleeping'],
+        avoid: ['Spicy, oily, or acidic foods', 'Tea/coffee on empty stomach', 'Late-night meals'],
+        whenToSee: 'Difficulty swallowing, unexplained weight loss, symptoms more than twice a week, or vomiting blood',
+    },
+    {
+        id: 'd6', name: 'Diabetes (Type 2)', category: 'Chronic',
+        icon: 'fa-droplet', iconBg: '#FFF7ED', iconColor: '#EA580C',
+        summary: 'A condition where blood sugar stays too high because the body can\'t use insulin properly. It is manageable with lifestyle changes and medication.',
+        causes: ['Being overweight or inactive', 'Family history of diabetes', 'Unhealthy eating habits', 'Age above 45 (higher risk)'],
+        symptoms: ['Frequent urination', 'Feeling very thirsty', 'Slow-healing wounds', 'Blurred vision', 'Tingling in hands or feet', 'Feeling tired'],
+        doThis: ['Eat less sugar, white rice, and refined carbs', 'Walk 30 minutes a day', 'Take medicines exactly as prescribed', 'Check blood sugar regularly'],
+        avoid: ['Sugary drinks and sweets', 'Skipping meals or medicine', 'Smoking'],
+        whenToSee: 'Very high or very low blood sugar, chest pain, or numbness/pain in feet',
+    },
+    {
+        id: 'd7', name: 'High Blood Pressure', category: 'Chronic',
+        icon: 'fa-heart-pulse', iconBg: '#FFE4E6', iconColor: '#BE123C',
+        summary: 'Blood pressure that is consistently too high (140/90 or above). Often called the "silent killer" because it has no obvious symptoms but can lead to heart attack or stroke.',
+        causes: ['Too much salt in diet', 'Stress', 'Being overweight', 'Lack of exercise', 'Family history', 'Alcohol or smoking'],
+        symptoms: ['Usually no symptoms (that\'s why it\'s dangerous)', 'Occasional headaches at the back of head', 'Dizziness', 'Blurred vision'],
+        doThis: ['Reduce salt intake', 'Exercise 30 min most days', 'Eat fruits and vegetables', 'Take BP medicines as prescribed every day', 'Check BP regularly'],
+        avoid: ['Salt, processed foods, pickles', 'Alcohol and smoking', 'Stopping medication without asking doctor'],
+        whenToSee: 'BP above 180/120, severe headache, chest pain, vision changes, or sudden weakness',
+    },
+    {
+        id: 'd8', name: 'Asthma', category: 'Respiratory',
+        icon: 'fa-lungs', iconBg: '#E0F0FF', iconColor: '#1D4ED8',
+        summary: 'A condition where the airways narrow and swell, making it hard to breathe. It cannot be cured but is very well controlled with the right inhalers.',
+        causes: ['Dust, pollen, or pet dander (allergens)', 'Cold air or smoke', 'Exercise in some people', 'Respiratory infections', 'Family history'],
+        symptoms: ['Shortness of breath', 'Chest tightness', 'Wheezing sound when breathing', 'Cough — especially at night'],
+        doThis: ['Always carry your reliever inhaler', 'Identify and avoid your personal triggers', 'Use a preventer inhaler as prescribed even when feeling fine', 'Keep home dust-free'],
+        avoid: ['Smoke (including others\')', 'Skipping preventer inhaler', 'Pets if allergic'],
+        whenToSee: 'Reliever inhaler not helping, lips or nails turning blue, cannot speak in full sentences',
+    },
+    {
+        id: 'd9', name: 'Urinary Tract Infection (UTI)', category: 'Infections',
+        icon: 'fa-bacterium', iconBg: '#FFF7ED', iconColor: '#C2410C',
+        summary: 'A bacterial infection in the urinary system — most commonly the bladder. More common in women. Usually treated with antibiotics and clears up quickly.',
+        causes: ['Bacteria entering the urinary tract (often from the bowel)', 'Not drinking enough water', 'Holding urine for too long', 'Sexual activity'],
+        symptoms: ['Burning or pain when urinating', 'Need to urinate more often', 'Cloudy or bad-smelling urine', 'Pelvic pain', 'Low fever'],
+        doThis: ['Drink plenty of water to flush bacteria', 'Urinate frequently — don\'t hold it in', 'Take the full course of antibiotics as prescribed', 'Urinate after sexual activity'],
+        avoid: ['Caffeine and alcohol — irritate the bladder', 'Stopping antibiotics early even if feeling better'],
+        whenToSee: 'High fever, back or side pain (kidney infection), blood in urine, or no improvement after 2 days of antibiotics',
+    },
+    {
+        id: 'd10', name: 'Anaemia', category: 'Blood',
+        icon: 'fa-circle-half-stroke', iconBg: '#FEE2E2', iconColor: '#DC2626',
+        summary: 'When your blood has too few healthy red blood cells to carry enough oxygen around the body. Iron-deficiency anaemia (from low iron intake) is the most common type in India.',
+        causes: ['Low iron intake (main cause — especially in women)', 'Vitamin B12 deficiency', 'Heavy menstrual periods', 'Bleeding in stomach or bowel'],
+        symptoms: ['Tiredness and weakness', 'Pale skin or pale inner eyelids', 'Shortness of breath on mild effort', 'Dizziness', 'Cold hands and feet', 'Craving unusual things like mud or ice'],
+        doThis: ['Eat iron-rich foods: green leafy vegetables, dal, meat, eggs', 'Take iron supplements as prescribed', 'Add vitamin C (lemon, amla) with iron-rich meals to boost absorption', 'Avoid tea/coffee with iron-rich meals'],
+        avoid: ['Tea and coffee with meals (blocks iron absorption)', 'Ignoring symptoms for too long'],
+        whenToSee: 'Extreme fatigue, chest pain, rapid heartbeat, or severe breathlessness',
+    },
+    {
+        id: 'd11', name: 'Dengue Fever', category: 'Infections',
+        icon: 'fa-mosquito', iconBg: '#FFF0E5', iconColor: '#C2410C',
+        summary: 'A viral infection spread by the Aedes mosquito (breeds in clean, stagnant water). Common during and after monsoon. Most people recover in 1–2 weeks with proper rest.',
+        causes: ['Bite from an infected Aedes mosquito', 'No direct person-to-person spread'],
+        symptoms: ['Sudden high fever (39–40°C)', 'Severe headache', 'Pain behind the eyes', 'Severe joint and muscle pain ("breakbone fever")', 'Rash', 'Mild bleeding from nose or gums'],
+        doThis: ['Rest completely', 'Drink lots of fluids — ORS, coconut water, juices', 'Take only paracetamol for fever', 'Watch platelet count with regular blood tests'],
+        avoid: ['Ibuprofen or aspirin — they increase bleeding risk in dengue', 'Ignoring warning signs'],
+        whenToSee: 'Bleeding from any site, severe stomach pain, persistent vomiting, difficulty breathing, or extreme drowsiness',
+    },
+    {
+        id: 'd12', name: 'Skin Allergy / Rash', category: 'Skin',
+        icon: 'fa-hand-dots', iconBg: '#FCE7F3', iconColor: '#BE185D',
+        summary: 'An allergic reaction on the skin caused by contact with something that irritates it. Usually causes red, itchy patches or bumps. Most mild reactions settle on their own.',
+        causes: ['Soaps, detergents, or cosmetics', 'Certain foods (nuts, shellfish, dairy)', 'Insect bites', 'Pollen, dust, or pet hair', 'Medicines'],
+        symptoms: ['Red, itchy skin', 'Bumps, hives, or blisters', 'Dry, flaky skin', 'Swelling', 'Burning or stinging'],
+        doThis: ['Identify and avoid the trigger', 'Apply a cool, wet cloth to soothe itching', 'Over-the-counter antihistamine tablet for itch', 'Calamine lotion for rashes'],
+        avoid: ['Scratching — it makes things worse and can cause infection', 'Hot showers (worsen itching)', 'The specific trigger food or product'],
+        whenToSee: 'Rash spreading rapidly, swelling of face or throat, difficulty breathing, or fever with rash',
+    },
+    {
+        id: 'd13', name: 'Typhoid', category: 'Infections',
+        icon: 'fa-virus', iconBg: '#E0F7E9', iconColor: '#166534',
+        summary: 'A bacterial infection caused by Salmonella Typhi, usually from contaminated food or water. Common in areas with poor sanitation. Treated effectively with antibiotics.',
+        causes: ['Drinking contaminated water or eating food washed with contaminated water', 'Poor hand hygiene', 'Not washing fruits and vegetables properly'],
+        symptoms: ['Sustained high fever (usually rising over several days)', 'Headache', 'Abdominal pain', 'Loss of appetite', 'Constipation or diarrhoea', 'Rose-coloured spots on chest in some cases'],
+        doThis: ['Complete the full antibiotic course (usually 10–14 days)', 'Rest and drink plenty of boiled or purified water', 'Eat soft, easily digestible food', 'Wash hands before eating and after toilet'],
+        avoid: ['Raw vegetables or outside food while ill', 'Stopping antibiotics once fever drops — the bacteria may not be fully gone'],
+        whenToSee: 'Extremely high fever, confusion, severe stomach pain, or bleeding from bowel',
+    },
+    {
+        id: 'd14', name: 'Back Pain', category: 'Bones & Joints',
+        icon: 'fa-person-walking', iconBg: '#F0FDF4', iconColor: '#166534',
+        summary: 'Pain felt in the lower or upper back, extremely common. Most cases are muscular (from strain or poor posture) and improve within a few weeks.',
+        causes: ['Muscle strain from lifting or sudden movement', 'Poor posture at desk or phone use', 'Sitting for long hours', 'Being overweight', 'Disc issues in older adults'],
+        symptoms: ['Aching or stiffness anywhere along the spine', 'Sharp shooting pain', 'Difficulty standing up straight', 'Pain radiating down the leg (sciatica)'],
+        doThis: ['Stay as active as you can — lying in bed too long makes it worse', 'Gentle stretching and walking', 'Heat pad or warm bath for muscle pain', 'Paracetamol or ibuprofen for pain relief', 'Improve your sitting posture'],
+        avoid: ['Complete bed rest for more than a day or two', 'Heavy lifting while in pain', 'Slouching at a desk'],
+        whenToSee: 'Pain shooting down one leg, numbness in legs, loss of bladder or bowel control, or pain after a fall or injury',
+    },
+    {
+        id: 'd15', name: 'Conjunctivitis (Pink Eye)', category: 'Eyes',
+        icon: 'fa-eye', iconBg: '#E0F0FF', iconColor: '#1D4ED8',
+        summary: 'Redness and inflammation of the clear membrane covering the white of the eye. Usually caused by infection or allergy. Very contagious if caused by a virus.',
+        causes: ['Viral infection (most common — spreads easily)', 'Bacterial infection', 'Allergic reaction (dust, pollen)', 'Chlorine in swimming pools'],
+        symptoms: ['Red or pink eyes', 'Watery or sticky discharge', 'Itching or burning sensation', 'Crusty eyelids in the morning', 'Sensitivity to light'],
+        doThis: ['Wash hands frequently — don\'t touch eyes', 'Clean discharge with a clean, warm damp cloth', 'Don\'t share towels or pillowcases', 'Antibiotic eye drops only if bacterial (doctor should advise)'],
+        avoid: ['Touching or rubbing eyes', 'Wearing contact lenses until it clears', 'Sharing eye drops or makeup'],
+        whenToSee: 'Severe eye pain, vision problems, or no improvement after 5 days',
+    },
+    {
+        id: 'd16', name: 'Malaria', category: 'Infections',
+        icon: 'fa-mosquito-net', iconBg: '#FFF7ED', iconColor: '#B45309',
+        summary: 'A serious infection caused by parasites spread through Anopheles mosquito bites. Common in India, especially during monsoon. Treatable if caught early.',
+        causes: ['Bite of an infected female Anopheles mosquito (bites at night)', 'Mosquitoes breed in stagnant water'],
+        symptoms: ['Cyclical high fever with chills and shivering', 'Sweating', 'Headache and muscle pain', 'Nausea and vomiting', 'Anaemia over time'],
+        doThis: ['Seek medical care immediately for fever with chills — get a malaria test', 'Complete the full course of antimalarial medicine', 'Rest and hydration', 'Use mosquito nets and repellents to prevent future bites'],
+        avoid: ['Delaying diagnosis', 'Stopping treatment early'],
+        whenToSee: 'Immediately if you have cyclical fever with chills. Serious malaria (P. falciparum) can be life-threatening if delayed.',
+    },
+    {
+        id: 'd17', name: 'Obesity', category: 'Lifestyle',
+        icon: 'fa-weight-scale', iconBg: '#F3F4F6', iconColor: '#374151',
+        summary: 'When excess body fat has accumulated to the point that it may have a negative effect on health. BMI above 30 is defined as obese. It increases risk of many serious conditions.',
+        causes: ['Eating more calories than the body burns', 'Sedentary lifestyle', 'Genetics', 'Poor sleep', 'Stress eating', 'Certain medications'],
+        symptoms: ['Excess body weight', 'Breathlessness on mild exertion', 'Joint pain (especially knees)', 'Fatigue', 'Low self-esteem or depression'],
+        doThis: ['Reduce portion sizes and sugary foods', 'Walk 30–45 minutes every day', 'Eat more vegetables, fruits, and protein', 'Drink water before meals', 'Sleep 7–8 hours — poor sleep leads to weight gain'],
+        avoid: ['Crash diets — they don\'t work long term', 'Sugary drinks including fruit juices', 'Snacking while watching TV'],
+        whenToSee: 'If BMI is above 35, or if you have diabetes, high blood pressure, or joint pain caused by weight',
+    },
+    {
+        id: 'd18', name: 'Anxiety', category: 'Mental Health',
+        icon: 'fa-brain', iconBg: '#F3E8FF', iconColor: '#7C3AED',
+        summary: 'Persistent feelings of worry, nervousness, or fear that are difficult to control. Mild anxiety is normal, but when it interferes with daily life, it may need attention.',
+        causes: ['Stress at work, relationships, or finances', 'Major life changes or trauma', 'Family history', 'Chronic illness', 'Caffeine overuse'],
+        symptoms: ['Excessive worry about everyday things', 'Difficulty concentrating', 'Restlessness or irritability', 'Rapid heartbeat', 'Sweating or trembling', 'Sleep problems'],
+        doThis: ['Talk to someone you trust about how you feel', 'Regular exercise helps a lot — even a daily walk', 'Deep breathing: 4 counts in, hold 4, out 6', 'Reduce caffeine intake', 'Mindfulness or meditation apps'],
+        avoid: ['Alcohol — makes anxiety worse long-term', 'Avoiding all anxious situations (avoidance increases anxiety)', 'Suffering in silence'],
+        whenToSee: 'Anxiety is severely affecting work, relationships, or daily activities; or if having panic attacks',
+    },
+    {
+        id: 'd19', name: 'Chickenpox', category: 'Infections',
+        icon: 'fa-circle-dot', iconBg: '#FCE7F3', iconColor: '#BE185D',
+        summary: 'A very contagious viral infection causing an itchy rash with small fluid-filled blisters. Common in children. Most people recover fully. A vaccine is available.',
+        causes: ['Varicella-zoster virus', 'Spread by breathing air near an infected person or touching their blisters'],
+        symptoms: ['Itchy red spots that turn into blisters', 'Fever', 'Tiredness and loss of appetite', 'Blisters that scab over in 5–7 days'],
+        doThis: ['Keep nails short and clean to prevent scratching', 'Calamine lotion soothes itch', 'Paracetamol for fever (not aspirin)', 'Wear loose cotton clothing', 'Stay home until all blisters have scabbed over'],
+        avoid: ['Scratching — it causes scarring and infection', 'Aspirin in children under 16', 'Contact with pregnant women, newborns, or people with weak immunity'],
+        whenToSee: 'Blisters become very red, swollen, or pus-filled; high fever; confusion; or breathing difficulty',
+    },
+    {
+        id: 'd20', name: 'Constipation', category: 'Digestive',
+        icon: 'fa-ban', iconBg: '#FEF9C3', iconColor: '#CA8A04',
+        summary: 'Having fewer than 3 bowel movements per week, with hard, dry, or difficult-to-pass stools. Very common and usually due to diet or lifestyle factors.',
+        causes: ['Low fibre diet', 'Not drinking enough water', 'Lack of physical activity', 'Ignoring the urge to go', 'Certain medicines (iron tablets, painkillers)', 'Travel changes'],
+        symptoms: ['Infrequent stools', 'Hard or lumpy stools', 'Straining or pain when trying to go', 'Feeling that bowels haven\'t fully emptied', 'Bloating'],
+        doThis: ['Drink at least 8 glasses of water a day', 'Eat fibre-rich foods: fruits, vegetables, whole grains, dal', 'Walk or exercise daily', 'Never ignore the urge to go', 'Warm water in the morning on an empty stomach helps'],
+        avoid: ['Refined flour (maida), processed food, not enough water', 'Overusing laxatives — creates dependence'],
+        whenToSee: 'Blood in stool, sudden severe constipation change, abdominal pain and bloating, or unintentional weight loss',
+    },
+];
+
+let _currentDiseaseCategory = 'All';
+let _currentDiseaseSearch = '';
+
 let MEDICINE_DB = [
     { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
       salt: "Paracetamol", strength: "500 mg", company: "Unbranded / Generic",
@@ -216,8 +565,9 @@ window.addEventListener('popstate', (e) => {
             let el = null;
             if (e.state.tab === 'tab-home') el = document.querySelectorAll('.nav-dock .nav-item')[0];
             else if (e.state.tab === 'tab-category') el = document.querySelectorAll('.nav-dock .nav-item')[1];
-            else if (e.state.tab === 'tab-doctor') el = document.querySelectorAll('.nav-dock .nav-item')[2];
-            else if (e.state.tab === 'tab-delivery') el = document.querySelectorAll('.nav-dock .nav-item')[3];
+            else if (e.state.tab === 'tab-health') el = document.querySelectorAll('.nav-dock .nav-item')[2];
+            else if (e.state.tab === 'tab-doctor') el = document.querySelectorAll('.nav-dock .nav-item')[3];
+            else if (e.state.tab === 'tab-delivery') el = document.querySelectorAll('.nav-dock .nav-item')[4];
             if (el) switchTab(el, e.state.tab, false);
         }
         updateCartUI();
@@ -237,6 +587,13 @@ function showScreen(id, pushHistory = true) {
 
 window.onload = async () => {
     window.rxVerified = false;
+
+    // Load saved language preference
+    try {
+        const savedLang = localStorage.getItem('mediflow_lang');
+        if (savedLang && TRANSLATIONS[savedLang]) { _currentLang = savedLang; applyLanguage(); }
+    } catch (e) { /* localStorage unavailable */ }
+
     if (!LOCAL_MODE) {
         try {
             const res = await fetch(`${API_BASE}/medicines`);
@@ -872,13 +1229,25 @@ function updateCartUI() {
     const activeTabObj = document.querySelector('.content-view.active-view');
     const activeTab = activeTabObj ? activeTabObj.id : 'tab-home';
 
+    // ── Update cart badge on nav icon ──────────────────────────────────────
+    const badge = document.getElementById('nav-cart-badge');
+    if (badge) {
+        const badgeCount = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        if (badgeCount > 0) {
+            badge.textContent = badgeCount > 99 ? '99+' : badgeCount;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
     if (cart.length === 0) {
         if (container) {
             container.innerHTML = `
                 <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
                     <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <h3 style="font-size:18px;">Your Cart is Empty</h3>
-                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Looks like you haven't added anything yet.</p>
+                    <h3 style="font-size:18px;">${t('cart_empty_title')}</h3>
+                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">${t('cart_empty_sub')}</p>
                 </div>`;
         }
         if (stickyBar) {
@@ -907,8 +1276,8 @@ function updateCartUI() {
 
         itemsHtml += `
             <div class="cart-item">
-                <div style="display:flex; align-items:center; flex:1;">
-                    <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0;"><i class="fa-solid ${item.icon}"></i></div>
+                <div style="display:flex; align-items:center; flex:1; cursor:pointer;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
+                    <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0; flex-shrink:0;"><i class="fa-solid ${item.icon}"></i></div>
                     <div>
                         <b style="font-size:15px; color:#111827;">${item.name}</b>
                         ${item.isRx ? '<span class="rx-badge" style="position:static; margin-left:8px; display:inline-block; background:#FEE2E2; color:#DC2626;">Schedule H</span>' : ''}
@@ -929,20 +1298,20 @@ function updateCartUI() {
     let grandTotal = itemTotal + delivery + handling;
 
     let billHtml = `
-        <div style="margin-bottom:15px;"><h3 class="cart-section-title">Order Items</h3></div>
+        <div style="margin-bottom:15px;"><h3 class="cart-section-title">${t('bill_order_items')}</h3></div>
         ${itemsHtml}
-        <div style="margin-bottom:15px; margin-top:30px;"><h3 class="cart-section-title">Bill Summary</h3></div>
+        <div style="margin-bottom:15px; margin-top:30px;"><h3 class="cart-section-title">${t('bill_summary')}</h3></div>
         <div class="bill-details-card">
-            <div class="bill-row"><span>Item Total</span><span style="font-weight:700;">₹${itemTotal}</span></div>
+            <div class="bill-row"><span>${t('bill_item_total')}</span><span style="font-weight:700;">₹${itemTotal}</span></div>
             <div class="bill-row" style="margin-top:14px;">
-                <span>Delivery Fee</span>
+                <span>${t('bill_delivery')}</span>
                 <span class="${delivery === 0 ? 'text-success' : ''}" style="font-weight:700;">${delivery === 0 ? 'FREE' : '₹' + delivery}</span>
             </div>
             <div class="bill-row">
-                <span>Platform Fee</span>
+                <span>${t('bill_platform')}</span>
                 <span class="${handling === 0 ? 'text-success' : ''}" style="font-weight:700;">${handling === 0 ? 'FREE' : '₹' + handling}</span>
             </div>
-            <div class="bill-row total"><span>Amount to Pay</span><span>₹${grandTotal}</span></div>
+            <div class="bill-row total"><span>${t('bill_total')}</span><span>₹${grandTotal}</span></div>
         </div>
     `;
 
@@ -997,9 +1366,9 @@ function updateCartUI() {
 
             if (actionBtn) {
                 if (activeTab === 'tab-delivery' && activeScreen === 'screen-dash') {
-                    actionBtn.innerHTML = 'Place Order <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
+                    actionBtn.innerHTML = t('checkout_btn') + ' <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
                 } else {
-                    actionBtn.innerHTML = 'View Cart <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
+                    actionBtn.innerHTML = t('view_cart_btn') + ' <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>';
                 }
             }
         }
@@ -2492,12 +2861,13 @@ function switchTab(el, tabId, pushHistory = true) {
         dashHeader.classList.add('compact');
         mainScroll.style.paddingTop = '122px';
 
-        if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = "Explore"; document.getElementById('dash-user').innerText = "Pharmacy"; }
-        else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = "Consult"; document.getElementById('dash-user').innerText = "Specialists"; }
-        else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = "Secure"; document.getElementById('dash-user').innerText = "Checkout"; }
+        if (tabId === 'tab-category') { document.getElementById('greeting-text').innerText = t('explore_pharmacy'); document.getElementById('dash-user').innerText = t('explore_pharmacy_sub'); }
+        else if (tabId === 'tab-health') { document.getElementById('greeting-text').innerText = "Health"; document.getElementById('dash-user').innerText = t('health_title'); renderHealthTab(); }
+        else if (tabId === 'tab-doctor') { document.getElementById('greeting-text').innerText = t('consult'); document.getElementById('dash-user').innerText = t('specialists'); }
+        else if (tabId === 'tab-delivery') { document.getElementById('greeting-text').innerText = t('checkout_title'); document.getElementById('dash-user').innerText = t('checkout_sub'); }
         else if (['tab-profile', 'tab-orders', 'tab-wishlist', 'tab-refunds', 'tab-payments', 'tab-profile-settings'].includes(tabId)) {
-            document.getElementById('greeting-text').innerText = "Manage";
-            document.getElementById('dash-user').innerText = "Account";
+            document.getElementById('greeting-text').innerText = t('manage') || "Manage";
+            document.getElementById('dash-user').innerText = t('account') || "Account";
             if (tabId === 'tab-profile-settings') {
                 // Populate profile settings sub-page with current user data
                 const psName = document.getElementById('ps-name-disp');
@@ -2506,6 +2876,7 @@ function switchTab(el, tabId, pushHistory = true) {
                     if (psName) psName.innerText = window.currentUser.name;
                     if (psPhone) psPhone.innerText = window.currentUser.phone;
                 }
+                renderLangGrid();
             }
         }
     }
@@ -2525,7 +2896,7 @@ function switchTab(el, tabId, pushHistory = true) {
 
 // --- MISSING FUNCTIONS (fixes JS errors) ---
 function triggerDoctorTab() {
-    const docNavBtn = document.querySelector('.nav-dock .nav-item:nth-child(3)');
+    const docNavBtn = document.querySelector('.nav-dock .nav-item:nth-child(4)');
     switchTab(docNavBtn, 'tab-doctor');
 }
 
@@ -3099,4 +3470,184 @@ function callPharmacy() {
 function openOrderSupport() {
     showToast('Connecting to MediFlow Support…');
     // 🎨 INTEGRATION: navigate to a support chat overlay or help screen
+}
+
+// ─── HEALTH ENCYCLOPEDIA ────────────────────────────────────────────────────
+
+function renderHealthTab() {
+    const diseaseCategories = ['All', ...new Set(DISEASE_DB.map(d => d.category))];
+    const pillsEl = document.getElementById('disease-category-pills');
+    if (pillsEl && pillsEl.children.length === 0) {
+        pillsEl.innerHTML = diseaseCategories.map(cat =>
+            `<div class="disease-cat-pill ${cat === _currentDiseaseCategory ? 'active' : ''}" data-cat="${cat.replace(/"/g,'&quot;')}">${cat === 'All' ? t('health_all') : cat}</div>`
+        ).join('');
+        pillsEl.addEventListener('click', function(e) {
+            const pill = e.target.closest('.disease-cat-pill');
+            if (pill && pill.dataset.cat) _setDiseaseCategory(pill.dataset.cat);
+        });
+    }
+    _renderDiseaseList();
+}
+
+function _setDiseaseCategory(cat) {
+    _currentDiseaseCategory = cat;
+    const pillsEl = document.getElementById('disease-category-pills');
+    if (pillsEl) {
+        Array.from(pillsEl.children).forEach(p => {
+            p.classList.toggle('active', p.textContent === cat || (cat === 'All' && (p.textContent === 'All' || p.textContent === t('health_all'))));
+        });
+    }
+    _renderDiseaseList();
+}
+
+function filterDiseases(query) {
+    _currentDiseaseSearch = query.trim().toLowerCase();
+    _renderDiseaseList();
+}
+
+function _renderDiseaseList() {
+    const listEl = document.getElementById('disease-list');
+    if (!listEl) return;
+
+    let filtered = DISEASE_DB;
+    if (_currentDiseaseCategory !== 'All') {
+        filtered = filtered.filter(d => d.category === _currentDiseaseCategory);
+    }
+    if (_currentDiseaseSearch) {
+        filtered = filtered.filter(d =>
+            d.name.toLowerCase().includes(_currentDiseaseSearch) ||
+            d.symptoms.some(s => s.toLowerCase().includes(_currentDiseaseSearch)) ||
+            d.category.toLowerCase().includes(_currentDiseaseSearch)
+        );
+    }
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--gray-text);">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:28px; margin-bottom:12px; display:block;"></i>
+            <p style="font-size:14px; font-weight:600;">No results found</p>
+        </div>`;
+        return;
+    }
+
+    listEl.innerHTML = filtered.map(d => `
+        <div class="disease-card" data-disease-id="${d.id}">
+            <div class="disease-card-header">
+                <div class="disease-card-icon" style="background:${d.iconBg}; color:${d.iconColor};">
+                    <i class="fa-solid ${d.icon}"></i>
+                </div>
+                <div>
+                    <div class="disease-card-title">${d.name}</div>
+                    <div class="disease-card-tag">${d.category}</div>
+                </div>
+            </div>
+            <div class="disease-card-summary">${d.summary}</div>
+            <div class="disease-card-footer">
+                ${d.symptoms.slice(0, 3).map(s => `<span class="disease-symptom-chip">${s}</span>`).join('')}
+                ${d.symptoms.length > 3 ? `<span class="disease-symptom-chip" style="background:#F3F4F6; color:var(--gray-text);">+${d.symptoms.length - 3} more</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    listEl.addEventListener('click', function(e) {
+        const card = e.target.closest('.disease-card[data-disease-id]');
+        if (card && card.dataset.diseaseId) openDiseaseDetail(card.dataset.diseaseId);
+    }, { once: true });
+}
+
+function openDiseaseDetail(id) {
+    const d = DISEASE_DB.find(x => x.id === id);
+    if (!d) return;
+
+    const listEl = document.getElementById('disease-list');
+    if (!listEl) return;
+
+    listEl.innerHTML = `
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px; cursor:pointer;" onclick="renderHealthTab(); _renderDiseaseList();">
+            <div style="width:36px; height:36px; background:white; border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); flex-shrink:0;">
+                <i class="fa-solid fa-arrow-left" style="color:#111827; font-size:14px;"></i>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:var(--gray-text);">All Conditions</span>
+        </div>
+
+        <div class="disease-detail-sheet">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                <div class="disease-card-icon" style="background:${d.iconBg}; color:${d.iconColor}; width:52px; height:52px; border-radius:18px;">
+                    <i class="fa-solid ${d.icon}" style="font-size:22px;"></i>
+                </div>
+                <div>
+                    <div style="font-size:20px; font-weight:800; color:#111827;">${d.name}</div>
+                    <div style="font-size:12px; font-weight:700; color:var(--c3); text-transform:uppercase; letter-spacing:0.4px; margin-top:2px;">${d.category}</div>
+                </div>
+            </div>
+
+            <p style="font-size:14px; color:#374151; font-weight:500; line-height:1.7; margin:0;">${d.summary}</p>
+
+            <div class="disease-detail-section-title">What Causes It?</div>
+            <ul class="disease-detail-list">${d.causes.map(c => `<li>${c}</li>`).join('')}</ul>
+
+            <div class="disease-detail-section-title">Common Signs & Symptoms</div>
+            <ul class="disease-detail-list">${d.symptoms.map(s => `<li>${s}</li>`).join('')}</ul>
+
+            <div class="disease-detail-section-title" style="color:#166534;">What To Do</div>
+            <ul class="disease-detail-list">${d.doThis.map(x => `<li>${x}</li>`).join('')}</ul>
+
+            <div class="disease-detail-section-title" style="color:#DC2626;">What To Avoid</div>
+            <ul class="disease-detail-list">${d.avoid.map(x => `<li>${x}</li>`).join('')}</ul>
+
+            <div style="background:#FEF9C3; border:1.5px solid #FDE047; border-radius:16px; padding:14px 16px; margin-top:16px; display:flex; align-items:flex-start; gap:10px;">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#CA8A04; font-size:16px; margin-top:1px; flex-shrink:0;"></i>
+                <div>
+                    <div style="font-size:12px; font-weight:800; color:#92400E; margin-bottom:4px;">SEE A DOCTOR IF</div>
+                    <p style="font-size:13px; color:#78350F; font-weight:500; margin:0; line-height:1.6;">${d.whenToSee}</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ─── LANGUAGE FUNCTIONS ─────────────────────────────────────────────────────
+
+function renderLangGrid() {
+    const grid = document.getElementById('lang-grid');
+    if (!grid) return;
+    grid.innerHTML = SUPPORTED_LANGS.map(lang => `
+        <div class="lang-option ${_currentLang === lang.code ? 'selected' : ''}" onclick="setLanguage('${lang.code}')">
+            <span class="lang-flag">${lang.flag}</span>
+            <div>
+                <div class="lang-name">${lang.name}</div>
+                <div class="lang-native">${lang.native}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setLanguage(code) {
+    if (!TRANSLATIONS[code]) return;
+    _currentLang = code;
+    try { localStorage.setItem('mediflow_lang', code); } catch (e) { /* localStorage unavailable */ }
+    renderLangGrid();
+    applyLanguage();
+    showToast('Language updated ✓');
+}
+
+function applyLanguage() {
+    // Update all elements with data-i18n attributes
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const val = t(key);
+        if (val) el.textContent = val;
+    });
+    // Update search placeholder
+    const searchEl = document.getElementById('global-search');
+    if (searchEl) searchEl.placeholder = t('search_placeholder');
+    // Re-render cart if visible
+    const cartTab = document.getElementById('tab-delivery');
+    if (cartTab && cartTab.classList.contains('active-view')) updateCartUI();
+    // Re-render health tab pills if visible
+    const healthTab = document.getElementById('tab-health');
+    if (healthTab && healthTab.classList.contains('active-view')) {
+        const pillsEl = document.getElementById('disease-category-pills');
+        if (pillsEl) pillsEl.innerHTML = ''; // force re-render on next renderHealthTab call
+        renderHealthTab();
+    }
 }

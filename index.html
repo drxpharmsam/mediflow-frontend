@@ -235,6 +235,20 @@
                 </div>
             </div>
 
+            <!-- HEALTH ENCYCLOPEDIA TAB -->
+            <div id="tab-health" class="content-view">
+                <div style="margin-bottom:16px; margin-top:10px;">
+                    <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;" data-i18n="health_title">Health Encyclopedia</h3>
+                    <p style="margin:6px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;" data-i18n="health_subtitle">Plain-language guides to common conditions</p>
+                </div>
+                <div class="disease-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="disease-search" class="disease-search-input" type="text" placeholder="Search a disease or condition…" oninput="filterDiseases(this.value)">
+                </div>
+                <div id="disease-category-pills" class="disease-category-pills"></div>
+                <div id="disease-list"></div>
+            </div>
+
             <!-- CART / DELIVERY TAB -->
             <div id="tab-delivery" class="content-view">
                 <div style="margin-bottom:25px; margin-top:10px;">
@@ -400,6 +414,21 @@
                     </div>
                 </div>
 
+                <!-- Language Preference -->
+                <p class="profile-section-label" style="margin-top:20px;" data-i18n="lang_pref_label">Language Preference</p>
+                <div class="profile-menu-card" style="margin-bottom:20px;">
+                    <div class="profile-menu-item" style="flex-direction:column; align-items:flex-start; cursor:default; padding-bottom:6px;">
+                        <div style="display:flex; align-items:center; gap:12px; width:100%; margin-bottom:14px;">
+                            <div class="icon-orb" style="background:#FFF7ED; color:#EA580C; margin-bottom:0; margin-right:0; flex-shrink:0;"><i class="fa-solid fa-language"></i></div>
+                            <div style="flex:1;">
+                                <h3 style="margin:0; font-size:15px; font-weight:600;" data-i18n="lang_choose_title">Choose Language</h3>
+                                <p style="margin:3px 0 0; font-size:12px; color:var(--gray-text); font-weight:500;" data-i18n="lang_choose_sub">App content will appear in selected language</p>
+                            </div>
+                        </div>
+                        <div class="lang-grid" id="lang-grid"></div>
+                    </div>
+                </div>
+
                 <!-- Delete Account -->
                 <p class="profile-section-label" style="color:#EF4444;">Danger Zone</p>
                 <div class="profile-menu-card" style="border:1.5px solid #FEE2E2;">
@@ -455,8 +484,9 @@
         <div class="nav-dock">
             <i class="fa-solid fa-house nav-item active" onclick="switchTab(this, 'tab-home')"></i>
             <i class="fa-solid fa-layer-group nav-item" onclick="switchTab(this, 'tab-category')"></i>
+            <i class="fa-solid fa-book-medical nav-item" onclick="switchTab(this, 'tab-health')"></i>
             <i id="nav-btn-doc" class="fa-solid fa-user-doctor nav-item" onclick="switchTab(this, 'tab-doctor')"></i>
-            <i id="nav-btn-cart" class="fa-solid fa-cart-shopping nav-item" onclick="switchTab(this, 'tab-delivery')"></i>
+            <span id="nav-btn-cart" class="nav-item" onclick="switchTab(this, 'tab-delivery')"><i class="fa-solid fa-cart-shopping"></i><span id="nav-cart-badge" class="nav-badge hidden">0</span></span>
         </div>
     </div>
 
