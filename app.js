@@ -359,154 +359,379 @@ let _currentDiseaseCategory = 'All';
 let _currentDiseaseSearch = '';
 
 let MEDICINE_DB = [
+    // === FEVER & FLU ===
     { name: "Paracetamol (500mg)", price: 15, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Tab",
       salt: "Paracetamol", strength: "500 mg", company: "Unbranded / Generic",
       description: "Paracetamol is a widely used analgesic and antipyretic. It relieves mild to moderate pain such as headache and toothache, and reduces high body temperature. Safe for adults and children when taken as directed.",
       sideEffects: ["Nausea", "Stomach upset", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Dolo 650", price: 30, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-arrow-up", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Dolo",
       salt: "Paracetamol", strength: "650 mg", company: "Micro Labs Ltd.",
       description: "Dolo 650 contains Paracetamol 650 mg for fast relief from fever and pain. It is commonly prescribed for COVID-related fever, flu, and body aches. Do not exceed the recommended dose.",
       sideEffects: ["Nausea", "Vomiting", "Allergic reaction (rare)", "Liver damage on overdose"] },
     { name: "Crocin 500", price: 22, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Crocin",
       salt: "Paracetamol", strength: "500 mg", company: "Haleon (GSK Consumer)",
       description: "Crocin 500 is a trusted brand of Paracetamol 500 mg for relief from fever, headache, body ache, and toothache. Suitable for adults and children above 12 years.",
       sideEffects: ["Nausea", "Stomach pain", "Skin rash (rare)", "Liver damage on overdose"] },
     { name: "Vicks Action 500", price: 45, category: "Fever & Flu", type: "Tab", icon: "fa-head-side-virus", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Vicks",
       salt: "Paracetamol + Phenylephrine + Caffeine", strength: "500 mg/5 mg/30 mg", company: "P&G Health India",
       description: "Vicks Action 500 is a combination tablet for multi-symptom cold & flu relief. It reduces fever, relieves nasal congestion, and alleviates body ache with a combination of Paracetamol, Phenylephrine, and Caffeine.",
       sideEffects: ["Dizziness", "Increased heart rate", "Insomnia", "Nervousness", "High blood pressure (rare)"] },
+    { name: "Pyrigesic 500", price: 18, category: "Fever & Flu", type: "Tab", icon: "fa-temperature-half", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Pyri",
+      salt: "Paracetamol", strength: "500 mg", company: "Dr. Reddy's Laboratories",
+      description: "Pyrigesic 500 is a Paracetamol 500 mg tablet from Dr. Reddy's Laboratories. It provides reliable relief from mild to moderate fever and pain.",
+      sideEffects: ["Nausea", "Stomach upset", "Liver damage on overdose"] },
+    { name: "Disprin (Aspirin)", price: 12, category: "Fever & Flu", type: "Tab", icon: "fa-circle-half-stroke", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Aspirin",
+      salt: "Aspirin (Acetylsalicylic Acid)", strength: "325 mg", company: "Bayer Consumer Health",
+      description: "Disprin is a soluble aspirin tablet used for fast relief from headache, body pain, and fever. It also has antiplatelet properties useful in cardiovascular prevention.",
+      sideEffects: ["Gastric irritation", "Nausea", "Bleeding (high doses)", "Ringing in ears (overdose)"] },
+    { name: "Meftal Forte", price: 55, category: "Fever & Flu", type: "Tab", icon: "fa-thermometer", isRx: false,
+      image: "https://placehold.co/80x80/FEF3C7/B45309?text=Meftal",
+      salt: "Mefenamic Acid + Paracetamol", strength: "250 mg/325 mg", company: "Blue Cross Laboratories",
+      description: "Meftal Forte combines Mefenamic Acid and Paracetamol for relief from fever, headache, dental pain, and dysmenorrhoea.",
+      sideEffects: ["Stomach irritation", "Nausea", "Diarrhoea", "Dizziness"] },
+
+    // === COUGH & COLD ===
     { name: "Benadryl Syrup", price: 125, category: "Cough & Cold", type: "Syr", icon: "fa-wine-bottle", isRx: false,
+      image: "https://placehold.co/80x80/E0F2FE/0369A1?text=Syr",
       salt: "Diphenhydramine + Ammonium Chloride + Sodium Citrate", strength: "14.08 mg/138 mg/57.03 mg per 5 ml", company: "Johnson & Johnson",
       description: "Benadryl Cough Syrup provides effective relief from dry and productive cough. Its combination of antihistamine and expectorant soothes the throat and helps clear mucus.",
       sideEffects: ["Drowsiness", "Dry mouth", "Blurred vision", "Constipation", "Urinary retention"] },
     { name: "Ascoril LS", price: 115, category: "Cough & Cold", type: "Syr", icon: "fa-lungs", isRx: true,
+      image: "https://placehold.co/80x80/E0F2FE/0369A1?text=Ascoril",
       salt: "Levosalbutamol + Ambroxol + Guaifenesin", strength: "1 mg/30 mg/50 mg per 5 ml", company: "Glenmark Pharma",
       description: "Ascoril LS is a prescription cough syrup combining a bronchodilator (Levosalbutamol), a mucolytic (Ambroxol), and an expectorant (Guaifenesin) for effective relief from bronchospasm and productive cough.",
       sideEffects: ["Tremor", "Palpitations", "Nausea", "Headache", "Dizziness"] },
+    { name: "D'Cold Total", price: 35, category: "Cough & Cold", type: "Tab", icon: "fa-snowflake", isRx: false,
+      image: "https://placehold.co/80x80/E0F2FE/0369A1?text=DCold",
+      salt: "Paracetamol + Phenylephrine + Chlorpheniramine", strength: "500 mg/10 mg/2 mg", company: "Abbott India",
+      description: "D'Cold Total provides complete relief from nasal congestion, runny nose, sneezing, body ache, and fever associated with colds.",
+      sideEffects: ["Drowsiness", "Dry mouth", "Increased heart rate", "Insomnia"] },
+    { name: "Grilinctus Syrup", price: 90, category: "Cough & Cold", type: "Syr", icon: "fa-bottle-droplet", isRx: false,
+      image: "https://placehold.co/80x80/E0F2FE/0369A1?text=Grili",
+      salt: "Dextromethorphan + Phenylephrine + Chlorpheniramine", strength: "10 mg/5 mg/2 mg per 5 ml", company: "Franco-Indian Pharma",
+      description: "Grilinctus Syrup suppresses dry cough, relieves nasal congestion, and reduces sneezing and runny nose. Suitable for adults and children.",
+      sideEffects: ["Drowsiness", "Dizziness", "Nausea", "Dry mouth"] },
+    { name: "Sinarest Tablet", price: 25, category: "Cough & Cold", type: "Tab", icon: "fa-head-side-cough", isRx: false,
+      image: "https://placehold.co/80x80/E0F2FE/0369A1?text=Sinarest",
+      salt: "Paracetamol + Chlorpheniramine + Pseudoephedrine", strength: "500 mg/2 mg/30 mg", company: "Centaur Pharma",
+      description: "Sinarest provides multi-symptom relief from cold, congestion, and fever. Chlorpheniramine reduces allergic symptoms while Pseudoephedrine relieves nasal congestion.",
+      sideEffects: ["Drowsiness", "Dry mouth", "Increased blood pressure", "Insomnia"] },
+
+    // === PAIN RELIEF ===
     { name: "Combiflam", price: 40, category: "Pain Relief", type: "Tab", icon: "fa-pills", isRx: false,
+      image: "https://placehold.co/80x80/FEE2E2/B91C1C?text=Combi",
       salt: "Ibuprofen + Paracetamol", strength: "400 mg/325 mg", company: "Sanofi India",
       description: "Combiflam combines Ibuprofen (400 mg) and Paracetamol (325 mg) for powerful relief from moderate to severe pain, fever, and inflammation. Used for dental pain, musculoskeletal pain, and post-surgical pain.",
       sideEffects: ["Gastric irritation", "Nausea", "Heartburn", "Dizziness", "Peptic ulcer (long-term use)"] },
     { name: "Diclofenac Gel", price: 85, category: "Pain Relief", type: "Gel", icon: "fa-spray-can", isRx: false,
+      image: "https://placehold.co/80x80/FEE2E2/B91C1C?text=Gel",
       salt: "Diclofenac Diethylamine", strength: "1.16% w/w", company: "Unbranded / Generic",
       description: "Diclofenac Gel is a topical NSAID used for local relief of pain and inflammation in conditions such as muscle strains, sprains, joint pain, and sports injuries. Apply to affected area 2–3 times daily.",
       sideEffects: ["Skin irritation", "Redness at application site", "Rash (rare)", "Photosensitivity (rare)"] },
+    { name: "Brufen 400", price: 28, category: "Pain Relief", type: "Tab", icon: "fa-capsules", isRx: false,
+      image: "https://placehold.co/80x80/FEE2E2/B91C1C?text=Brufen",
+      salt: "Ibuprofen", strength: "400 mg", company: "Abbott India",
+      description: "Brufen 400 (Ibuprofen 400 mg) is an NSAID that relieves mild to moderate pain, reduces fever, and decreases inflammation. Commonly used for dental pain, period pain, and muscular aches.",
+      sideEffects: ["Gastric pain", "Nausea", "Heartburn", "Dizziness", "Peptic ulcer (long-term)"] },
+    { name: "Nimulid 100", price: 22, category: "Pain Relief", type: "Tab", icon: "fa-pills", isRx: false,
+      image: "https://placehold.co/80x80/FEE2E2/B91C1C?text=Nimulid",
+      salt: "Nimesulide", strength: "100 mg", company: "Panacea Biotec",
+      description: "Nimulid 100 (Nimesulide 100 mg) is a selective COX-2 inhibitor NSAID with rapid onset of action. It is used for acute pain, osteoarthritis, and dysmenorrhoea.",
+      sideEffects: ["Gastric irritation", "Nausea", "Liver enzyme elevation", "Dizziness"] },
+    { name: "Volini Gel", price: 110, category: "Pain Relief", type: "Gel", icon: "fa-hand-holding-medical", isRx: false,
+      image: "https://placehold.co/80x80/FEE2E2/B91C1C?text=Volini",
+      salt: "Diclofenac + Methyl Salicylate + Menthol", strength: "1%/10%/5%", company: "Sun Pharma",
+      description: "Volini Gel combines a topical NSAID with counter-irritants for fast relief from muscular and joint pain, arthritis, and sports injuries. Apply gently to the affected area.",
+      sideEffects: ["Skin irritation", "Burning sensation", "Rash (rare)", "Photosensitivity"] },
+
+    // === HEADACHE ===
     { name: "Saridon", price: 10, category: "Headache", type: "Tab", icon: "fa-brain", isRx: false,
+      image: "https://placehold.co/80x80/F3E8FF/6D28D9?text=Saridon",
       salt: "Paracetamol + Propyphenazone + Caffeine", strength: "250 mg/150 mg/50 mg", company: "Bayer Consumer Health",
       description: "Saridon is a fast-acting headache tablet combining Paracetamol, Propyphenazone, and Caffeine. The caffeine enhances pain-relief effectiveness and reduces the time to onset of action.",
       sideEffects: ["Insomnia", "Nervousness", "Stomach upset", "Dizziness (rare)"] },
+    { name: "Migranex Plus", price: 45, category: "Headache", type: "Tab", icon: "fa-head-side-virus", isRx: true,
+      image: "https://placehold.co/80x80/F3E8FF/6D28D9?text=Migranex",
+      salt: "Sumatriptan", strength: "50 mg", company: "Sun Pharma",
+      description: "Migranex Plus (Sumatriptan 50 mg) is a triptan used for the acute treatment of migraine attacks with or without aura. It constricts blood vessels in the brain to relieve migraine headache.",
+      sideEffects: ["Tingling sensation", "Dizziness", "Flushing", "Chest tightness", "Nausea"] },
+    { name: "Crocin Pain Relief", price: 28, category: "Headache", type: "Tab", icon: "fa-circle-dot", isRx: false,
+      image: "https://placehold.co/80x80/F3E8FF/6D28D9?text=CrocinP",
+      salt: "Paracetamol + Caffeine", strength: "650 mg/65 mg", company: "Haleon (GSK Consumer)",
+      description: "Crocin Pain Relief combines Paracetamol 650 mg with Caffeine 65 mg for fast, effective relief from headache, including tension headache and migraine.",
+      sideEffects: ["Insomnia", "Nervousness", "Stomach upset", "Liver damage on overdose"] },
+    { name: "Dart (Propylhex)", price: 8, category: "Headache", type: "Tab", icon: "fa-bolt", isRx: false,
+      image: "https://placehold.co/80x80/F3E8FF/6D28D9?text=Dart",
+      salt: "Paracetamol + Ibuprofen", strength: "325 mg/200 mg", company: "Cipla Ltd.",
+      description: "Dart tablet combines Paracetamol and Ibuprofen for synergistic headache relief. The dual mechanism provides faster and more complete pain relief than either drug alone.",
+      sideEffects: ["Gastric irritation", "Nausea", "Dizziness", "Stomach pain"] },
+
+    // === DIGESTION ===
     { name: "Digene Tablet", price: 20, category: "Digestion", type: "Chew", icon: "fa-fire-burner", isRx: false,
+      image: "https://placehold.co/80x80/ECFDF5/065F46?text=Digene",
       salt: "Magaldrate + Simethicone", strength: "480 mg/20 mg", company: "Abbott India",
       description: "Digene Tablet is an antacid that provides fast relief from acidity, heartburn, and gas. Magaldrate neutralises stomach acid while Simethicone relieves bloating and flatulence.",
       sideEffects: ["Constipation", "Diarrhoea (rare)", "Decreased phosphate absorption (long-term use)"] },
     { name: "Eno (Lemon)", price: 10, category: "Digestion", type: "Sachet", icon: "fa-glass-water", isRx: false,
+      image: "https://placehold.co/80x80/ECFDF5/065F46?text=Eno",
       salt: "Sodium Bicarbonate + Citric Acid + Sodium Carbonate", strength: "2.32 g/2.18 g/0.5 g per sachet", company: "Haleon (GSK Consumer)",
       description: "Eno Fruit Salt is a fast-acting antacid that neutralises stomach acid within 6 seconds, providing quick relief from acidity, heartburn, and stomach discomfort.",
       sideEffects: ["Bloating (from CO₂ release)", "Sodium excess (avoid in hypertension)", "Rebound acidity (frequent use)"] },
+    { name: "Gelusil MPS", price: 30, category: "Digestion", type: "Chew", icon: "fa-circle-nodes", isRx: false,
+      image: "https://placehold.co/80x80/ECFDF5/065F46?text=Gelusil",
+      salt: "Magnesium Trisilicate + Dried Aluminium Hydroxide + Simethicone", strength: "250 mg/250 mg/25 mg", company: "Pfizer Ltd.",
+      description: "Gelusil MPS is a popular antacid and anti-flatulent tablet that neutralises stomach acid, relieves heartburn, and reduces gas and bloating.",
+      sideEffects: ["Constipation", "Diarrhoea (rare)", "Chalky taste"] },
+    { name: "Pudin Hara", price: 22, category: "Digestion", type: "Liq", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/ECFDF5/065F46?text=Pudin",
+      salt: "Pudina Satva (Peppermint)", strength: "Natural extract", company: "Dabur India",
+      description: "Pudin Hara is an Ayurvedic liquid for quick relief from acidity, indigestion, nausea, and stomach pain. The peppermint extract provides a cooling, soothing effect.",
+      sideEffects: ["Heartburn (in some patients)", "Allergic reaction (rare)"] },
+    { name: "Ranitidine (Zinetac)", price: 35, category: "Digestion", type: "Tab", icon: "fa-shield-halved", isRx: false,
+      image: "https://placehold.co/80x80/ECFDF5/065F46?text=Zinetac",
+      salt: "Ranitidine Hydrochloride", strength: "150 mg", company: "GlaxoSmithKline",
+      description: "Ranitidine (Zinetac 150 mg) is an H2 blocker that reduces stomach acid production for 8–12 hours. Used for indigestion, GERD, and peptic ulcers.",
+      sideEffects: ["Headache", "Constipation", "Diarrhoea", "Nausea", "Dizziness"] },
+
+    // === STOMACH GAS ===
     { name: "Pantop 40", price: 110, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Pantop",
       salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
       description: "Pantop 40 is a proton pump inhibitor (PPI) containing Pantoprazole 40 mg. It reduces stomach acid production and is used to treat GERD, peptic ulcers, and Zollinger-Ellison syndrome.",
       sideEffects: ["Headache", "Diarrhoea", "Nausea", "Abdominal pain", "Hypomagnesaemia (long-term use)"] },
     { name: "Pantocid 40", price: 88, category: "Stomach Gas", type: "Tab", icon: "fa-fire", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Pantocid",
       salt: "Pantoprazole", strength: "40 mg", company: "Sun Pharma",
       description: "Pantocid 40 is a Pantoprazole 40 mg tablet that suppresses excess stomach acid. It is prescribed for gastric and duodenal ulcers, GERD, and acid-related disorders.",
       sideEffects: ["Headache", "Diarrhoea", "Flatulence", "Nausea", "Vitamin B12 deficiency (long-term use)"] },
     { name: "Omez", price: 150, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Omez",
       salt: "Omeprazole", strength: "20 mg", company: "Dr. Reddy's Laboratories",
       description: "Omez (Omeprazole 20 mg) is a proton pump inhibitor used to treat gastric and duodenal ulcers, GERD, and H. pylori infection (in combination therapy). It significantly reduces stomach acid secretion.",
       sideEffects: ["Headache", "Nausea", "Diarrhoea", "Constipation", "Hypomagnesaemia (long-term use)"] },
     { name: "Omeprazole (20mg)", price: 48, category: "Stomach Gas", type: "Cap", icon: "fa-capsules", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Omep",
       salt: "Omeprazole", strength: "20 mg", company: "Unbranded / Generic",
       description: "Generic Omeprazole 20 mg is a cost-effective proton pump inhibitor that reduces stomach acid production. Therapeutically equivalent to branded options like Omez and Prilosec.",
       sideEffects: ["Headache", "Nausea", "Diarrhoea", "Abdominal pain", "Vitamin B12 deficiency (long-term use)"] },
+    { name: "Razo 20", price: 95, category: "Stomach Gas", type: "Tab", icon: "fa-fire-flame-simple", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Razo",
+      salt: "Rabeprazole Sodium", strength: "20 mg", company: "Sun Pharma",
+      description: "Razo 20 (Rabeprazole 20 mg) is a PPI that effectively controls acid secretion. It has a faster onset compared to other PPIs and is used for GERD, ulcers, and dyspepsia.",
+      sideEffects: ["Headache", "Diarrhoea", "Nausea", "Abdominal pain", "Flatulence"] },
+    { name: "Nexpro 40", price: 120, category: "Stomach Gas", type: "Cap", icon: "fa-bottle-droplet", isRx: true,
+      image: "https://placehold.co/80x80/FFF7ED/C2410C?text=Nexpro",
+      salt: "Esomeprazole", strength: "40 mg", company: "Torrent Pharmaceuticals",
+      description: "Nexpro 40 (Esomeprazole 40 mg) is an advanced PPI providing superior and sustained acid suppression. Indicated for erosive esophagitis, GERD, and H. pylori eradication.",
+      sideEffects: ["Headache", "Diarrhoea", "Abdominal pain", "Nausea", "Dry mouth"] },
+
+    // === DIABETES ===
     { name: "Metformin (500mg)", price: 65, category: "Diabetes", type: "Tab", icon: "fa-cube", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Metform",
       salt: "Metformin Hydrochloride", strength: "500 mg", company: "Unbranded / Generic",
       description: "Metformin 500 mg is the first-line oral antidiabetic drug for Type 2 diabetes. It reduces hepatic glucose production and improves insulin sensitivity without causing weight gain.",
       sideEffects: ["Nausea", "Diarrhoea", "Metallic taste", "Vitamin B12 deficiency (long-term)", "Lactic acidosis (rare)"] },
     { name: "Glycomet GP1", price: 95, category: "Diabetes", type: "Tab", icon: "fa-cubes", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=GP1",
       salt: "Metformin + Glipizide", strength: "500 mg/1 mg", company: "USV Pvt. Ltd.",
       description: "Glycomet GP1 is a combination tablet of Metformin (500 mg) and Glipizide (1 mg) for Type 2 diabetes management. It controls blood sugar through complementary mechanisms.",
       sideEffects: ["Hypoglycaemia", "Nausea", "Diarrhoea", "Weight gain", "Dizziness"] },
     { name: "Insulin (Lantus)", price: 650, category: "Diabetes", type: "Inj", icon: "fa-syringe", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Inj",
       salt: "Insulin Glargine", strength: "100 IU/ml", company: "Sanofi India",
       description: "Lantus (Insulin Glargine) is a long-acting basal insulin used once daily to control blood glucose in Type 1 and Type 2 diabetes. It provides steady, 24-hour glucose lowering with no pronounced peak.",
       sideEffects: ["Hypoglycaemia", "Injection-site reactions", "Lipodystrophy", "Weight gain", "Allergic reaction (rare)"] },
+    { name: "Januvia 100", price: 275, category: "Diabetes", type: "Tab", icon: "fa-droplet-slash", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Januvia",
+      salt: "Sitagliptin", strength: "100 mg", company: "MSD Pharmaceuticals",
+      description: "Januvia 100 (Sitagliptin 100 mg) is a DPP-4 inhibitor that increases insulin release and decreases glucagon levels in a glucose-dependent manner. Used as mono- or combination therapy for Type 2 diabetes.",
+      sideEffects: ["Headache", "Nasopharyngitis", "Upper respiratory infection", "Pancreatitis (rare)"] },
+    { name: "Glimepiride 1mg", price: 45, category: "Diabetes", type: "Tab", icon: "fa-hexagon-nodes", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Glim",
+      salt: "Glimepiride", strength: "1 mg", company: "Unbranded / Generic",
+      description: "Glimepiride 1 mg is a sulphonylurea that stimulates insulin secretion from the pancreas. It is used alone or in combination with Metformin or insulin for Type 2 diabetes.",
+      sideEffects: ["Hypoglycaemia", "Weight gain", "Nausea", "Skin rash (rare)"] },
+
+    // === BLOOD PRESSURE ===
     { name: "Amlodipine (5mg)", price: 45, category: "Blood Pressure", type: "Tab", icon: "fa-heart-pulse", isRx: true,
+      image: "https://placehold.co/80x80/FFF1F2/BE123C?text=Amlod",
       salt: "Amlodipine Besylate", strength: "5 mg", company: "Unbranded / Generic",
       description: "Amlodipine 5 mg is a calcium channel blocker used to treat hypertension and angina. It relaxes blood vessels, lowering blood pressure and reducing cardiac workload.",
       sideEffects: ["Ankle swelling", "Flushing", "Headache", "Dizziness", "Palpitations (rare)"] },
     { name: "Telma 40", price: 180, category: "Blood Pressure", type: "Tab", icon: "fa-droplet", isRx: true,
+      image: "https://placehold.co/80x80/FFF1F2/BE123C?text=Telma",
       salt: "Telmisartan", strength: "40 mg", company: "Glenmark Pharma",
       description: "Telma 40 (Telmisartan 40 mg) is an angiotensin II receptor blocker (ARB) that controls hypertension and reduces the risk of cardiovascular events in high-risk patients.",
       sideEffects: ["Dizziness", "Back pain", "Sinusitis", "Hyperkalaemia (high doses)", "Renal impairment (rare)"] },
+    { name: "Cardace 5 (Ramipril)", price: 95, category: "Blood Pressure", type: "Cap", icon: "fa-heart", isRx: true,
+      image: "https://placehold.co/80x80/FFF1F2/BE123C?text=Cardace",
+      salt: "Ramipril", strength: "5 mg", company: "Sanofi India",
+      description: "Cardace 5 (Ramipril 5 mg) is an ACE inhibitor that lowers blood pressure and protects the heart and kidneys. It is used for hypertension, heart failure, and post-myocardial infarction treatment.",
+      sideEffects: ["Dry cough", "Dizziness", "Hyperkalaemia", "Renal impairment", "Angioedema (rare)"] },
+    { name: "Losar 50 (Losartan)", price: 75, category: "Blood Pressure", type: "Tab", icon: "fa-wave-square", isRx: true,
+      image: "https://placehold.co/80x80/FFF1F2/BE123C?text=Losar",
+      salt: "Losartan Potassium", strength: "50 mg", company: "Cipla Ltd.",
+      description: "Losar 50 (Losartan 50 mg) is an ARB antihypertensive that also provides renal protection in diabetic nephropathy and reduces stroke risk. It does not cause the dry cough associated with ACE inhibitors.",
+      sideEffects: ["Dizziness", "Back pain", "Hyperkalaemia", "Fatigue", "Renal impairment (rare)"] },
+    { name: "Nebicard 5 (Nebivolol)", price: 110, category: "Blood Pressure", type: "Tab", icon: "fa-heart-circle-check", isRx: true,
+      image: "https://placehold.co/80x80/FFF1F2/BE123C?text=Nebi",
+      salt: "Nebivolol", strength: "5 mg", company: "Torrent Pharmaceuticals",
+      description: "Nebicard 5 (Nebivolol 5 mg) is a selective beta-1 blocker with vasodilatory properties. It is used for hypertension, stable angina, and chronic heart failure.",
+      sideEffects: ["Fatigue", "Dizziness", "Bradycardia", "Cold extremities", "Nausea"] },
+
+    // === CHOLESTEROL ===
     { name: "Atorva 10", price: 120, category: "Cholesterol", type: "Tab", icon: "fa-heart", isRx: true,
+      image: "https://placehold.co/80x80/FFFBEB/B45309?text=Atorva",
       salt: "Atorvastatin Calcium", strength: "10 mg", company: "Zydus Cadila",
       description: "Atorva 10 (Atorvastatin 10 mg) is a statin that lowers LDL cholesterol and triglycerides while raising HDL cholesterol, reducing the risk of heart attack and stroke.",
       sideEffects: ["Muscle pain (myalgia)", "Liver enzyme elevation", "Headache", "Nausea", "Rhabdomyolysis (rare)"] },
+    { name: "Rozavel 10", price: 145, category: "Cholesterol", type: "Tab", icon: "fa-chart-line", isRx: true,
+      image: "https://placehold.co/80x80/FFFBEB/B45309?text=Rozavel",
+      salt: "Rosuvastatin Calcium", strength: "10 mg", company: "Sun Pharma",
+      description: "Rozavel 10 (Rosuvastatin 10 mg) is a potent statin with a long half-life. It significantly reduces LDL cholesterol and is used for primary and secondary prevention of cardiovascular disease.",
+      sideEffects: ["Muscle pain", "Headache", "Constipation", "Nausea", "Myopathy (rare)"] },
+    { name: "Ecosprin 75", price: 18, category: "Cholesterol", type: "Tab", icon: "fa-heart-crack", isRx: true,
+      image: "https://placehold.co/80x80/FFFBEB/B45309?text=Ecosp",
+      salt: "Aspirin (Acetylsalicylic Acid)", strength: "75 mg", company: "USV Pvt. Ltd.",
+      description: "Ecosprin 75 is a low-dose aspirin used as an antiplatelet agent to prevent blood clots in patients with cardiovascular disease, after heart attack, or after coronary artery bypass surgery.",
+      sideEffects: ["Gastric irritation", "Nausea", "Bleeding tendency", "Peptic ulcer (long-term)"] },
+    { name: "Fenofibrate 160", price: 130, category: "Cholesterol", type: "Tab", icon: "fa-droplet", isRx: true,
+      image: "https://placehold.co/80x80/FFFBEB/B45309?text=Feno",
+      salt: "Fenofibrate", strength: "160 mg", company: "Abbott India",
+      description: "Fenofibrate 160 mg is a fibric acid derivative used to lower elevated triglycerides and raise HDL cholesterol. Often combined with statins for comprehensive dyslipidaemia management.",
+      sideEffects: ["Stomach pain", "Nausea", "Muscle pain", "Liver enzyme elevation", "Gallstones (rare)"] },
+
+    // === VITAMINS & SUPPLEMENTS ===
     { name: "Limcee (Vit C)", price: 25, category: "Vitamins & Supplements", type: "Chew", icon: "fa-lemon", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=VitC",
       salt: "Ascorbic Acid (Vitamin C)", strength: "500 mg", company: "Abbott India",
       description: "Limcee is a chewable Vitamin C (500 mg) tablet that supports immune function, collagen synthesis, and acts as an antioxidant. Orange-flavoured for pleasant consumption.",
       sideEffects: ["Stomach upset (high doses)", "Diarrhoea (high doses)", "Kidney stones (very high doses)"] },
     { name: "Zincovit", price: 105, category: "Vitamins & Supplements", type: "Tab", icon: "fa-shield-virus", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Zinc",
       salt: "Zinc + Multivitamins + Minerals", strength: "—", company: "Apex Laboratories",
       description: "Zincovit is a comprehensive multivitamin and mineral supplement with Zinc, Vitamins A, B-complex, C, D, and E. It boosts immunity, supports growth, and aids in recovery.",
       sideEffects: ["Nausea (on empty stomach)", "Metallic taste", "Stomach upset"] },
     { name: "Shelcal 500 (Calcium)", price: 115, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bone", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Calc",
       salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg/250 IU", company: "Sun Pharma",
       description: "Shelcal 500 provides Calcium Carbonate (500 mg) with Vitamin D3 to prevent and treat calcium deficiency, osteoporosis, and rickets. Vitamin D3 enhances calcium absorption.",
       sideEffects: ["Constipation", "Bloating", "Kidney stones (high doses)", "Hypercalcaemia (overdose)"] },
     { name: "Evion 400 (Vit E)", price: 35, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=VitE",
       salt: "Tocopheryl Acetate (Vitamin E)", strength: "400 IU", company: "Merck (India)",
       description: "Evion 400 is a Vitamin E supplement used for skin health, hair growth, and as an antioxidant. It is also applied topically for wound healing and stretch marks.",
       sideEffects: ["Nausea (high doses)", "Headache (high doses)", "Blurred vision (very high doses)", "Fatigue"] },
     { name: "Omega-3 Fish Oil", price: 249, category: "Vitamins & Supplements", type: "Cap", icon: "fa-fish", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Omega",
       salt: "Omega-3 Fatty Acids (EPA + DHA)", strength: "1000 mg", company: "HealthKart",
       description: "Omega-3 Fish Oil provides essential EPA and DHA fatty acids that support heart health, brain function, and help reduce inflammation. Take 1 capsule daily with meals.",
       sideEffects: ["Fishy breath", "Stomach upset", "Loose stools (high doses)"] },
     { name: "Iron + Folic Acid", price: 85, category: "Vitamins & Supplements", type: "Tab", icon: "fa-droplet", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Iron",
       salt: "Ferrous Sulfate + Folic Acid", strength: "150 mg/0.5 mg", company: "Abbott India",
       description: "Iron + Folic Acid tablet prevents and treats anaemia. Essential for women of childbearing age, pregnant women, and those with iron-deficiency anaemia.",
       sideEffects: ["Constipation", "Nausea", "Dark stools", "Stomach cramps"] },
     { name: "Vitamin D3 (60,000 IU)", price: 130, category: "Vitamins & Supplements", type: "Cap", icon: "fa-sun", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=VitD3",
       salt: "Cholecalciferol (Vitamin D3)", strength: "60,000 IU", company: "Sun Pharma",
       description: "Vitamin D3 60,000 IU is taken once weekly to correct Vitamin D deficiency, supporting bone health, immune function, and muscle strength.",
       sideEffects: ["Nausea (overdose)", "Fatigue (overdose)", "Hypercalcaemia (very high doses)"] },
     { name: "Neurobion Forte", price: 90, category: "Vitamins & Supplements", type: "Tab", icon: "fa-bolt", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Neuro",
       salt: "Vitamin B1 + B6 + B12", strength: "10 mg/100 mg/15 mcg", company: "Merck (India)",
       description: "Neurobion Forte contains Vitamins B1, B6, and B12 to support nerve health, reduce tiredness, and boost energy. Recommended for B-vitamin deficiency and neuropathy.",
       sideEffects: ["Nausea (rare)", "Skin rash (rare)"] },
+    { name: "Biotin 10,000 mcg", price: 180, category: "Vitamins & Supplements", type: "Tab", icon: "fa-seedling", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Biotin",
+      salt: "Biotin (Vitamin B7)", strength: "10,000 mcg", company: "HealthKart",
+      description: "Biotin 10,000 mcg supports healthy hair, skin, and nails by aiding keratin production. Also important for fatty acid metabolism and energy production.",
+      sideEffects: ["Rare adverse effects at high doses", "May interfere with lab tests (thyroid, troponin)"] },
+    { name: "Ashwagandha KSM-66", price: 350, category: "Vitamins & Supplements", type: "Cap", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Ashwa",
+      salt: "Withania Somnifera Root Extract", strength: "600 mg", company: "Himalaya Drug Company",
+      description: "Ashwagandha KSM-66 is a premium standardised root extract used to reduce stress, improve energy, enhance concentration, and boost immunity. Clinically studied for cortisol reduction.",
+      sideEffects: ["Stomach upset (rare)", "Drowsiness (high doses)", "Thyroid interactions (rare)"] },
+    { name: "Magnesium Glycinate", price: 420, category: "Vitamins & Supplements", type: "Tab", icon: "fa-circle-nodes", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/15803D?text=Mg",
+      salt: "Magnesium Bisglycinate", strength: "400 mg", company: "HealthKart",
+      description: "Magnesium Glycinate is a highly bioavailable form of magnesium that supports muscle relaxation, sleep quality, nerve function, and bone health. Gentle on the stomach.",
+      sideEffects: ["Diarrhoea (high doses)", "Nausea (rare)", "Stomach cramping (rare)"] },
+
+    // === HOME FIRST AID ===
     { name: "Dettol Liquid", price: 65, category: "Home First Aid", type: "Liq", icon: "fa-pump-medical", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Dettol",
       salt: "Chloroxylenol (PCMX)", strength: "4.8% w/v", company: "Reckitt Benckiser",
       description: "Dettol Antiseptic Liquid containing Chloroxylenol is used for wound cleansing, skin disinfection, and general hygiene. Dilute before applying to skin.",
       sideEffects: ["Skin irritation (undiluted)", "Allergic contact dermatitis (rare)", "Toxic if swallowed"] },
     { name: "Hansaplast Strips", price: 20, category: "Home First Aid", type: "Strip", icon: "fa-bandage", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Strip",
       salt: "N/A (Medical Device)", strength: "N/A", company: "Beiersdorf India",
       description: "Hansaplast adhesive wound strips protect minor cuts, scrapes, and blisters from dirt and germs. The breathable wound pad promotes faster healing and stays in place even when wet.",
       sideEffects: ["Skin irritation (sensitive skin)", "Adhesive allergy (rare)"] },
     { name: "Betadine Ointment", price: 95, category: "Home First Aid", type: "Cream", icon: "fa-hand-dots", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Betad",
       salt: "Povidone-Iodine", strength: "5% w/w", company: "Win-Medicare Pvt. Ltd.",
       description: "Betadine Ointment is a broad-spectrum antiseptic containing Povidone-Iodine, effective against bacteria, viruses, and fungi. Used for wound care, minor burns, and skin infections.",
       sideEffects: ["Skin staining (brown)", "Skin irritation", "Iodine sensitivity reaction (rare)", "Avoid on large wounds"] },
     { name: "Electral ORS", price: 35, category: "Home First Aid", type: "Sachet", icon: "fa-glass-water-droplet", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=ORS",
       salt: "Sodium Chloride + Potassium Chloride + Sodium Citrate + Glucose", strength: "Per sachet (21.8 g)", company: "FDC Ltd.",
       description: "Electral ORS (Oral Rehydration Salts) is essential for treating dehydration caused by diarrhoea, vomiting, fever, or heat exhaustion. Dissolve one sachet in 1 litre of clean drinking water.",
       sideEffects: ["Nausea (rare)", "Elevated sodium in large doses"] },
     { name: "Burnol Cream", price: 70, category: "Home First Aid", type: "Cream", icon: "fa-fire-flame-curved", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Burnol",
       salt: "Cetrimide + Chlorhexidine", strength: "0.5% / 0.025% w/w", company: "Dr. Morepen",
       description: "Burnol is a trusted antiseptic cream for minor burns, scalds, and skin wounds. It relieves pain, prevents infection, and aids healing. Apply a thin layer on the affected area.",
       sideEffects: ["Mild skin irritation", "Burning sensation on open wounds", "Allergy (rare)"] },
     { name: "Calpol Paediatric", price: 45, category: "Home First Aid", type: "Syr", icon: "fa-child", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Calpol",
       salt: "Paracetamol", strength: "120 mg/5 ml", company: "GlaxoSmithKline",
       description: "Calpol Paediatric Suspension is a children's fever and pain relief syrup, gentle on young stomachs. Indicated for fever, teething pain, and post-vaccination discomfort.",
       sideEffects: ["Nausea (rare)", "Skin rash (rare)", "Liver damage on overdose"] },
+    { name: "Savlon Antiseptic", price: 55, category: "Home First Aid", type: "Liq", icon: "fa-droplet", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Savlon",
+      salt: "Cetrimide + Chlorhexidine Gluconate", strength: "3%/0.3% w/v", company: "ICI India",
+      description: "Savlon Antiseptic Liquid is a gentle antiseptic for wound cleansing, first aid disinfection, and general hygiene. Less irritating than Dettol, suitable for use on sensitive skin.",
+      sideEffects: ["Mild skin irritation", "Allergic contact dermatitis (rare)"] },
+    { name: "Micropore Tape (3M)", price: 75, category: "Home First Aid", type: "Strip", icon: "fa-tape", isRx: false,
+      image: "https://placehold.co/80x80/F0F9FF/0369A1?text=Tape",
+      salt: "N/A (Medical Device)", strength: "N/A", company: "3M India",
+      description: "3M Micropore surgical tape is a breathable, paper-based medical adhesive tape used for securing dressings, tubes, and bandages. Gentle on skin and leaves minimal residue on removal.",
+      sideEffects: ["Skin irritation (prolonged use)", "Adhesive allergy (rare)"] },
+
+    // === ALLERGY ===
     { name: "Cetrizine", price: 18, category: "Allergy", type: "Tab", icon: "fa-head-side-cough", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Cetriz",
       salt: "Cetirizine Hydrochloride", strength: "10 mg", company: "Unbranded / Generic",
       description: "Cetirizine is a second-generation antihistamine with minimal sedation, used to treat allergic rhinitis, hives, hay fever, and other allergic conditions. Effective for 24 hours.",
       sideEffects: ["Drowsiness (mild)", "Dry mouth", "Headache", "Nausea", "Fatigue"] },
     { name: "Allegra 120", price: 195, category: "Allergy", type: "Tab", icon: "fa-wind", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Allegra",
       salt: "Fexofenadine Hydrochloride", strength: "120 mg", company: "Sanofi India",
       description: "Allegra 120 (Fexofenadine 120 mg) is a non-drowsy antihistamine for seasonal allergic rhinitis and chronic idiopathic urticaria. It does not cross the blood-brain barrier, ensuring no sedation.",
-      sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] }
+      sideEffects: ["Headache", "Nausea", "Dizziness (rare)", "Back pain (rare)"] },
+    { name: "Montair LC", price: 145, category: "Allergy", type: "Tab", icon: "fa-lungs", isRx: true,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Montair",
+      salt: "Montelukast + Levocetirizine", strength: "10 mg/5 mg", company: "Cipla Ltd.",
+      description: "Montair LC combines Montelukast (leukotriene receptor antagonist) and Levocetirizine (antihistamine) for effective control of allergic rhinitis and allergic asthma.",
+      sideEffects: ["Drowsiness", "Dry mouth", "Headache", "Mood changes (Montelukast)", "Nausea"] },
+    { name: "Levocet 5mg", price: 65, category: "Allergy", type: "Tab", icon: "fa-shield-halved", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Levocet",
+      salt: "Levocetirizine Hydrochloride", strength: "5 mg", company: "Sun Pharma",
+      description: "Levocet 5 (Levocetirizine 5 mg) is a potent, non-sedating antihistamine for allergic rhinitis, urticaria, and dermatoses. It has a rapid onset and 24-hour efficacy.",
+      sideEffects: ["Mild drowsiness", "Dry mouth", "Headache", "Fatigue"] },
+    { name: "Nasivion Nasal Drop", price: 55, category: "Allergy", type: "Drop", icon: "fa-nose", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Nasiv",
+      salt: "Oxymetazoline Hydrochloride", strength: "0.05% w/v", company: "Merck (India)",
+      description: "Nasivion Nasal Drops provide fast nasal decongestion in allergic rhinitis, sinusitis, and common cold. Effects begin within 5 minutes and last up to 12 hours.",
+      sideEffects: ["Nasal burning", "Dryness", "Rebound congestion (overuse)", "Headache"] }
 ];
 
 // Plain-language display names for medicine therapeutic categories
@@ -1886,11 +2111,15 @@ function _runSearch(rawQuery) {
 
 function renderItemCard(item) {
     const inW = isInWishlist(item.name);
+    const imgHtml = item.image
+        ? `<img src="${item.image}" alt="${item.name}" style="width:56px; height:56px; border-radius:14px; object-fit:cover; flex-shrink:0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div class="icon-orb orb-1" style="display:none;"><i class="fa-solid ${item.icon}"></i></div>`
+        : `<div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>`;
     return `
         <div class="glass-card" style="position:relative;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
             ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
             <button data-wish="${item.name}" class="wish-btn" onclick='event.stopPropagation(); toggleWishlist(${JSON.stringify(item.name)})' style="position:absolute; top:10px; ${item.isRx ? 'right:52px' : 'right:10px'}; background:none; border:none; cursor:pointer; font-size:18px; color:${inW ? '#EF4444' : '#D1D5DB'}; padding:4px; z-index:2; line-height:1;" aria-label="${inW ? 'Remove from wishlist' : 'Add to wishlist'}"><i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i></button>
-            <div class="icon-orb orb-1"><i class="fa-solid ${item.icon}"></i></div>
+            ${imgHtml}
             <div>
                 <h3 style="margin:0; font-size:15px;">${item.name}</h3>
                 <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</p>
@@ -1907,10 +2136,13 @@ function renderPopularMeds() {
     const popular = MEDICINE_DB.slice(0, 4);
     let html = '';
     popular.forEach(item => {
+        const imgTag = item.image
+            ? `<img src="${item.image}" alt="${item.name}" style="width:56px; height:56px; border-radius:14px; object-fit:cover; margin-bottom:12px; flex-shrink:0;" onerror="this.style.display='none';">`
+            : `<div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
         html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
-                <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                ${imgTag}
                 <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
                 <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.category}</p>
                 <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
@@ -1961,10 +2193,13 @@ function _renderDailyNeedsMeds(catName) {
     const items = MEDICINE_DB.filter(m => m.category === catName);
     let html = '';
     items.forEach(item => {
+        const imgTag = item.image
+            ? `<img src="${item.image}" alt="${item.name}" style="width:56px; height:56px; border-radius:14px; object-fit:cover; margin-bottom:12px; flex-shrink:0;" onerror="this.style.display='none';">`
+            : `<div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
         html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
-                <div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>
+                ${imgTag}
                 <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
                 <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
                 <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
@@ -1982,7 +2217,7 @@ let _medSliderTotal = 3;
 let _medAutoSlideTimer = null;
 
 const _MED_SLIDE_BGSM = [
-    'linear-gradient(135deg,#344E41 0%,#3A5A40 100%)',
+    'linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 100%)',
     'linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%)',
     'linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)'
 ];
@@ -2406,32 +2641,76 @@ const BROWSE_CATEGORIES = [
     { name: "Homeopathy", icon: "fa-mortar-pestle", section: "alternative" },
 ];
 
+// ─── Category tab: section definitions ─────────────────────────────────────
+const CAT_SECTIONS = [
+    { key: 'all',         label: 'All',            icon: 'fa-grip',              },
+    { key: 'womancare',   label: 'Woman Care',      icon: 'fa-venus-double',      },
+    { key: 'childcare',   label: 'Child Care',      icon: 'fa-child-reaching',    },
+    { key: 'everyday',    label: 'Everyday',        icon: 'fa-bolt',              },
+    { key: 'chronic',     label: 'Chronic',         icon: 'fa-heart-pulse',       },
+    { key: 'vitamins',    label: 'Vitamins',        icon: 'fa-shield-virus',      },
+    { key: 'firstaid',    label: 'First Aid',       icon: 'fa-kit-medical',       },
+    { key: 'wellness',    label: 'Wellness',        icon: 'fa-spa',               },
+    { key: 'organ',       label: 'Organ Care',      icon: 'fa-heart',             },
+    { key: 'lifestyle',   label: 'Lifestyle',       icon: 'fa-seedling',          },
+    { key: 'prescription',label: 'Rx Medicines',   icon: 'fa-file-prescription', },
+    { key: 'alternative', label: 'Alternative',     icon: 'fa-leaf',              },
+];
+
+let _activeCatSection = 'all';
+
+const ACUTE_CATS   = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
+const CHRONIC_CATS = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
+const SPECIAL_CATS = ["Vitamins & Supplements"];
+const FIRSTAID_CATS = ["Home First Aid"];
+
 function renderCategoriesTab() {
-    const grid = document.getElementById('all-cats-grid');
-    if (!grid) return;
+    const tabsEl = document.getElementById('cat-section-tabs');
+    const contentEl = document.getElementById('cat-section-content');
+    if (!tabsEl || !contentEl) return;
 
-    const ACUTE_CATS    = ["Fever & Flu", "Cough & Cold", "Pain Relief", "Headache", "Digestion", "Allergy"];
-    const CHRONIC_CATS  = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"];
-    const SPECIAL_CATS  = ["Vitamins & Supplements", "Home First Aid"];
-    const allMapped     = [...SPECIAL_CATS, ...ACUTE_CATS, ...CHRONIC_CATS];
-    const colors        = ['orb-1', 'orb-2', 'orb-3'];
+    // Build sliding pill tab strip
+    tabsEl.innerHTML = CAT_SECTIONS.map((s, i) =>
+        `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchCategorySection('${s.key}', this)">
+            <i class="fa-solid ${s.icon}"></i> <span>${s.label}</span>
+         </div>`
+    ).join('');
 
-    function catCard(cat, idx, icon) {
-        const example = MEDICINE_DB.find(m => m.category === cat);
-        const iconClass = icon || (example ? example.icon : 'fa-capsules');
-        return `
-            <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
-                <div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${iconClass}"></i></div>
-                <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
-            </div>`;
-    }
+    _activeCatSection = 'all';
+    _renderCatSectionContent('all', contentEl);
+}
 
+function switchCategorySection(sectionKey, el) {
+    _activeCatSection = sectionKey;
+    document.querySelectorAll('#cat-section-tabs .daily-needs-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+    const contentEl = document.getElementById('cat-section-content');
+    if (contentEl) _renderCatSectionContent(sectionKey, contentEl);
+}
+
+function _catMiniCard(cat, idx, icon) {
+    const colors = ['orb-1', 'orb-2', 'orb-3'];
+    const example = MEDICINE_DB.find(m => m.category === cat);
+    const iconClass = icon || (example ? example.icon : 'fa-capsules');
+    const imgTag = example && example.image
+        ? `<img src="${example.image}" alt="${cat}" style="width:50px; height:50px; border-radius:14px; object-fit:cover; margin-bottom:10px;" onerror="this.style.display='none';">`
+        : `<div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${iconClass}"></i></div>`;
+    return `
+        <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
+            ${imgTag}
+            <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
+        </div>`;
+}
+
+function _renderCatSectionContent(sectionKey, el) {
     let html = '';
 
-    // ── Woman Care (featured wide banner) ──
-    html += `<div class="cat-section-label"><i class="fa-solid fa-venus-double" style="color:#BE185D; margin-right:6px;"></i>Woman Care</div>`;
-    html += `
-        <div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
+    const allMapped = [...SPECIAL_CATS, ...FIRSTAID_CATS, ...ACUTE_CATS, ...CHRONIC_CATS];
+
+    if (sectionKey === 'all') {
+        // Compact overview — show one card per section group with a label
+        html += `<div class="cat-section-label"><i class="fa-solid fa-venus-double" style="color:#BE185D; margin-right:6px;"></i>Woman Care</div>`;
+        html += `<div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
                 <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
                 <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
@@ -2443,10 +2722,8 @@ function renderCategoriesTab() {
             <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
         </div>`;
 
-    // ── Child & Pediatrics Care (featured wide banner) ──
-    html += `<div class="cat-section-label" style="margin-top:8px;"><i class="fa-solid fa-child-reaching" style="color:#0369A1; margin-right:6px;"></i>Child &amp; Pediatrics Care</div>`;
-    html += `
-        <div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
+        html += `<div class="cat-section-label" style="margin-top:8px;"><i class="fa-solid fa-child-reaching" style="color:var(--c4); margin-right:6px;"></i>Child &amp; Pediatrics Care</div>`;
+        html += `<div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
                 <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
                 <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
@@ -2458,70 +2735,141 @@ function renderCategoriesTab() {
             <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
         </div>`;
 
-    // ── Acute / Everyday conditions ──
-    const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
-    if (acuteCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief — Quick Care</div>`;
-        html += acuteCats.map((c, i) => catCard(c, i)).join('');
+        const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        if (acuteCats.length) {
+            html += `<div class="cat-section-label"><i class="fa-solid fa-bolt" style="color:#F59E0B; margin-right:6px;"></i>Everyday Relief</div>`;
+            html += acuteCats.map((c, i) => _catMiniCard(c, i)).join('');
+        }
+        const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        if (chronicCats.length) {
+            html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Chronic Care</div>`;
+            html += chronicCats.map((c, i) => _catMiniCard(c, i)).join('');
+        }
+        const vitCats = SPECIAL_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        if (vitCats.length) {
+            html += `<div class="cat-section-label"><i class="fa-solid fa-shield-virus" style="color:var(--c3); margin-right:6px;"></i>Vitamins &amp; Supplements</div>`;
+            html += vitCats.map((c, i) => _catMiniCard(c, i)).join('');
+        }
+        const faCats = FIRSTAID_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        if (faCats.length) {
+            html += `<div class="cat-section-label"><i class="fa-solid fa-kit-medical" style="color:var(--c4); margin-right:6px;"></i>First Aid</div>`;
+            html += faCats.map((c, i) => _catMiniCard(c, i)).join('');
+        }
+        const browseKeys = ['wellness', 'organ', 'lifestyle', 'prescription', 'alternative'];
+        const browseLabels = {
+            wellness: ['fa-spa', '#8B5CF6', 'Wellness & Personal Care'],
+            organ: ['fa-heart', '#EC4899', 'Organ & Body Care'],
+            lifestyle: ['fa-seedling', 'var(--c3)', 'Lifestyle & Nutrition'],
+            prescription: ['fa-file-prescription', '#DC2626', 'Prescription Medicines'],
+            alternative: ['fa-leaf', 'var(--c4)', 'Alternative Medicine'],
+        };
+        browseKeys.forEach(bk => {
+            const cats = BROWSE_CATEGORIES.filter(c => c.section === bk);
+            if (!cats.length) return;
+            const [lIcon, lColor, lLabel] = browseLabels[bk];
+            html += `<div class="cat-section-label"><i class="fa-solid ${lIcon}" style="color:${lColor}; margin-right:6px;"></i>${lLabel}</div>`;
+            html += cats.map((c, i) => _catMiniCard(c.name, i, c.icon)).join('');
+        });
+
+    } else if (sectionKey === 'womancare') {
+        html += `<div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
+            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
+                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
+                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
+            </div>
+            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
+        </div>`;
+        WOMAN_CARE_SUBCATEGORIES.forEach(s => {
+            html += `<div class="woman-subcat-card ${s.name === 'Personal Hygiene' ? 'hygiene' : 'menstrual'}" onclick="openWomanSubCategory(${JSON.stringify(s.name)})">
+                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:23px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
+                <p style="margin:6px 0 0; font-size:11px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
+            </div>`;
+        });
+
+    } else if (sectionKey === 'childcare') {
+        html += `<div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
+            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
+                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
+                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
+            </div>
+            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
+        </div>`;
+        CHILD_CARE_SUBCATEGORIES.forEach((s, i) => {
+            html += `<div class="child-subcat-card" onclick="openChildSubCategory(${JSON.stringify(s.name)})" style="background:white; border-radius:22px; padding:20px 16px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border:1.5px solid rgba(219,234,254,0.8); box-shadow:0 4px 16px rgba(29,78,216,0.07); transition:transform 0.25s; min-height:120px; position:relative; overflow:hidden;">
+                <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:22px 22px 0 0; background:${i%2===0 ? 'linear-gradient(90deg,#0EA5E9,#38BDF8)' : 'linear-gradient(90deg,#6366F1,#818CF8)'};"></div>
+                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
+            </div>`;
+        });
+
+    } else if (sectionKey === 'everyday') {
+        const cats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        html += cats.map((c, i) => _catMiniCard(c, i)).join('');
+        // Also show medicines from first everyday category
+        const meds = MEDICINE_DB.filter(m => cats.includes(m.category)).slice(0, 6);
+        if (meds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-pills" style="color:var(--c3); margin-right:6px;"></i>Featured Products</div>`;
+            html += meds.map(item => _medGridCard(item)).join('');
+        }
+
+    } else if (sectionKey === 'chronic') {
+        const cats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        html += cats.map((c, i) => _catMiniCard(c, i)).join('');
+        const meds = MEDICINE_DB.filter(m => cats.includes(m.category)).slice(0, 6);
+        if (meds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-pills" style="color:var(--c3); margin-right:6px;"></i>Featured Products</div>`;
+            html += meds.map(item => _medGridCard(item)).join('');
+        }
+
+    } else if (sectionKey === 'vitamins') {
+        const cats = SPECIAL_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        html += cats.map((c, i) => _catMiniCard(c, i)).join('');
+        const meds = MEDICINE_DB.filter(m => m.category === 'Vitamins & Supplements').slice(0, 8);
+        if (meds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-shield-virus" style="color:var(--c3); margin-right:6px;"></i>Popular Products</div>`;
+            html += meds.map(item => _medGridCard(item)).join('');
+        }
+
+    } else if (sectionKey === 'firstaid') {
+        const cats = FIRSTAID_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
+        html += cats.map((c, i) => _catMiniCard(c, i)).join('');
+        const meds = MEDICINE_DB.filter(m => m.category === 'Home First Aid');
+        if (meds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-kit-medical" style="color:var(--c4); margin-right:6px;"></i>First Aid Essentials</div>`;
+            html += meds.map(item => _medGridCard(item)).join('');
+        }
+
+    } else {
+        // Browse-only sections: wellness, organ, lifestyle, prescription, alternative
+        const cats = BROWSE_CATEGORIES.filter(c => c.section === sectionKey);
+        if (cats.length) {
+            html += cats.map((c, i) => _catMiniCard(c.name, i, c.icon)).join('');
+        } else {
+            html += `<div style="grid-column:span 2; text-align:center; padding:40px 20px;">
+                <div style="font-size:48px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
+                <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
+                <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">This section will be available shortly.</p>
+            </div>`;
+        }
     }
 
-    // ── Chronic / Long-term conditions ──
-    const chronicCats = CHRONIC_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
-    if (chronicCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EF4444; margin-right:6px;"></i>Ongoing Care — Long-Term Conditions</div>`;
-        html += chronicCats.map((c, i) => catCard(c, i)).join('');
-    }
+    el.innerHTML = html;
+}
 
-    // ── Vitamins, First Aid & Supplements ──
-    const specialCats = SPECIAL_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
-    if (specialCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-kit-medical" style="color:#16A34A; margin-right:6px;"></i>Vitamins, Supplements & First Aid</div>`;
-        html += specialCats.map((c, i) => catCard(c, i)).join('');
-    }
-
-    // ── Wellness & Personal Care (browse-only) ──
-    const wellnessCats = BROWSE_CATEGORIES.filter(c => c.section === 'wellness');
-    if (wellnessCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-spa" style="color:#8B5CF6; margin-right:6px;"></i>Wellness & Personal Care</div>`;
-        html += wellnessCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
-    }
-
-    // ── Organ & Body Care (browse-only) ──
-    const organCats = BROWSE_CATEGORIES.filter(c => c.section === 'organ');
-    if (organCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-heart-pulse" style="color:#EC4899; margin-right:6px;"></i>Organ & Body Care</div>`;
-        html += organCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
-    }
-
-    // ── Lifestyle & Nutrition (browse-only) ──
-    const lifestyleCats = BROWSE_CATEGORIES.filter(c => c.section === 'lifestyle');
-    if (lifestyleCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-seedling" style="color:#059669; margin-right:6px;"></i>Lifestyle & Nutrition</div>`;
-        html += lifestyleCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
-    }
-
-    // ── Prescription & Specialist (browse-only) ──
-    const rxCats = BROWSE_CATEGORIES.filter(c => c.section === 'prescription');
-    if (rxCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-file-prescription" style="color:#DC2626; margin-right:6px;"></i>Prescription Medicines</div>`;
-        html += rxCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
-    }
-
-    // ── Alternative Medicine (browse-only) ──
-    const altCats = BROWSE_CATEGORIES.filter(c => c.section === 'alternative');
-    if (altCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-leaf" style="color:#16A34A; margin-right:6px;"></i>Alternative Medicine</div>`;
-        html += altCats.map((c, i) => catCard(c.name, i, c.icon)).join('');
-    }
-
-    // ── Any remaining unmapped categories from MEDICINE_DB ──
-    const otherCats = [...new Set(MEDICINE_DB.map(m => m.category))].filter(c => !allMapped.includes(c));
-    if (otherCats.length) {
-        html += `<div class="cat-section-label"><i class="fa-solid fa-grid-2" style="color:var(--c4); margin-right:6px;"></i>More</div>`;
-        html += otherCats.map((c, i) => catCard(c, i)).join('');
-    }
-
-    grid.innerHTML = html;
+function _medGridCard(item) {
+    const imgTag = item.image
+        ? `<img src="${item.image}" alt="${item.name}" style="width:50px; height:50px; border-radius:12px; object-fit:cover; margin:0 0 10px; flex-shrink:0;" onerror="this.style.display='none';">`
+        : `<div class="icon-orb orb-1" style="margin:0 0 10px; width:50px; height:50px; font-size:20px;"><i class="fa-solid ${item.icon}"></i></div>`;
+    return `
+        <div class="glass-card cat-mini-card" onclick='openMedicineDetail(${JSON.stringify(item.name)})' style="min-height:150px;">
+            ${item.isRx ? '<span class="rx-badge" style="top:8px; right:8px; font-size:9px;">Rx</span>' : ''}
+            ${imgTag}
+            <h3 style="margin:0; font-size:12px; text-align:center; line-height:1.3; white-space:normal;">${item.name}</h3>
+            <p style="margin:4px 0 0; font-size:12px; font-weight:800; color:var(--c4); text-align:center;">₹${item.price}</p>
+        </div>`;
 }
 
 // Zepto-style: collapse/expand the home header based on scroll position
