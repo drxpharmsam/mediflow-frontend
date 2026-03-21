@@ -2361,8 +2361,24 @@ function clearSearch() {
     document.getElementById('home-search-content').style.display = 'none';
 }
 
+// Sub-categories for Woman Care
+const WOMAN_CARE_SUBCATEGORIES = [
+    { name: "Personal Hygiene", icon: "fa-soap", orbClass: "orb-woman", desc: "Intimate washes, feminine hygiene sprays, sanitary care essentials and daily cleanliness products." },
+    { name: "Menstrual Cycle Care", icon: "fa-droplet", orbClass: "orb-woman-2", desc: "Period care products, menstrual pain relief, cycle trackers and hormonal health supplements." },
+];
+
+// Sub-categories for Child & Pediatrics Care
+const CHILD_CARE_SUBCATEGORIES = [
+    { name: "Infant & Baby Care", icon: "fa-baby", orbClass: "orb-child-1", desc: "Baby oils, rash creams, nasal drops, gripe water and nutrition for infants 0–12 months." },
+    { name: "Child Nutrition", icon: "fa-apple-whole", orbClass: "orb-child-2", desc: "Growth supplements, multivitamins, protein powders and immunity boosters for children." },
+    { name: "Fever & Paediatric Flu", icon: "fa-thermometer", orbClass: "orb-child-3", desc: "Child-safe fever reducers, cough syrups, nasal sprays and cold & flu remedies." },
+    { name: "Child Skin & Allergy", icon: "fa-shield-heart", orbClass: "orb-child-1", desc: "Gentle skin creams, anti-allergy drops, insect bite relief and eczema care for kids." },
+];
+
 // Browse-only categories (no medicines in DB yet) with icons for the category page
 const BROWSE_CATEGORIES = [
+    { name: "Woman Care", icon: "fa-venus-double", section: "womancare" },
+    { name: "Child & Pediatrics Care", icon: "fa-child-reaching", section: "childcare" },
     { name: "Skin Care", icon: "fa-hand-sparkles", section: "wellness" },
     { name: "Eye Care", icon: "fa-eye", section: "wellness" },
     { name: "Ear Care", icon: "fa-ear-listen", section: "wellness" },
@@ -2411,6 +2427,36 @@ function renderCategoriesTab() {
     }
 
     let html = '';
+
+    // ── Woman Care (featured wide banner) ──
+    html += `<div class="cat-section-label"><i class="fa-solid fa-venus-double" style="color:#BE185D; margin-right:6px;"></i>Woman Care</div>`;
+    html += `
+        <div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
+            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
+                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
+                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
+                <div style="display:inline-flex; gap:8px;">
+                    ${WOMAN_CARE_SUBCATEGORIES.map(s => `<span onclick="event.stopPropagation(); openWomanSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:11px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
+                </div>
+            </div>
+            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
+        </div>`;
+
+    // ── Child & Pediatrics Care (featured wide banner) ──
+    html += `<div class="cat-section-label" style="margin-top:8px;"><i class="fa-solid fa-child-reaching" style="color:#0369A1; margin-right:6px;"></i>Child &amp; Pediatrics Care</div>`;
+    html += `
+        <div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
+            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
+                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
+                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
+                <div style="display:inline-flex; gap:8px; flex-wrap:wrap;">
+                    ${CHILD_CARE_SUBCATEGORIES.slice(0,3).map(s => `<span onclick="event.stopPropagation(); openChildSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:11px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
+                </div>
+            </div>
+            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
+        </div>`;
 
     // ── Acute / Everyday conditions ──
     const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
@@ -2504,6 +2550,42 @@ function _initHomeScrollHeader() {
 }
 
 function openCategoryView(catName) {
+    // Special handling for Woman Care — show sub-category picker
+    if (catName === 'Woman Care') {
+        document.getElementById('cat-title').innerText = '🌸 Woman Care';
+        const grid = document.getElementById('cat-items-grid');
+        grid.innerHTML = `
+            <div style="grid-column:span 2; padding:4px 0 16px;">
+                <p style="margin:0 0 16px; font-size:13px; color:var(--gray-text); font-weight:500;">Choose a sub-category to explore products tailored for women's wellness.</p>
+            </div>
+            ${WOMAN_CARE_SUBCATEGORIES.map(s => `
+            <div class="woman-subcat-card ${s.name === 'Personal Hygiene' ? 'hygiene' : 'menstrual'}" onclick="openWomanSubCategory(${JSON.stringify(s.name)})">
+                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:23px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
+                <p style="margin:6px 0 0; font-size:11px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
+            </div>`).join('')}`;
+        showScreen('screen-cat-items');
+        return;
+    }
+
+    // Special handling for Child & Pediatrics Care — show sub-category picker
+    if (catName === 'Child & Pediatrics Care') {
+        document.getElementById('cat-title').innerText = '🧒 Child & Pediatrics Care';
+        const grid = document.getElementById('cat-items-grid');
+        grid.innerHTML = `
+            <div style="grid-column:span 2; padding:4px 0 16px;">
+                <p style="margin:0 0 16px; font-size:13px; color:var(--gray-text); font-weight:500;">Browse child-safe products and pediatric care essentials.</p>
+            </div>
+            ${CHILD_CARE_SUBCATEGORIES.map((s, i) => `
+            <div class="child-subcat-card" onclick="openChildSubCategory(${JSON.stringify(s.name)})" style="background:white; border-radius:22px; padding:20px 16px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border:1.5px solid rgba(219,234,254,0.8); box-shadow:0 4px 16px rgba(29,78,216,0.07); transition:transform 0.25s; min-height:120px; position:relative; overflow:hidden;">
+                <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:22px 22px 0 0; background:${i%2===0 ? 'linear-gradient(90deg,#0EA5E9,#38BDF8)' : 'linear-gradient(90deg,#6366F1,#818CF8)'};"></div>
+                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
+            </div>`).join('')}`;
+        showScreen('screen-cat-items');
+        return;
+    }
+
     document.getElementById('cat-title').innerText = catName;
     const grid = document.getElementById('cat-items-grid');
     const items = MEDICINE_DB.filter(m => m.category === catName);
@@ -2517,6 +2599,44 @@ function openCategoryView(catName) {
                 <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Medicines for this category will be available shortly.</p>
             </div>`;
     }
+    showScreen('screen-cat-items');
+}
+
+function openWomanSubCategory(subCatName) {
+    const sub = WOMAN_CARE_SUBCATEGORIES.find(s => s.name === subCatName);
+    document.getElementById('cat-title').innerText = subCatName;
+    const grid = document.getElementById('cat-items-grid');
+    grid.innerHTML = `
+        <div style="grid-column:span 2; padding:4px 0 20px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                <div class="icon-orb ${sub ? sub.orbClass : 'orb-woman'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
+                <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
+            </div>
+        </div>
+        <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(252,231,243,0.5),rgba(245,243,255,0.5)); border-radius:24px; border:1.5px solid rgba(251,207,232,0.5);">
+            <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
+            <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
+            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
+        </div>`;
+    showScreen('screen-cat-items');
+}
+
+function openChildSubCategory(subCatName) {
+    const sub = CHILD_CARE_SUBCATEGORIES.find(s => s.name === subCatName);
+    document.getElementById('cat-title').innerText = subCatName;
+    const grid = document.getElementById('cat-items-grid');
+    grid.innerHTML = `
+        <div style="grid-column:span 2; padding:4px 0 20px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                <div class="icon-orb ${sub ? sub.orbClass : 'orb-child-1'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
+                <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
+            </div>
+        </div>
+        <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(219,234,254,0.5),rgba(224,242,254,0.5)); border-radius:24px; border:1.5px solid rgba(191,219,254,0.5);">
+            <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
+            <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
+            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
+        </div>`;
     showScreen('screen-cat-items');
 }
 

@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-    <meta name="theme-color" content="#3A5A40">
+    <meta name="theme-color" content="#1D4ED8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="MediFlow">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -53,8 +53,8 @@
 
     <!-- LOGIN SCREEN -->
     <div id="screen-login" class="screen auth-bg">
-        <h1 style="color: var(--c5); font-size: 42px; margin: 0; letter-spacing: -1.5px; font-weight: 800;">MediFlow</h1>
-        <p style="color: var(--c5); font-weight: 600; opacity: 0.8; margin-top: 5px;">Your digital pharmacy.</p>
+        <h1 style="color: white; font-size: 42px; margin: 0; letter-spacing: -1.5px; font-weight: 800; text-shadow: 0 4px 16px rgba(0,0,0,0.18);">MediFlow</h1>
+        <p style="color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 5px;">Your digital pharmacy.</p>
         <div class="glass-sheet">
             <h2 style="font-size: 28px; color: #111827; margin-top: 0;">Welcome</h2>
             <div class="input-group">
@@ -67,7 +67,7 @@
 
     <!-- OTP SCREEN -->
     <div id="screen-otp" class="screen auth-bg hidden">
-        <h1 style="color: var(--c5); font-size: 42px; margin: 0; font-weight: 800;">Verify</h1>
+        <h1 style="color: white; font-size: 42px; margin: 0; font-weight: 800; text-shadow: 0 4px 16px rgba(0,0,0,0.18);">Verify</h1>
         <div class="glass-sheet">
             <h2 style="font-size: 28px; color: #111827; margin-top: 0;">Enter Code</h2>
             <p id="otp-phone-hint" style="color: var(--gray-text); font-size: 13px; font-weight: 500;">We've sent a 6-digit OTP to your number.</p>
@@ -89,7 +89,7 @@
 
     <!-- PROFILE SETUP SCREEN -->
     <div id="screen-profile" class="screen auth-bg hidden">
-        <h1 style="color: var(--c5); font-size: 42px; margin: 0; font-weight: 800;">Identity</h1>
+        <h1 style="color: white; font-size: 42px; margin: 0; font-weight: 800; text-shadow: 0 4px 16px rgba(0,0,0,0.18);">Identity</h1>
         <div class="glass-sheet" style="top: 15%;">
             <h2 style="font-size: 24px; color: #111827; margin-top: 0; margin-bottom: 25px;">Personal Info</h2>
             <div class="input-group">
@@ -149,14 +149,14 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="flex:1; min-width:0;">
                     <div id="header-location-row" class="header-location-row" onclick="openAddressManager()">
-                        <i class="fa-solid fa-location-dot" style="color:#A3B18A; font-size:13px; margin-right:5px;"></i>
-                        <span id="header-loc-text" style="font-size:12px; font-weight:700; color:#DAD7CD; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Set delivery location</span>
-                        <i class="fa-solid fa-chevron-down" style="font-size:9px; color:#A3B18A; margin-left:4px;"></i>
+                        <i class="fa-solid fa-location-dot" style="color:#93C5FD; font-size:13px; margin-right:5px;"></i>
+                        <span id="header-loc-text" style="font-size:12px; font-weight:700; color:#BFDBFE; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Set delivery location</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:9px; color:#93C5FD; margin-left:4px;"></i>
                     </div>
-                    <p id="greeting-text" style="margin:0; opacity:0.8; font-size:13px; font-weight:600; color:#DAD7CD;">Good morning,</p>
+                    <p id="greeting-text" style="margin:0; opacity:0.8; font-size:13px; font-weight:600; color:#BFDBFE;">Good morning,</p>
                     <h2 id="dash-user" style="margin:0; font-size:24px; font-weight:800;">User</h2>
                 </div>
-                <div id="initial-box" onclick="switchTab(null, 'tab-profile')" style="width:44px; height:44px; background:var(--white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--c4); font-size:17px; font-weight:800; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor:pointer;">U</div>
+                <div id="initial-box" onclick="switchTab(null, 'tab-profile')" style="width:44px; height:44px; background:rgba(255,255,255,0.18); backdrop-filter:blur(10px); border:1.5px solid rgba(255,255,255,0.3); border-radius:15px; display:flex; align-items:center; justify-content:center; color:white; font-size:17px; font-weight:800; box-shadow: 0 8px 20px rgba(0,0,0,0.15); cursor:pointer;">U</div>
             </div>
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -187,6 +187,74 @@
                         <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Popular Medicines</h3>
                     </div>
                     <div class="category-slider" id="popular-meds-slider"></div>
+
+                    <!-- WOMAN CARE FEATURED SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Woman Care</h3>
+                        <span onclick="openCategoryView('Woman Care')" style="font-size:12px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
+                    </div>
+                    <div class="service-grid">
+                        <div class="woman-care-banner" onclick="openCategoryView('Woman Care')">
+                            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
+                                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness<br>for Women</h3>
+                                <p style="margin:6px 0 0; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500; line-height:1.4;">Personal hygiene &amp;<br>menstrual care</p>
+                                <div class="woman-care-explore-btn" style="margin-top:14px;">
+                                    <span style="font-size:12px; font-weight:800; color:white;">Explore Now</span>
+                                    <i class="fa-solid fa-arrow-right" style="font-size:10px; color:white;"></i>
+                                </div>
+                            </div>
+                            <div style="font-size:64px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <div class="woman-subcat-card hygiene" onclick="openWomanSubCategory('Personal Hygiene')">
+                                <div class="icon-orb orb-woman" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid fa-soap"></i></div>
+                                <div>
+                                    <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">Personal<br>Hygiene</p>
+                                </div>
+                            </div>
+                            <div class="woman-subcat-card menstrual" onclick="openWomanSubCategory('Menstrual Cycle Care')">
+                                <div class="icon-orb orb-woman-2" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid fa-droplet"></i></div>
+                                <div>
+                                    <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">Menstrual<br>Cycle Care</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHILD & PEDIATRICS CARE FEATURED SECTION -->
+                    <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="margin:0; font-size:18px; color:#111827; font-weight:800;">Child &amp; Pediatrics Care</h3>
+                        <span onclick="openCategoryView('Child &amp; Pediatrics Care')" style="font-size:12px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
+                    </div>
+                    <div class="service-grid">
+                        <div class="child-care-banner" onclick="openCategoryView('Child &amp; Pediatrics Care')">
+                            <div style="flex:1; min-width:0; position:relative; z-index:1;">
+                                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
+                                <h3 style="margin:0; font-size:18px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
+                                <p style="margin:6px 0 0; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500; line-height:1.4;">Infant care &amp;<br>child wellness</p>
+                                <div class="woman-care-explore-btn" style="margin-top:14px;">
+                                    <span style="font-size:12px; font-weight:800; color:white;">Explore Now</span>
+                                    <i class="fa-solid fa-arrow-right" style="font-size:10px; color:white;"></i>
+                                </div>
+                            </div>
+                            <div style="font-size:64px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <div class="woman-subcat-card hygiene" onclick="openChildSubCategory('Infant &amp; Baby Care')" style="border-top:3px solid transparent; border-image:linear-gradient(90deg,#0EA5E9,#38BDF8) 1;">
+                                <div class="icon-orb orb-child-1" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid fa-baby"></i></div>
+                                <div>
+                                    <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">Infant &amp;<br>Baby Care</p>
+                                </div>
+                            </div>
+                            <div class="woman-subcat-card menstrual" onclick="openChildSubCategory('Child Nutrition')" style="border-top:3px solid transparent; border-image:linear-gradient(90deg,#6366F1,#818CF8) 1;">
+                                <div class="icon-orb orb-child-2" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid fa-apple-whole"></i></div>
+                                <div>
+                                    <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">Child<br>Nutrition</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- SUGGESTED FOR YOU SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
