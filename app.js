@@ -149,7 +149,7 @@ const TRANSLATIONS = {
 };
 
 let _currentLang = 'en';
-function t(key) { return (TRANSLATIONS[_currentLang] || TRANSLATIONS.en)[key] || TRANSLATIONS.en[key] || key; }
+function t(key) { return (TRANSLATIONS[_currentLang]?.[key] ?? TRANSLATIONS.en[key]) ?? key; }
 
 // ─── DISEASE DATABASE ───────────────────────────────────────────────────────
 const DISEASE_DB = [
@@ -3494,7 +3494,7 @@ function _setDiseaseCategory(cat) {
     const pillsEl = document.getElementById('disease-category-pills');
     if (pillsEl) {
         Array.from(pillsEl.children).forEach(p => {
-            p.classList.toggle('active', p.textContent === cat || (cat === 'All' && (p.textContent === 'All' || p.textContent === t('health_all'))));
+            p.classList.toggle('active', p.dataset.cat === cat);
         });
     }
     _renderDiseaseList();
@@ -3551,7 +3551,7 @@ function _renderDiseaseList() {
     listEl.addEventListener('click', function(e) {
         const card = e.target.closest('.disease-card[data-disease-id]');
         if (card && card.dataset.diseaseId) openDiseaseDetail(card.dataset.diseaseId);
-    }, { once: true });
+    });
 }
 
 function openDiseaseDetail(id) {
