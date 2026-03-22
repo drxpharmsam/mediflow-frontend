@@ -731,7 +731,521 @@ let MEDICINE_DB = [
       image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Nasiv",
       salt: "Oxymetazoline Hydrochloride", strength: "0.05% w/v", company: "Merck (India)",
       description: "Nasivion Nasal Drops provide fast nasal decongestion in allergic rhinitis, sinusitis, and common cold. Effects begin within 5 minutes and last up to 12 hours.",
-      sideEffects: ["Nasal burning", "Dryness", "Rebound congestion (overuse)", "Headache"] }
+      sideEffects: ["Nasal burning", "Dryness", "Rebound congestion (overuse)", "Headache"] },
+
+    // ── Woman Care ────────────────────────────────────────────────────────────
+    { name: "Meftal Spas", price: 65, category: "Woman Care", type: "Tab", icon: "fa-droplet", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Meftal",
+      salt: "Dicyclomine + Mefenamic Acid", strength: "10 mg / 250 mg", company: "Blue Cross Laboratories",
+      description: "Meftal Spas relieves menstrual cramps and abdominal spasms by combining an antispasmodic with a pain reliever.",
+      sideEffects: ["Nausea", "Dry mouth", "Dizziness", "Constipation"] },
+    { name: "Stayfree Secure", price: 60, category: "Woman Care", type: "Pack", icon: "fa-soap", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Stay",
+      salt: "Sanitary Pad", strength: "Regular", company: "Johnson & Johnson",
+      description: "Stayfree Secure provides reliable protection with a cottony cover for comfort during menstrual cycle.",
+      sideEffects: ["Change regularly every 4–6 hours"] },
+    { name: "Whisper Ultra", price: 75, category: "Woman Care", type: "Pack", icon: "fa-soap", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Whi",
+      salt: "Sanitary Pad", strength: "XL Plus", company: "Procter & Gamble",
+      description: "Whisper Ultra Thin pads offer maximum absorption with a thin design for overnight protection.",
+      sideEffects: ["Dispose responsibly after use"] },
+    { name: "Everteen Intimate Wash", price: 199, category: "Woman Care", type: "Wash", icon: "fa-soap", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Ever",
+      salt: "Tea Tree + Neem Extract", strength: "100 ml", company: "Vedantika Herbals",
+      description: "Everteen Natural Intimate Wash maintains vaginal pH balance with natural tea tree and neem extracts. Gentle and soap-free.",
+      sideEffects: ["External use only", "Avoid contact with eyes"] },
+    { name: "Primolut N", price: 95, category: "Woman Care", type: "Tab", icon: "fa-droplet", isRx: true,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Prim",
+      salt: "Norethisterone", strength: "5 mg", company: "Bayer",
+      description: "Primolut N is used for the treatment of menstrual disorders, endometriosis, and to delay periods.",
+      sideEffects: ["Nausea", "Headache", "Breast tenderness", "Mood changes"] },
+    { name: "Femiplan Tablet", price: 50, category: "Woman Care", type: "Tab", icon: "fa-shield-heart", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Femi",
+      salt: "Ethinylestradiol + Levonorgestrel", strength: "0.03 mg / 0.15 mg", company: "Cipla",
+      description: "Femiplan is an oral contraceptive pill used to prevent pregnancy when taken correctly.",
+      sideEffects: ["Nausea", "Breakthrough bleeding", "Headache", "Breast tenderness"] },
+
+    // ── Child Care ────────────────────────────────────────────────────────────
+    { name: "Calpol Paediatric Syrup", price: 55, category: "Child Care", type: "Syr", icon: "fa-child", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=Calp",
+      salt: "Paracetamol", strength: "120 mg/5 ml", company: "GSK",
+      description: "Calpol Paediatric Suspension is a trusted fever and pain reliever for children aged 2 months and above.",
+      sideEffects: ["Rarely: skin rash", "Nausea", "Liver damage on overdose"] },
+    { name: "Gripe Water (Woodward's)", price: 80, category: "Child Care", type: "Liq", icon: "fa-baby", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=Gripe",
+      salt: "Dill Seed Oil + Sodium Bicarbonate", strength: "100 ml", company: "Reckitt",
+      description: "Woodward's Gripe Water provides fast relief from colic, gas and indigestion in infants.",
+      sideEffects: ["May cause allergic reaction in some infants"] },
+    { name: "Pediaflor (Vit D3)", price: 110, category: "Child Care", type: "Drop", icon: "fa-sun", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=PedD",
+      salt: "Cholecalciferol", strength: "400 IU/drop", company: "Abbott",
+      description: "Pediaflor Drops provide Vitamin D3 supplementation for infants and children for healthy bone development.",
+      sideEffects: ["Overdose: hypercalcaemia", "Constipation"] },
+    { name: "Junior Horlicks", price: 370, category: "Child Care", type: "Powder", icon: "fa-apple-whole", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=JHor",
+      salt: "Malted Milk + Vitamins + Minerals", strength: "500 g", company: "GlaxoSmithKline",
+      description: "Junior Horlicks is a health and nutrition drink for children that supports growth and immunity.",
+      sideEffects: ["Contains milk; not for lactose-intolerant children"] },
+    { name: "Otrivin Paediatric", price: 70, category: "Child Care", type: "Drop", icon: "fa-nose", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=Otri",
+      salt: "Xylometazoline Hydrochloride", strength: "0.05% w/v", company: "Novartis",
+      description: "Otrivin Paediatric Nasal Drops relieve nasal congestion in infants and young children due to cold or allergies.",
+      sideEffects: ["Rebound congestion", "Nasal dryness", "Use ≤ 3 days"] },
+
+    // ── Skin Care ─────────────────────────────────────────────────────────────
+    { name: "Cetaphil Moisturising Cream", price: 399, category: "Skin Care", type: "Cream", icon: "fa-hand-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/E0F7FA/006064?text=Cet",
+      salt: "Petrolatum + Glycerin", strength: "250 g", company: "Galderma",
+      description: "Cetaphil Moisturising Cream provides 24-hour intense hydration for very dry and sensitive skin without any irritation.",
+      sideEffects: ["Rarely: skin irritation in very sensitive individuals"] },
+    { name: "Lacto Calamine Lotion", price: 149, category: "Skin Care", type: "Lotion", icon: "fa-hand-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/E0F7FA/006064?text=Lacto",
+      salt: "Calamine + Kaolin", strength: "120 ml", company: "Piramal",
+      description: "Lacto Calamine is a dermatologist-tested face lotion that controls excess oil, reduces pimples and improves skin texture.",
+      sideEffects: ["External use only", "Avoid eyes"] },
+    { name: "Clobetasol Cream", price: 65, category: "Skin Care", type: "Cream", icon: "fa-hand-dots", isRx: true,
+      image: "https://placehold.co/80x80/E0F7FA/006064?text=Clob",
+      salt: "Clobetasol Propionate", strength: "0.05% w/w", company: "GSK",
+      description: "Clobetasol cream is a potent corticosteroid used for eczema, psoriasis, and other inflammatory skin conditions.",
+      sideEffects: ["Skin thinning on prolonged use", "Burning", "Avoid face"] },
+    { name: "Soframycin Skin Cream", price: 72, category: "Skin Care", type: "Cream", icon: "fa-hand-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/E0F7FA/006064?text=Sofra",
+      salt: "Framycetin Sulphate", strength: "1% w/w", company: "Sanofi",
+      description: "Soframycin is a topical antibiotic cream for prevention and treatment of superficial bacterial skin infections.",
+      sideEffects: ["Skin irritation", "Allergic reaction (rare)"] },
+    { name: "Kojivit Plus Gel", price: 320, category: "Skin Care", type: "Gel", icon: "fa-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/E0F7FA/006064?text=Koj",
+      salt: "Kojic Acid + Arbutin + Vitamin C", strength: "30 g", company: "Micro Labs",
+      description: "Kojivit Plus Gel reduces skin hyperpigmentation, dark spots, and melasma for an even-toned complexion.",
+      sideEffects: ["Mild burning", "Avoid sun exposure after use"] },
+
+    // ── Eye Care ──────────────────────────────────────────────────────────────
+    { name: "Lubricant Eye Drops (Systane)", price: 180, category: "Eye Care", type: "Drop", icon: "fa-eye", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Sys",
+      salt: "Propylene Glycol + Polyethylene Glycol 400", strength: "10 ml", company: "Alcon",
+      description: "Systane Ultra provides long-lasting dry eye relief with a lubricating formula for comfort.",
+      sideEffects: ["Temporary blurred vision after instillation", "Eye irritation (rare)"] },
+    { name: "Tobramycin Eye Drop", price: 90, category: "Eye Care", type: "Drop", icon: "fa-eye", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Tobra",
+      salt: "Tobramycin", strength: "0.3% w/v", company: "Alcon",
+      description: "Tobramycin eye drops treat bacterial conjunctivitis and other eye infections caused by susceptible bacteria.",
+      sideEffects: ["Stinging on instillation", "Eye redness", "Allergic reaction"] },
+    { name: "Visine Red Eye Relief", price: 120, category: "Eye Care", type: "Drop", icon: "fa-eye", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Vis",
+      salt: "Tetrahydrozoline Hydrochloride", strength: "0.05% w/v", company: "J&J",
+      description: "Visine drops quickly relieve redness and minor eye irritation due to dust, smoke, and swimming.",
+      sideEffects: ["Rebound redness on prolonged use", "Avoid in glaucoma"] },
+    { name: "Timolol Eye Drop", price: 55, category: "Eye Care", type: "Drop", icon: "fa-eye", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1D4ED8?text=Tim",
+      salt: "Timolol Maleate", strength: "0.5% w/v", company: "Cipla",
+      description: "Timolol eye drops reduce elevated intraocular pressure in glaucoma and ocular hypertension.",
+      sideEffects: ["Stinging", "Bradycardia", "Dry eyes"] },
+
+    // ── Ear Care ──────────────────────────────────────────────────────────────
+    { name: "Waxsol Ear Drops", price: 65, category: "Ear Care", type: "Drop", icon: "fa-ear-listen", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/92400E?text=Wax",
+      salt: "Docusate Sodium", strength: "0.5% w/v", company: "Napp Pharma",
+      description: "Waxsol softens and removes hardened earwax safely, restoring normal hearing.",
+      sideEffects: ["Mild discomfort on instillation"] },
+    { name: "Soliwax Ear Drop", price: 55, category: "Ear Care", type: "Drop", icon: "fa-ear-listen", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/92400E?text=Soli",
+      salt: "Paradichlorobenzene + Turpentine Oil", strength: "10 ml", company: "Elder Pharma",
+      description: "Soliwax ear drops help dissolve and remove earwax blockage effectively.",
+      sideEffects: ["Mild burning sensation", "Avoid if eardrum is perforated"] },
+    { name: "Ciplox Ear Drop", price: 48, category: "Ear Care", type: "Drop", icon: "fa-ear-listen", isRx: true,
+      image: "https://placehold.co/80x80/FEF9C3/92400E?text=Cipl",
+      salt: "Ciprofloxacin", strength: "0.3% w/v", company: "Cipla",
+      description: "Ciplox ear drops treat outer ear infections (otitis externa) caused by susceptible bacteria.",
+      sideEffects: ["Local burning", "Itching", "Taste disturbance"] },
+
+    // ── Dental Care ───────────────────────────────────────────────────────────
+    { name: "Sensodyne Rapid Relief", price: 110, category: "Dental Care", type: "Paste", icon: "fa-tooth", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Sens",
+      salt: "Stannous Fluoride", strength: "1040 ppm", company: "Haleon",
+      description: "Sensodyne Rapid Relief builds a protective layer over sensitive teeth to block pain in as fast as 60 seconds.",
+      sideEffects: ["Avoid swallowing", "Not for children under 12"] },
+    { name: "Clove Oil (Dabur)", price: 45, category: "Dental Care", type: "Oil", icon: "fa-tooth", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Clov",
+      salt: "Eugenol (Clove Oil)", strength: "10 ml", company: "Dabur",
+      description: "Clove oil provides immediate toothache relief and has antibacterial properties for gum health.",
+      sideEffects: ["Gum irritation", "Dilute before use"] },
+    { name: "Hexidine Mouthwash", price: 95, category: "Dental Care", type: "Wash", icon: "fa-tooth", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Hex",
+      salt: "Chlorhexidine Gluconate", strength: "0.2% w/v", company: "ICPA Health",
+      description: "Hexidine mouthwash kills germs that cause bad breath, plaque, and gum disease.",
+      sideEffects: ["Tooth staining on prolonged use", "Taste alteration", "Mouth ulcers (rare)"] },
+    { name: "GumTone Toothpaste", price: 80, category: "Dental Care", type: "Paste", icon: "fa-tooth", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Gum",
+      salt: "Fluoride + Calcium Phosphate", strength: "100 g", company: "Charak Pharma",
+      description: "GumTone toothpaste strengthens gums, prevents bleeding and provides all-round oral hygiene care.",
+      sideEffects: ["Do not swallow"] },
+
+    // ── Hair Care ─────────────────────────────────────────────────────────────
+    { name: "Minoxidil 5% Solution", price: 490, category: "Hair Care", type: "Solution", icon: "fa-wand-magic-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/5B21B6?text=Mino",
+      salt: "Minoxidil", strength: "5% w/v", company: "Dr. Reddy's",
+      description: "Minoxidil 5% topical solution is clinically proven to regrow hair and halt hair loss in men.",
+      sideEffects: ["Scalp itching", "Dryness", "Initial hair shedding"] },
+    { name: "Ketoconazole Shampoo", price: 220, category: "Hair Care", type: "Shampoo", icon: "fa-wand-magic-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/5B21B6?text=Keto",
+      salt: "Ketoconazole", strength: "2% w/v", company: "Cipla",
+      description: "Ketoconazole shampoo treats dandruff, seborrhoeic dermatitis, and tinea versicolor of the scalp.",
+      sideEffects: ["Scalp irritation", "Hair texture change", "Eye irritation if contact"] },
+    { name: "Foligain Anti-Hair Loss Serum", price: 599, category: "Hair Care", type: "Serum", icon: "fa-wand-magic-sparkles", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/5B21B6?text=Foli",
+      salt: "Procapil + Biotin + Redensyl", strength: "50 ml", company: "Traya",
+      description: "Foligain serum reduces hair fall and stimulates growth by targeting follicles with advanced botanical actives.",
+      sideEffects: ["Mild scalp tingling", "Avoid broken skin"] },
+
+    // ── Women's Health ────────────────────────────────────────────────────────
+    { name: "Folvite (Folic Acid)", price: 30, category: "Women's Health", type: "Tab", icon: "fa-venus", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Folv",
+      salt: "Folic Acid", strength: "5 mg", company: "Pfizer",
+      description: "Folvite provides folic acid supplementation essential during pregnancy to prevent neural tube defects.",
+      sideEffects: ["Nausea (rare)", "Bloating"] },
+    { name: "Susten 200 (Progesterone)", price: 195, category: "Women's Health", type: "Cap", icon: "fa-venus", isRx: true,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Sust",
+      salt: "Progesterone", strength: "200 mg", company: "Sun Pharma",
+      description: "Susten is used for progesterone supplementation in pregnancy support, luteal phase defect, and IVF cycles.",
+      sideEffects: ["Dizziness", "Bloating", "Breast tenderness", "Drowsiness"] },
+    { name: "Calcitas (Calcium + D3)", price: 140, category: "Women's Health", type: "Tab", icon: "fa-venus", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Calc",
+      salt: "Calcium Carbonate + Vitamin D3", strength: "500 mg + 250 IU", company: "FDC",
+      description: "Calcitas provides calcium and Vitamin D3 to prevent osteoporosis and maintain bone density in women.",
+      sideEffects: ["Constipation", "Bloating", "Kidney stones (overdose)"] },
+
+    // ── Men's Health ──────────────────────────────────────────────────────────
+    { name: "Sildenafil (25 mg)", price: 95, category: "Men's Health", type: "Tab", icon: "fa-mars", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=Sild",
+      salt: "Sildenafil Citrate", strength: "25 mg", company: "Cipla",
+      description: "Sildenafil treats erectile dysfunction by increasing blood flow to the penis during sexual stimulation.",
+      sideEffects: ["Headache", "Flushing", "Indigestion", "Vision changes (rare)"] },
+    { name: "Himalaya Confido", price: 160, category: "Men's Health", type: "Tab", icon: "fa-mars", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=Conf",
+      salt: "Salabmisri + Kokilaksha + Vanya kahu", strength: "60 tabs", company: "Himalaya Drug Co.",
+      description: "Confido is an ayurvedic tablet for management of spermatorrhoea, nightfall, and premature ejaculation.",
+      sideEffects: ["Generally well tolerated"] },
+    { name: "Testosterone Booster (MuscleTech)", price: 1299, category: "Men's Health", type: "Cap", icon: "fa-dumbbell", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=Test",
+      salt: "Ashwagandha + Tribulus + Zinc", strength: "60 caps", company: "MuscleTech",
+      description: "A natural testosterone booster combining ashwagandha, tribulus and zinc to support vitality and stamina.",
+      sideEffects: ["Mild acne", "Aggression (overdose)"] },
+
+    // ── Baby & Mother Care ────────────────────────────────────────────────────
+    { name: "Lactare Granules", price: 180, category: "Baby & Mother Care", type: "Granules", icon: "fa-baby", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=Lact",
+      salt: "Galactagogue Herbs + Vitamins", strength: "200 g", company: "TTK Healthcare",
+      description: "Lactare helps nursing mothers increase breast milk production through natural galactagogue herbs.",
+      sideEffects: ["Generally safe; consult doctor if on medication"] },
+    { name: "Johnson's Baby Lotion", price: 150, category: "Baby & Mother Care", type: "Lotion", icon: "fa-baby", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=JBL",
+      salt: "Mineral Oil + Glycerin", strength: "200 ml", company: "Johnson & Johnson",
+      description: "Johnson's Baby Lotion keeps baby's skin soft, moisturised and smooth with a gentle, clinically proven formula.",
+      sideEffects: ["Avoid contact with eyes"] },
+    { name: "Pregnacare Max", price: 750, category: "Baby & Mother Care", type: "Tab", icon: "fa-heart", isRx: false,
+      image: "https://placehold.co/80x80/DBEAFE/1D4ED8?text=PMax",
+      salt: "Folic Acid + Iron + DHA + Multivitamins", strength: "84 tabs/caps", company: "Vitabiotics",
+      description: "Pregnacare Max provides comprehensive nutritional support for mother and baby throughout pregnancy and breastfeeding.",
+      sideEffects: ["Nausea", "Dark stools (from iron)", "Constipation"] },
+
+    // ── Elderly Care ──────────────────────────────────────────────────────────
+    { name: "Enzoflam (Anti-inflammatory)", price: 85, category: "Elderly Care", type: "Tab", icon: "fa-person-cane", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Enz",
+      salt: "Diclofenac + Paracetamol + Serratiopeptidase", strength: "50 mg/325 mg/10 mg", company: "FDC",
+      description: "Enzoflam reduces joint pain, stiffness, and inflammation in osteoarthritis and rheumatoid arthritis in the elderly.",
+      sideEffects: ["GI irritation", "Kidney strain on prolonged use", "Dizziness"] },
+    { name: "Calcitriol + Calcium", price: 165, category: "Elderly Care", type: "Tab", icon: "fa-person-cane", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Cal3",
+      salt: "Calcitriol + Calcium Carbonate", strength: "0.25 mcg + 500 mg", company: "Sun Pharma",
+      description: "Used to manage calcium and bone metabolism in the elderly, especially for osteoporosis prevention.",
+      sideEffects: ["Hypercalcaemia on overdose", "Nausea", "Constipation"] },
+    { name: "Donepezil 5mg", price: 275, category: "Elderly Care", type: "Tab", icon: "fa-brain", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Done",
+      salt: "Donepezil Hydrochloride", strength: "5 mg", company: "Cipla",
+      description: "Donepezil improves cognitive function in mild to moderate Alzheimer's disease and dementia.",
+      sideEffects: ["Nausea", "Diarrhoea", "Muscle cramps", "Insomnia"] },
+
+    // ── Antibiotics ───────────────────────────────────────────────────────────
+    { name: "Amoxicillin 500mg", price: 85, category: "Antibiotics", type: "Cap", icon: "fa-shield-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Amox",
+      salt: "Amoxicillin Trihydrate", strength: "500 mg", company: "GSK",
+      description: "Amoxicillin is a broad-spectrum penicillin antibiotic for respiratory, urinary, and skin infections.",
+      sideEffects: ["Diarrhoea", "Rash", "Nausea", "Anaphylaxis (rare)"] },
+    { name: "Azithromycin 500mg", price: 95, category: "Antibiotics", type: "Tab", icon: "fa-shield-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Azit",
+      salt: "Azithromycin Dihydrate", strength: "500 mg", company: "Cipla",
+      description: "Azithromycin is a macrolide antibiotic for community-acquired pneumonia, typhoid, and STIs.",
+      sideEffects: ["Nausea", "Diarrhoea", "Abdominal pain", "QT prolongation (rare)"] },
+    { name: "Ciprofloxacin 500mg", price: 65, category: "Antibiotics", type: "Tab", icon: "fa-shield-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Cipro",
+      salt: "Ciprofloxacin Hydrochloride", strength: "500 mg", company: "Cipla",
+      description: "Ciprofloxacin is a broad-spectrum fluoroquinolone antibiotic for UTI, respiratory, and GI infections.",
+      sideEffects: ["Tendon damage", "Nausea", "Diarrhoea", "Photosensitivity"] },
+    { name: "Metronidazole 400mg", price: 22, category: "Antibiotics", type: "Tab", icon: "fa-shield-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Metro",
+      salt: "Metronidazole", strength: "400 mg", company: "Pfizer",
+      description: "Metronidazole treats anaerobic bacterial infections, amoebic dysentery, and H. pylori infections.",
+      sideEffects: ["Metallic taste", "Nausea", "Avoid alcohol"] },
+
+    // ── Liver Care ────────────────────────────────────────────────────────────
+    { name: "Liv.52 DS", price: 195, category: "Liver Care", type: "Tab", icon: "fa-flask-vial", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Liv",
+      salt: "Caper Bush + Chicory (Herbal)", strength: "60 tabs", company: "Himalaya Drug Co.",
+      description: "Liv.52 DS is a trusted hepatoprotective formulation that promotes liver cell regeneration and liver function.",
+      sideEffects: ["Generally well tolerated", "Occasional GI disturbance"] },
+    { name: "Udiliv 300 (UDCA)", price: 350, category: "Liver Care", type: "Tab", icon: "fa-flask-vial", isRx: true,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Udi",
+      salt: "Ursodeoxycholic Acid", strength: "300 mg", company: "Abbott",
+      description: "Udiliv treats primary biliary cirrhosis, dissolves cholesterol gallstones, and improves liver function tests.",
+      sideEffects: ["Diarrhoea", "Pruritus", "Nausea"] },
+    { name: "Silymarin 140mg", price: 120, category: "Liver Care", type: "Cap", icon: "fa-flask-vial", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Sil",
+      salt: "Silymarin (Milk Thistle)", strength: "140 mg", company: "Micro Labs",
+      description: "Silymarin is a standardised milk thistle extract that protects liver cells from toxins and supports liver health.",
+      sideEffects: ["Mild GI upset", "Laxative effect (high doses)"] },
+
+    // ── Kidney Care ───────────────────────────────────────────────────────────
+    { name: "Cystone Tablet", price: 135, category: "Kidney Care", type: "Tab", icon: "fa-droplet", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=Cyst",
+      salt: "Shilajeet + Pasanabheda + Shilapushpa", strength: "60 tabs", company: "Himalaya Drug Co.",
+      description: "Cystone prevents and treats urinary stones by reducing crystallisation and promoting their dissolution.",
+      sideEffects: ["Generally well tolerated"] },
+    { name: "K-Mac (Potassium Citrate)", price: 88, category: "Kidney Care", type: "Tab", icon: "fa-droplet", isRx: true,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=KMac",
+      salt: "Potassium Citrate", strength: "1080 mg", company: "Intas",
+      description: "K-Mac alkalinises urine to prevent uric acid and calcium oxalate kidney stones.",
+      sideEffects: ["GI irritation", "Hyperkalemia on overdose"] },
+    { name: "Neeri KFT Syrup", price: 165, category: "Kidney Care", type: "Syr", icon: "fa-droplet", isRx: false,
+      image: "https://placehold.co/80x80/EFF6FF/1E3A8A?text=Neer",
+      salt: "Pashanbheda + Gokshura + Varun (Herbal)", strength: "200 ml", company: "Aimil Pharma",
+      description: "Neeri KFT Syrup supports kidney function, reduces BUN/creatinine, and helps in CKD management.",
+      sideEffects: ["Generally safe; monitor renal parameters"] },
+
+    // ── Bone & Joint ──────────────────────────────────────────────────────────
+    { name: "Shelcal-HD (Calcium + D3)", price: 245, category: "Bone & Joint", type: "Tab", icon: "fa-bone", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Shel",
+      salt: "Calcium Carbonate + Vitamin D3", strength: "1000 mg + 1000 IU", company: "Elder Pharma",
+      description: "Shelcal-HD provides high-dose calcium and Vitamin D3 supplementation for osteoporosis and bone fracture prevention.",
+      sideEffects: ["Constipation", "Bloating", "Hypercalcaemia (overdose)"] },
+    { name: "Flexon (Ibuprofen + Paracetamol)", price: 45, category: "Bone & Joint", type: "Tab", icon: "fa-bone", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Flex",
+      salt: "Ibuprofen + Paracetamol", strength: "400 mg + 325 mg", company: "Aristo Pharma",
+      description: "Flexon combines ibuprofen and paracetamol for effective relief of joint pain, arthritis, and musculoskeletal pain.",
+      sideEffects: ["GI irritation", "Dizziness", "Kidney strain on overdose"] },
+    { name: "Glucosamine 500mg", price: 380, category: "Bone & Joint", type: "Tab", icon: "fa-bone", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Gluc",
+      salt: "Glucosamine Sulphate", strength: "500 mg", company: "Ranbaxy",
+      description: "Glucosamine supports cartilage repair and reduces joint stiffness in osteoarthritis.",
+      sideEffects: ["Nausea", "Diarrhoea", "Heartburn"] },
+
+    // ── Heart Care ────────────────────────────────────────────────────────────
+    { name: "Clopidogrel 75mg", price: 85, category: "Heart Care", type: "Tab", icon: "fa-heart", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Clop",
+      salt: "Clopidogrel Bisulphate", strength: "75 mg", company: "Sun Pharma",
+      description: "Clopidogrel is an antiplatelet drug that prevents blood clots in coronary artery disease and after stenting.",
+      sideEffects: ["Bleeding", "Bruising", "Stomach upset", "Rash"] },
+    { name: "Aspirin 75mg (Ecosprin)", price: 18, category: "Heart Care", type: "Tab", icon: "fa-heart", isRx: false,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Eco",
+      salt: "Aspirin", strength: "75 mg", company: "USV",
+      description: "Low-dose Aspirin reduces the risk of heart attack and stroke by inhibiting platelet aggregation.",
+      sideEffects: ["GI bleeding", "Stomach upset", "Tinnitus on high doses"] },
+    { name: "Metoprolol 50mg", price: 55, category: "Heart Care", type: "Tab", icon: "fa-heart", isRx: true,
+      image: "https://placehold.co/80x80/FEF2F2/991B1B?text=Met",
+      salt: "Metoprolol Succinate", strength: "50 mg", company: "AstraZeneca",
+      description: "Metoprolol is a beta-blocker for hypertension, angina, and heart failure.",
+      sideEffects: ["Bradycardia", "Fatigue", "Cold extremities", "Dizziness"] },
+
+    // ── Lungs & Respiratory ───────────────────────────────────────────────────
+    { name: "Salbutamol Inhaler", price: 120, category: "Lungs & Respiratory", type: "Inhaler", icon: "fa-lungs", isRx: true,
+      image: "https://placehold.co/80x80/E0F2FE/075985?text=Salb",
+      salt: "Salbutamol Sulphate", strength: "100 mcg/dose", company: "Cipla",
+      description: "Salbutamol inhaler provides fast bronchodilation for acute asthma and COPD attacks.",
+      sideEffects: ["Tremor", "Tachycardia", "Headache", "Palpitations"] },
+    { name: "Montelukast 10mg", price: 145, category: "Lungs & Respiratory", type: "Tab", icon: "fa-lungs", isRx: true,
+      image: "https://placehold.co/80x80/E0F2FE/075985?text=Mont",
+      salt: "Montelukast Sodium", strength: "10 mg", company: "Merck",
+      description: "Montelukast prevents asthma attacks and relieves allergic rhinitis by blocking leukotriene receptors.",
+      sideEffects: ["Headache", "Abdominal pain", "Mood changes", "Rare: neuropsychiatric effects"] },
+    { name: "Budesonide Inhaler", price: 450, category: "Lungs & Respiratory", type: "Inhaler", icon: "fa-lungs", isRx: true,
+      image: "https://placehold.co/80x80/E0F2FE/075985?text=Bude",
+      salt: "Budesonide", strength: "200 mcg/dose", company: "AstraZeneca",
+      description: "Budesonide is an inhaled corticosteroid for long-term asthma control and COPD management.",
+      sideEffects: ["Oral thrush", "Dysphonia", "Rinse mouth after use"] },
+
+    // ── Thyroid Care ──────────────────────────────────────────────────────────
+    { name: "Eltroxin 50mcg", price: 40, category: "Thyroid Care", type: "Tab", icon: "fa-syringe", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Eltr",
+      salt: "Levothyroxine Sodium", strength: "50 mcg", company: "GSK",
+      description: "Eltroxin is the standard treatment for hypothyroidism, providing synthetic thyroid hormone replacement.",
+      sideEffects: ["Palpitations on overdose", "Hair loss", "Nervousness", "Take on empty stomach"] },
+    { name: "Thyronorm 100mcg", price: 55, category: "Thyroid Care", type: "Tab", icon: "fa-syringe", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Thyr",
+      salt: "Levothyroxine Sodium", strength: "100 mcg", company: "Abbott",
+      description: "Thyronorm treats hypothyroidism and suppresses TSH in thyroid cancer management.",
+      sideEffects: ["Angina", "Insomnia", "Weight changes", "Irregular heartbeat"] },
+    { name: "Carbimazole 10mg", price: 75, category: "Thyroid Care", type: "Tab", icon: "fa-syringe", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Carb",
+      salt: "Carbimazole", strength: "10 mg", company: "Nicholas Piramal",
+      description: "Carbimazole reduces thyroid hormone production in hyperthyroidism and Graves' disease.",
+      sideEffects: ["Agranulocytosis (rare)", "Rash", "Nausea"] },
+
+    // ── Stomach & Gut ─────────────────────────────────────────────────────────
+    { name: "Rifaximin 550mg", price: 380, category: "Stomach & Gut", type: "Tab", icon: "fa-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Rifa",
+      salt: "Rifaximin", strength: "550 mg", company: "Sun Pharma",
+      description: "Rifaximin is a gut-selective antibiotic for traveller's diarrhoea, IBS-D, and hepatic encephalopathy.",
+      sideEffects: ["Nausea", "Dizziness", "Flatulence"] },
+    { name: "Mebeverine 135mg", price: 85, category: "Stomach & Gut", type: "Tab", icon: "fa-virus", isRx: true,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Mebe",
+      salt: "Mebeverine Hydrochloride", strength: "135 mg", company: "Solvay Pharma",
+      description: "Mebeverine relieves abdominal cramps and spasms in IBS without affecting gut motility.",
+      sideEffects: ["Rarely: skin rash", "Dizziness"] },
+    { name: "Loperamide 2mg", price: 25, category: "Stomach & Gut", type: "Tab", icon: "fa-virus", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Lope",
+      salt: "Loperamide Hydrochloride", strength: "2 mg", company: "Johnson & Johnson",
+      description: "Loperamide (Imodium) provides fast relief from acute and traveller's diarrhoea by slowing gut movement.",
+      sideEffects: ["Constipation", "Nausea", "Dizziness", "Avoid in bloody diarrhoea"] },
+
+    // ── Mental Wellness ───────────────────────────────────────────────────────
+    { name: "Escitalopram 10mg", price: 95, category: "Mental Wellness", type: "Tab", icon: "fa-brain", isRx: true,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Esci",
+      salt: "Escitalopram Oxalate", strength: "10 mg", company: "Lundbeck",
+      description: "Escitalopram is an SSRI antidepressant for depression, generalised anxiety disorder, and OCD.",
+      sideEffects: ["Nausea", "Insomnia", "Sexual dysfunction", "Increased suicidal risk in young adults (initial weeks)"] },
+    { name: "Ashwagandha KSM-66 Cap", price: 350, category: "Mental Wellness", type: "Cap", icon: "fa-brain", isRx: false,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Ashw",
+      salt: "Withania Somnifera Root Extract", strength: "600 mg", company: "Himalaya Drug Co.",
+      description: "Ashwagandha KSM-66 reduces cortisol, improves stress resilience, and enhances cognitive performance.",
+      sideEffects: ["GI upset", "Drowsiness", "Avoid in pregnancy"] },
+    { name: "Buspirone 10mg", price: 65, category: "Mental Wellness", type: "Tab", icon: "fa-brain", isRx: true,
+      image: "https://placehold.co/80x80/F5F3FF/4C1D95?text=Busp",
+      salt: "Buspirone Hydrochloride", strength: "10 mg", company: "Torrent Pharma",
+      description: "Buspirone is a non-benzodiazepine anxiolytic for generalised anxiety disorder without risk of dependence.",
+      sideEffects: ["Dizziness", "Nausea", "Headache", "Nervousness"] },
+
+    // ── Sleep & Stress ────────────────────────────────────────────────────────
+    { name: "Melatonin 5mg", price: 295, category: "Sleep & Stress", type: "Tab", icon: "fa-moon", isRx: false,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=Mela",
+      salt: "Melatonin", strength: "5 mg", company: "Natrol",
+      description: "Melatonin regulates circadian rhythm for better sleep onset, jet lag, and shift-work sleep disorder.",
+      sideEffects: ["Drowsiness", "Dizziness", "Headache", "Start with low dose"] },
+    { name: "Clonazepam 0.5mg", price: 22, category: "Sleep & Stress", type: "Tab", icon: "fa-moon", isRx: true,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=Clon",
+      salt: "Clonazepam", strength: "0.5 mg", company: "Roche",
+      description: "Clonazepam is a benzodiazepine for panic disorder, sleep disorders, and certain seizure types.",
+      sideEffects: ["Dependence on prolonged use", "Drowsiness", "Impaired coordination"] },
+    { name: "Restyl 0.25mg (Alprazolam)", price: 18, category: "Sleep & Stress", type: "Tab", icon: "fa-moon", isRx: true,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=Rest",
+      salt: "Alprazolam", strength: "0.25 mg", company: "Pfizer",
+      description: "Alprazolam provides short-term relief from anxiety and panic attacks as a benzodiazepine anxiolytic.",
+      sideEffects: ["Dependence", "Drowsiness", "Memory impairment", "Withdrawal symptoms"] },
+
+    // ── Weight Management ─────────────────────────────────────────────────────
+    { name: "Orlistat 120mg", price: 450, category: "Weight Management", type: "Cap", icon: "fa-weight-scale", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Orli",
+      salt: "Orlistat", strength: "120 mg", company: "Roche",
+      description: "Orlistat blocks fat absorption from the diet, aiding weight loss when combined with a calorie-reduced diet.",
+      sideEffects: ["Fatty/oily stools", "Frequent bowel movements", "Oily spotting"] },
+    { name: "Garcinia Cambogia Extract", price: 350, category: "Weight Management", type: "Cap", icon: "fa-weight-scale", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Garc",
+      salt: "Hydroxycitric Acid (HCA)", strength: "500 mg", company: "Himalaya Drug Co.",
+      description: "Garcinia Cambogia helps reduce appetite and inhibit fat storage through HCA.",
+      sideEffects: ["Headache", "GI disturbance"] },
+    { name: "Metformin ER (Weight)", price: 55, category: "Weight Management", type: "Tab", icon: "fa-weight-scale", isRx: true,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=MER",
+      salt: "Metformin Hydrochloride Extended Release", strength: "500 mg", company: "Sun Pharma",
+      description: "Extended-release Metformin is used off-label for weight management in insulin resistance and PCOS.",
+      sideEffects: ["GI discomfort", "B12 deficiency", "Lactic acidosis (rare)"] },
+
+    // ── Sexual Wellness ───────────────────────────────────────────────────────
+    { name: "Unwanted 72 (Emergency)", price: 85, category: "Sexual Wellness", type: "Tab", icon: "fa-shield-heart", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=UW72",
+      salt: "Levonorgestrel", strength: "1.5 mg", company: "Mankind Pharma",
+      description: "Unwanted 72 is an emergency contraceptive pill to prevent pregnancy if taken within 72 hours of unprotected sex.",
+      sideEffects: ["Nausea", "Irregular bleeding", "Headache", "Not for regular use"] },
+    { name: "Condom (Manforce)", price: 50, category: "Sexual Wellness", type: "Pack", icon: "fa-shield-heart", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Man",
+      salt: "Latex Condom", strength: "3 pcs", company: "Mankind Pharma",
+      description: "Manforce condoms protect against unwanted pregnancy and sexually transmitted infections.",
+      sideEffects: ["Latex allergy in some individuals"] },
+    { name: "Fluconazole 150mg", price: 25, category: "Sexual Wellness", type: "Tab", icon: "fa-shield-heart", isRx: false,
+      image: "https://placehold.co/80x80/FDF2F8/9D174D?text=Fluc",
+      salt: "Fluconazole", strength: "150 mg", company: "Pfizer",
+      description: "Fluconazole is a single-dose oral antifungal for vaginal candidiasis.",
+      sideEffects: ["Headache", "Nausea", "Rash"] },
+
+    // ── Immunity Boosters ─────────────────────────────────────────────────────
+    { name: "Chyawanprash (Dabur)", price: 220, category: "Immunity Boosters", type: "Jam", icon: "fa-shield", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Chy",
+      salt: "Amla + Giloy + Ashwagandha + 40+ herbs", strength: "500 g", company: "Dabur",
+      description: "Dabur Chyawanprash builds immunity with 40+ Ayurvedic herbs, Amla (Vitamin C) and essential minerals.",
+      sideEffects: ["Contains sugar; monitor in diabetes"] },
+    { name: "Septilin (Immunity)", price: 145, category: "Immunity Boosters", type: "Tab", icon: "fa-shield", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Sept",
+      salt: "Guggulu + Guduchi + Shatavari (Herbal)", strength: "60 tabs", company: "Himalaya Drug Co.",
+      description: "Septilin is a natural immunomodulator that increases the body's resistance to infection.",
+      sideEffects: ["Generally well tolerated"] },
+    { name: "Zinc Sulphate 20mg", price: 45, category: "Immunity Boosters", type: "Tab", icon: "fa-shield", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Zinc",
+      salt: "Zinc Sulphate Monohydrate", strength: "20 mg", company: "Cipla",
+      description: "Zinc supports immune function, wound healing, and reduces duration of common cold.",
+      sideEffects: ["Nausea on empty stomach", "Metallic taste", "GI irritation"] },
+
+    // ── Protein & Fitness ─────────────────────────────────────────────────────
+    { name: "Whey Protein (Gold Standard)", price: 3499, category: "Protein & Fitness", type: "Powder", icon: "fa-dumbbell", isRx: false,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=ON",
+      salt: "Whey Protein Isolate + Concentrate", strength: "907 g (30 g/serving)", company: "Optimum Nutrition",
+      description: "Gold Standard 100% Whey delivers 24g of protein per scoop for muscle recovery and growth.",
+      sideEffects: ["Bloating if lactose-intolerant", "GI discomfort in excess"] },
+    { name: "Creatine Monohydrate", price: 799, category: "Protein & Fitness", type: "Powder", icon: "fa-dumbbell", isRx: false,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=Creat",
+      salt: "Creatine Monohydrate", strength: "500 g", company: "MuscleBlaze",
+      description: "Creatine Monohydrate increases muscle strength, power output, and lean mass when combined with training.",
+      sideEffects: ["Water retention", "GI discomfort", "Stay well hydrated"] },
+    { name: "BCAA 6000", price: 1199, category: "Protein & Fitness", type: "Powder", icon: "fa-dumbbell", isRx: false,
+      image: "https://placehold.co/80x80/1E1B4B/A5B4FC?text=BCAA",
+      salt: "L-Leucine + L-Isoleucine + L-Valine (2:1:1)", strength: "250 g", company: "MuscleBlaze",
+      description: "BCAAs reduce muscle soreness, prevent muscle breakdown during intense training, and support recovery.",
+      sideEffects: ["Generally safe at recommended doses"] },
+
+    // ── Ayurvedic ─────────────────────────────────────────────────────────────
+    { name: "Triphala Churna", price: 95, category: "Ayurvedic", type: "Powder", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Trip",
+      salt: "Haritaki + Bibhitaki + Amalaki", strength: "100 g", company: "Dabur",
+      description: "Triphala is a classical Ayurvedic formula for digestive health, detoxification, and bowel regularity.",
+      sideEffects: ["Loose stools", "GI discomfort initially"] },
+    { name: "Shatavari Granules", price: 155, category: "Ayurvedic", type: "Granules", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Shat",
+      salt: "Asparagus Racemosus", strength: "200 g", company: "Himalaya Drug Co.",
+      description: "Shatavari supports female reproductive health, lactation, and hormonal balance.",
+      sideEffects: ["Allergic reaction in asparagus allergy"] },
+    { name: "Giloy (Guduchi) Tab", price: 120, category: "Ayurvedic", type: "Tab", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Gil",
+      salt: "Tinospora Cordifolia Extract", strength: "500 mg", company: "Patanjali",
+      description: "Giloy is a potent immunomodulator, antipyretic, and anti-inflammatory Ayurvedic herb.",
+      sideEffects: ["Hypoglycaemia risk in diabetics"] },
+    { name: "Noni Juice", price: 350, category: "Ayurvedic", type: "Juice", icon: "fa-leaf", isRx: false,
+      image: "https://placehold.co/80x80/F0FDF4/166534?text=Noni",
+      salt: "Morinda Citrifolia Fruit Extract", strength: "500 ml", company: "Himalaya Drug Co.",
+      description: "Noni juice is rich in antioxidants and supports immunity, energy levels, and overall wellness.",
+      sideEffects: ["High potassium; caution in renal disease"] },
+
+    // ── Homeopathy ────────────────────────────────────────────────────────────
+    { name: "Arnica Montana 30C", price: 85, category: "Homeopathy", type: "Pellets", icon: "fa-mortar-pestle", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Arn",
+      salt: "Arnica Montana 30C", strength: "4g pellets", company: "Boiron",
+      description: "Arnica Montana is a homeopathic remedy commonly used for bruising, muscle soreness, and trauma.",
+      sideEffects: ["Homeopathic; generally well tolerated"] },
+    { name: "Oscillococcinum", price: 290, category: "Homeopathy", type: "Pellets", icon: "fa-mortar-pestle", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Osc",
+      salt: "Anas Barbariae 200CK", strength: "6 doses", company: "Boiron",
+      description: "Oscillococcinum is a popular homeopathic flu remedy for body aches, chills, and fatigue.",
+      sideEffects: ["Homeopathic; no known side effects"] },
+    { name: "Belladonna 30C", price: 75, category: "Homeopathy", type: "Pellets", icon: "fa-mortar-pestle", isRx: false,
+      image: "https://placehold.co/80x80/FEF9C3/78350F?text=Bell",
+      salt: "Atropa Belladonna 30C", strength: "4g pellets", company: "SBL",
+      description: "Belladonna 30C is a homeopathic remedy for sudden high fever, throbbing headache, and sore throat.",
+      sideEffects: ["Homeopathic; generally well tolerated"] }
 ];
 
 // Plain-language display names for medicine therapeutic categories
@@ -748,6 +1262,33 @@ const CATEGORY_DISPLAY_NAMES = {
     "Allergy": "Allergy Relief",
     "Vitamins & Supplements": "Vitamins & Supplements",
     "Home First Aid": "Home First Aid",
+    "Woman Care": "Woman Care",
+    "Child Care": "Child Care",
+    "Skin Care": "Skin Care",
+    "Eye Care": "Eye Care",
+    "Ear Care": "Ear Care",
+    "Dental Care": "Dental Care",
+    "Hair Care": "Hair Care",
+    "Women's Health": "Women's Health",
+    "Men's Health": "Men's Health",
+    "Baby & Mother Care": "Baby & Mother Care",
+    "Elderly Care": "Elderly Care",
+    "Antibiotics": "Antibiotics",
+    "Liver Care": "Liver Care",
+    "Kidney Care": "Kidney Care",
+    "Bone & Joint": "Bone & Joint",
+    "Heart Care": "Heart Care",
+    "Lungs & Respiratory": "Lungs & Respiratory",
+    "Thyroid Care": "Thyroid Care",
+    "Stomach & Gut": "Stomach & Gut",
+    "Mental Wellness": "Mental Wellness",
+    "Sleep & Stress": "Sleep & Stress",
+    "Weight Management": "Weight Management",
+    "Sexual Wellness": "Sexual Wellness",
+    "Immunity Boosters": "Immunity Boosters",
+    "Protein & Fitness": "Protein & Fitness",
+    "Ayurvedic": "Ayurvedic",
+    "Homeopathy": "Homeopathy",
 };
 function _catDisplayName(cat) { return CATEGORY_DISPLAY_NAMES[cat] || cat; }
 
@@ -834,6 +1375,7 @@ window.onload = async () => {
         updateDash(user);
         renderCategoriesTab();
         renderPopularMeds();
+        _loadCart();
 
         await loadAddresses(user.id);
         loading(false);
@@ -859,6 +1401,29 @@ window.onload = async () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     }
+
+    // Cross-tab data sync: when another tab updates localStorage (cart, wishlist,
+    // session) this tab reacts and refreshes the relevant UI.
+    window.addEventListener('storage', function (e) {
+        if (!e.key) return;
+        if (e.key.startsWith('mediflow_cart_')) {
+            try { cart = JSON.parse(e.newValue || '[]'); } catch (err) { console.warn('Cart sync parse error:', err); cart = []; }
+            updateCartUI();
+        } else if (e.key.startsWith('mediflow_wishlist_')) {
+            // Refresh any visible wishlist tab and wish-button states
+            if (document.querySelector('#tab-wishlist.active-view')) renderWishlistTab();
+            document.querySelectorAll('.wish-btn[data-wish]').forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    const inW = isInWishlist(btn.dataset.wish);
+                    icon.style.color = inW ? '#EF4444' : 'rgba(0,0,0,0.3)';
+                }
+            });
+        } else if (e.key === 'mediflow_current_session') {
+            // Another tab logged in or out — reload this tab to stay consistent
+            window.location.reload();
+        }
+    });
 
     // Zepto-style: wire up scroll-based header collapse for the home tab
     _initHomeScrollHeader();
@@ -1432,6 +1997,7 @@ function addToCart(itemName) {
         if (item) cart.push({ ...item, qty: 1 });
     }
     showToast(`Added ${itemName} to Cart`);
+    _saveCart();
     updateCartUI();
 }
 
@@ -1441,7 +2007,25 @@ function updateQty(index, delta) {
     if (cart[index].qty <= 0) {
         cart.splice(index, 1);
     }
+    _saveCart();
     updateCartUI();
+}
+
+// ── Cart localStorage persistence ────────────────────────────────────────────
+function _cartKey() {
+    try {
+        const s = JSON.parse(localStorage.getItem('mediflow_current_session') || 'null');
+        return s ? 'mediflow_cart_' + s.id : 'mediflow_cart_guest';
+    } catch (e) { return 'mediflow_cart_guest'; }
+}
+function _saveCart() {
+    try { localStorage.setItem(_cartKey(), JSON.stringify(cart)); } catch (e) {}
+}
+function _loadCart() {
+    try {
+        const saved = localStorage.getItem(_cartKey());
+        if (saved) cart = JSON.parse(saved);
+    } catch (e) {}
 }
 
 function updateCartUI() {
@@ -1731,7 +2315,7 @@ async function verifyPayment(method) {
                 loading(false);
                 const placedOrderId = data.order.orderId || generatedId;
                 cart = []; window.rxVerified = false; window.rxImageUrl = null;
-                updateCartUI(); closeConsultation();
+                _saveCart(); updateCartUI(); closeConsultation();
                 // Open live tracker for cart orders; show toast for consultations
                 if (currentPaymentContext.type === 'cart') {
                     // freshOrder = true → shows the order-confirmed banner on the tracker screen
@@ -1755,7 +2339,7 @@ async function verifyPayment(method) {
             localHistory.push(localOrderData);
             localStorage.setItem('mediflow_local_history', JSON.stringify(localHistory));
 
-            cart = []; window.rxVerified = false; updateCartUI(); closeConsultation();
+            cart = []; window.rxVerified = false; _saveCart(); updateCartUI(); closeConsultation();
             // Open live tracker for cart orders (simulated locally); toast for consultations
             if (currentPaymentContext.type === 'cart') {
                 // freshOrder = true → shows the order-confirmed banner on the tracker screen
@@ -2787,6 +3371,11 @@ function _renderCatSectionContent(sectionKey, el) {
                 <p style="margin:6px 0 0; font-size:11px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
             </div>`;
         });
+        const womanMeds = MEDICINE_DB.filter(m => m.category === 'Woman Care' || m.category === "Women's Health").slice(0, 6);
+        if (womanMeds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-pills" style="color:var(--c3); margin-right:6px;"></i>Featured Products</div>`;
+            html += womanMeds.map(item => _medGridCard(item)).join('');
+        }
 
     } else if (sectionKey === 'childcare') {
         html += `<div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
@@ -2804,6 +3393,11 @@ function _renderCatSectionContent(sectionKey, el) {
                 <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
             </div>`;
         });
+        const childMeds = MEDICINE_DB.filter(m => m.category === 'Child Care').slice(0, 6);
+        if (childMeds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-pills" style="color:var(--c3); margin-right:6px;"></i>Featured Products</div>`;
+            html += childMeds.map(item => _medGridCard(item)).join('');
+        }
 
     } else if (sectionKey === 'everyday') {
         const cats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
@@ -2843,11 +3437,26 @@ function _renderCatSectionContent(sectionKey, el) {
         }
 
     } else {
-        // Browse-only sections: wellness, organ, lifestyle, prescription, alternative
+        // Browse sections: wellness, organ, lifestyle, prescription, alternative
+        // Map section key → MEDICINE_DB categories to show featured products
+        const SECTION_MED_CATS = {
+            wellness:     ["Skin Care", "Eye Care", "Ear Care", "Dental Care", "Hair Care", "Women's Health", "Men's Health", "Baby & Mother Care", "Elderly Care"],
+            organ:        ["Liver Care", "Kidney Care", "Bone & Joint", "Heart Care", "Lungs & Respiratory", "Thyroid Care", "Stomach & Gut"],
+            lifestyle:    ["Mental Wellness", "Sleep & Stress", "Weight Management", "Sexual Wellness", "Immunity Boosters", "Protein & Fitness"],
+            prescription: ["Antibiotics"],
+            alternative:  ["Ayurvedic", "Homeopathy"],
+        };
         const cats = BROWSE_CATEGORIES.filter(c => c.section === sectionKey);
         if (cats.length) {
             html += cats.map((c, i) => _catMiniCard(c.name, i, c.icon)).join('');
-        } else {
+        }
+        const medCats = SECTION_MED_CATS[sectionKey] || [];
+        const featuredMeds = MEDICINE_DB.filter(m => medCats.includes(m.category)).slice(0, 6);
+        if (featuredMeds.length) {
+            html += `<div class="cat-section-label" style="margin-top:8px; grid-column:span 2;"><i class="fa-solid fa-pills" style="color:var(--c3); margin-right:6px;"></i>Featured Products</div>`;
+            html += featuredMeds.map(item => _medGridCard(item)).join('');
+        }
+        if (!cats.length && !featuredMeds.length) {
             html += `<div style="grid-column:span 2; text-align:center; padding:40px 20px;">
                 <div style="font-size:48px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
                 <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
@@ -2889,7 +3498,7 @@ function _initHomeScrollHeader() {
                     scroll.style.paddingTop = '122px';
                 } else {
                     header.classList.remove('compact');
-                    scroll.style.paddingTop = '196px';
+                    scroll.style.paddingTop = '214px';
                 }
             }
             _ticking = false;
@@ -2954,18 +3563,33 @@ function openWomanSubCategory(subCatName) {
     const sub = WOMAN_CARE_SUBCATEGORIES.find(s => s.name === subCatName);
     document.getElementById('cat-title').innerText = subCatName;
     const grid = document.getElementById('cat-items-grid');
-    grid.innerHTML = `
-        <div style="grid-column:span 2; padding:4px 0 20px;">
+
+    // Map sub-category to relevant medicine names from MEDICINE_DB
+    const WOMAN_SUBCAT_MEDS = {
+        "Personal Hygiene": ["Stayfree Secure", "Whisper Ultra", "Everteen Intimate Wash"],
+        "Menstrual Cycle Care": ["Meftal Spas", "Primolut N", "Femiplan Tablet"],
+    };
+    const relevantNames = WOMAN_SUBCAT_MEDS[subCatName] || [];
+    const items = relevantNames.map(n => MEDICINE_DB.find(m => m.name === n)).filter(Boolean);
+
+    const headerHtml = `
+        <div style="grid-column:span 2; padding:4px 0 16px;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                 <div class="icon-orb ${sub ? sub.orbClass : 'orb-woman'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
                 <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
             </div>
-        </div>
+        </div>`;
+
+    if (items.length) {
+        grid.innerHTML = headerHtml + items.map(item => renderItemCard(item)).join('');
+    } else {
+        grid.innerHTML = headerHtml + `
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(252,231,243,0.5),rgba(245,243,255,0.5)); border-radius:24px; border:1.5px solid rgba(251,207,232,0.5);">
             <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
             <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
             <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
+    }
     showScreen('screen-cat-items');
 }
 
@@ -2973,18 +3597,35 @@ function openChildSubCategory(subCatName) {
     const sub = CHILD_CARE_SUBCATEGORIES.find(s => s.name === subCatName);
     document.getElementById('cat-title').innerText = subCatName;
     const grid = document.getElementById('cat-items-grid');
-    grid.innerHTML = `
-        <div style="grid-column:span 2; padding:4px 0 20px;">
+
+    // Map sub-category to relevant medicine names from MEDICINE_DB
+    const CHILD_SUBCAT_MEDS = {
+        "Infant & Baby Care":      ["Calpol Paediatric Syrup", "Gripe Water (Woodward's)", "Otrivin Paediatric", "Johnson's Baby Lotion"],
+        "Child Nutrition":         ["Junior Horlicks", "Pediaflor (Vit D3)", "Pregnacare Max"],
+        "Fever & Paediatric Flu":  ["Calpol Paediatric Syrup", "Otrivin Paediatric", "Paracetamol (500mg)", "Benadryl Syrup"],
+        "Child Skin & Allergy":    ["Cetaphil Moisturising Cream", "Soframycin Skin Cream", "Cetrizine", "Nasivion Nasal Drop"],
+    };
+    const relevantNames = CHILD_SUBCAT_MEDS[subCatName] || [];
+    const items = relevantNames.map(n => MEDICINE_DB.find(m => m.name === n)).filter(Boolean);
+
+    const headerHtml = `
+        <div style="grid-column:span 2; padding:4px 0 16px;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
                 <div class="icon-orb ${sub ? sub.orbClass : 'orb-child-1'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
                 <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
             </div>
-        </div>
+        </div>`;
+
+    if (items.length) {
+        grid.innerHTML = headerHtml + items.map(item => renderItemCard(item)).join('');
+    } else {
+        grid.innerHTML = headerHtml + `
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(219,234,254,0.5),rgba(224,242,254,0.5)); border-radius:24px; border:1.5px solid rgba(191,219,254,0.5);">
             <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
             <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
             <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
+    }
     showScreen('screen-cat-items');
 }
 
@@ -3322,7 +3963,7 @@ function switchTab(el, tabId, pushHistory = true) {
             if (mainScroll) mainScroll.style.paddingTop = '122px';
         } else {
             dashHeader.classList.remove('compact');
-            if (mainScroll) mainScroll.style.paddingTop = '196px';
+            if (mainScroll) mainScroll.style.paddingTop = '214px';
         }
         setHomeGreeting();
     } else {
