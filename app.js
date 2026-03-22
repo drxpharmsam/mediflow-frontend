@@ -1407,7 +1407,7 @@ window.onload = async () => {
     window.addEventListener('storage', function (e) {
         if (!e.key) return;
         if (e.key.startsWith('mediflow_cart_')) {
-            try { cart = JSON.parse(e.newValue || '[]'); } catch (_) { cart = []; }
+            try { cart = JSON.parse(e.newValue || '[]'); } catch (err) { console.warn('Cart sync parse error:', err); cart = []; }
             updateCartUI();
         } else if (e.key.startsWith('mediflow_wishlist_')) {
             // Refresh any visible wishlist tab and wish-button states
@@ -3498,7 +3498,7 @@ function _initHomeScrollHeader() {
                     scroll.style.paddingTop = '122px';
                 } else {
                     header.classList.remove('compact');
-                    scroll.style.paddingTop = '196px';
+                    scroll.style.paddingTop = '214px';
                 }
             }
             _ticking = false;
@@ -3587,7 +3587,7 @@ function openWomanSubCategory(subCatName) {
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(252,231,243,0.5),rgba(245,243,255,0.5)); border-radius:24px; border:1.5px solid rgba(251,207,232,0.5);">
             <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
             <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">More products for ${subCatName} will be available shortly.</p>
+            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
     }
     showScreen('screen-cat-items');
@@ -3623,7 +3623,7 @@ function openChildSubCategory(subCatName) {
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(219,234,254,0.5),rgba(224,242,254,0.5)); border-radius:24px; border:1.5px solid rgba(191,219,254,0.5);">
             <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
             <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">More products for ${subCatName} will be available shortly.</p>
+            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
     }
     showScreen('screen-cat-items');
@@ -3963,7 +3963,7 @@ function switchTab(el, tabId, pushHistory = true) {
             if (mainScroll) mainScroll.style.paddingTop = '122px';
         } else {
             dashHeader.classList.remove('compact');
-            if (mainScroll) mainScroll.style.paddingTop = '196px';
+            if (mainScroll) mainScroll.style.paddingTop = '214px';
         }
         setHomeGreeting();
     } else {
