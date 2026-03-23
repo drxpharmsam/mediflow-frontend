@@ -3358,6 +3358,19 @@ const CHRONIC_CATS = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"
 const SPECIAL_CATS = ["Vitamins & Supplements"];
 const FIRSTAID_CATS = ["Home First Aid"];
 
+// Maps MEDICINE_DB .category values to the matching CAT_SECTIONS key on the pharmacy tab
+const MEDICINE_CATEGORY_TO_SECTION = (() => {
+    const map = {};
+    ACUTE_CATS.forEach(c => { map[c] = 'everyday'; });
+    CHRONIC_CATS.forEach(c => { map[c] = 'chronic'; });
+    SPECIAL_CATS.forEach(c => { map[c] = 'vitamins'; });
+    FIRSTAID_CATS.forEach(c => { map[c] = 'firstaid'; });
+    map['Woman Care'] = 'womancare';
+    map["Women's Health"] = 'womancare';
+    map['Child Care'] = 'childcare';
+    return map;
+})();
+
 function renderCategoriesTab() {
     const tabsEl = document.getElementById('cat-section-tabs');
     const contentEl = document.getElementById('cat-section-content');
@@ -3380,6 +3393,19 @@ function switchCategorySection(sectionKey, el) {
     if (el) el.classList.add('active');
     const contentEl = document.getElementById('cat-section-content');
     if (contentEl) _renderCatSectionContent(sectionKey, contentEl);
+}
+
+// Navigate to the pharmacy/category tab and pre-select the given section pill
+function openPharmacySection(sectionKey) {
+    const validKey = CAT_SECTIONS.some(s => s.key === sectionKey) ? sectionKey : 'all';
+    const navItem = document.querySelector('.nav-dock [onclick*="tab-category"]');
+    switchTab(navItem, 'tab-category');
+    renderCategoriesTab();
+    const idx = CAT_SECTIONS.findIndex(s => s.key === validKey);
+    if (idx !== -1) {
+        const tabEl = document.querySelectorAll('#cat-section-tabs .daily-needs-tab')[idx];
+        switchCategorySection(validKey, tabEl || null);
+    }
 }
 
 function _catMiniCard(cat, idx, icon) {
