@@ -1527,14 +1527,14 @@ function addAddressMarkersToMap() {
         const el = document.createElement('div');
         el.title = `${addr.tag}: ${addr.line1}`;
         // 🎨 BRAND EDIT: Adjust marker size / drop-shadow below
-        el.style.cssText = 'font-size:28px; cursor:pointer; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.35)); transition:transform 0.15s;';
+        el.style.cssText = 'font-size:23px; cursor:pointer; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.35)); transition:transform 0.15s;';
         el.textContent = tagEmoji[addr.tag] || '📍';
         el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.2)'; });
         el.addEventListener('mouseleave', () => { el.style.transform = ''; });
         el.addEventListener('click', () => selectAddress(addr));
         const popup = new mapboxgl.Popup({ offset: 30, closeButton: false })
-            .setHTML(`<div style="font-size:13px;font-weight:700;color:#111827;">${addr.tag}: ${addr.line1}</div>` +
-                     `<div style="font-size:12px;color:#6B7280;margin-top:3px;">${addr.line2}</div>`);
+            .setHTML(`<div style="font-size:11px;font-weight:700;color:#111827;">${addr.tag}: ${addr.line1}</div>` +
+                     `<div style="font-size:10px;color:#6B7280;margin-top:3px;">${addr.line2}</div>`);
         const marker = new mapboxgl.Marker({ element: el })
             .setLngLat([addr.lng, addr.lat])
             .setPopup(popup)
@@ -1603,7 +1603,7 @@ function showLocationAskPage() {
                     <span class="loc-ask-addr-tag"></span>
                     <span class="loc-ask-addr-line"></span>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:12px;"></i>`;
+                <i class="fa-solid fa-chevron-right" style="color:#9CA3AF; font-size:10px;"></i>`;
             card.querySelector('.loc-ask-addr-tag').textContent = addr.tag;
             card.querySelector('.loc-ask-addr-line').textContent = addr.line1 + ', ' + addr.line2;
             savedList.appendChild(card);
@@ -1952,7 +1952,7 @@ function renderAddressList() {
     const tagIcon = { 'Home': 'fa-house', 'Work': 'fa-briefcase', 'Other': 'fa-location-dot' };
 
     // Horizontal scrollable chip row — Zepto-style
-    let html = `<p style="font-size:11px; font-weight:800; color:var(--gray-text); text-transform:uppercase; letter-spacing:0.8px; margin: 0 0 10px;">Saved Addresses</p>`;
+    let html = `<p style="font-size:10px; font-weight:800; color:var(--gray-text); text-transform:uppercase; letter-spacing:0.8px; margin: 0 0 10px;">Saved Addresses</p>`;
     html += `<div class="addr-chips-row">`;
 
     list.forEach(addr => {
@@ -1988,7 +1988,7 @@ function selAddrTag(el) {
 }
 
 // --- CART SYSTEM ---
-function addToCart(itemName) {
+function addToCart(itemName, skipRelated = false) {
     let existingItem = cart.find(i => i.name === itemName);
     if (existingItem) {
         existingItem.qty = (existingItem.qty || 1) + 1;
@@ -1999,7 +1999,70 @@ function addToCart(itemName) {
     showToast(`Added ${itemName} to Cart`);
     _saveCart();
     updateCartUI();
+    if (!skipRelated) _showRelatedProducts(itemName);
 }
+
+// ── Related Products Panel ────────────────────────────────────────────────────
+// Auto-dismiss delay (ms) for the related products sliding panel
+const RELATED_PANEL_AUTO_DISMISS_MS = 5000;
+let _relatedPanelTimer = null;
+
+function _showRelatedProducts(itemName) {
+    const item = MEDICINE_DB.find(i => i.name === itemName);
+    if (!item) return;
+
+    const related = MEDICINE_DB.filter(m =>
+        m.category === item.category &&
+        m.name !== itemName &&
+        !cart.find(c => c.name === m.name)
+    ).slice(0, 10);
+
+    if (related.length === 0) return;
+
+    const panel   = document.getElementById('related-products-panel');
+    const list    = document.getElementById('related-products-list');
+    const overlay = document.getElementById('related-panel-overlay');
+    const catEl   = document.getElementById('related-panel-cat');
+    if (!panel || !list) return;
+
+    if (catEl) catEl.textContent = item.category;
+
+    // skipRelated=true prevents reopening the panel when adding from within it
+    list.innerHTML = related.map(m => `
+        <div class="related-prod-card" onclick="addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">
+            <div class="icon-orb orb-1" style="width:36px; height:36px; font-size:14px; margin-bottom:8px;"><i class="fa-solid ${m.icon}"></i></div>
+            <div class="related-prod-name">${m.name}</div>
+            <div class="related-prod-price">₹${m.price}</div>
+            <button class="related-prod-add" onclick="event.stopPropagation(); addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">ADD +</button>
+        </div>
+    `).join('');
+
+    panel.classList.remove('rp-gone');
+    if (overlay) overlay.classList.remove('rp-gone');
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            panel.classList.add('show');
+            if (overlay) overlay.classList.add('show');
+        });
+    });
+
+    clearTimeout(_relatedPanelTimer);
+    _relatedPanelTimer = setTimeout(closeRelatedPanel, RELATED_PANEL_AUTO_DISMISS_MS);
+}
+
+function closeRelatedPanel() {
+    clearTimeout(_relatedPanelTimer);
+    const panel   = document.getElementById('related-products-panel');
+    const overlay = document.getElementById('related-panel-overlay');
+    if (!panel) return;
+    panel.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+    setTimeout(() => {
+        panel.classList.add('rp-gone');
+        if (overlay) overlay.classList.add('rp-gone');
+    }, 420);
+}
+
 
 function updateQty(index, delta) {
     if (!cart[index].qty) cart[index].qty = 1;
@@ -2054,9 +2117,9 @@ function updateCartUI() {
         if (container) {
             container.innerHTML = `
                 <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
-                    <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <h3 style="font-size:18px;">${t('cart_empty_title')}</h3>
-                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">${t('cart_empty_sub')}</p>
+                    <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:24px; margin:0 auto 15px;"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <h3 style="font-size:14px;">${t('cart_empty_title')}</h3>
+                    <p style="margin-top:8px; font-size:11px; color:var(--gray-text); font-weight:500;">${t('cart_empty_sub')}</p>
                 </div>`;
         }
         if (stickyBar) {
@@ -2086,16 +2149,16 @@ function updateCartUI() {
         itemsHtml += `
             <div class="cart-item">
                 <div style="display:flex; align-items:center; flex:1; cursor:pointer;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
-                    <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:18px; margin:0 15px 0 0; flex-shrink:0;"><i class="fa-solid ${item.icon}"></i></div>
+                    <div class="icon-orb orb-1" style="width:45px; height:45px; font-size:14px; margin:0 15px 0 0; flex-shrink:0;"><i class="fa-solid ${item.icon}"></i></div>
                     <div>
-                        <b style="font-size:15px; color:#111827;">${item.name}</b>
+                        <b style="font-size:12px; color:#111827;">${item.name}</b>
                         ${item.isRx ? '<span class="rx-badge" style="position:static; margin-left:8px; display:inline-block; background:#FEE2E2; color:#DC2626;">Schedule H</span>' : ''}
-                        <div style="font-size:14px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price * currentQty}</div>
+                        <div style="font-size:12px; font-weight:800; color:var(--c4); margin-top:4px;">₹${item.price * currentQty}</div>
                     </div>
                 </div>
                 <div class="qty-controls" style="display:flex; align-items:center; gap:10px; background:#F3F4F6; padding:4px 8px; border-radius:12px;">
                     <div class="qty-btn" onclick="updateQty(${index}, -1)" style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:white; border-radius:8px; font-weight:800; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.05); color:${currentQty === 1 ? 'var(--error)' : 'var(--c5)'};"><i class="fa-solid ${currentQty === 1 ? 'fa-trash-can' : 'fa-minus'}"></i></div>
-                    <div class="qty-num" style="font-size:14px; font-weight:800; color:var(--c5); min-width:14px; text-align:center;">${currentQty}</div>
+                    <div class="qty-num" style="font-size:12px; font-weight:800; color:var(--c5); min-width:14px; text-align:center;">${currentQty}</div>
                     <div class="qty-btn" onclick="updateQty(${index}, 1)" style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:white; border-radius:8px; font-weight:800; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.05); color:var(--c5);"><i class="fa-solid fa-plus"></i></div>
                 </div>
             </div>
@@ -2125,14 +2188,14 @@ function updateCartUI() {
     `;
 
     if (hasRx && !window.rxVerified) {
-        billHtml += `<div style="background:var(--error-bg); border:1.5px solid #FECACA; color:var(--error); padding:16px; border-radius:18px; font-size:13px; font-weight:600; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(255,94,94,0.1);"><i class="fa-solid fa-file-prescription" style="font-size:20px; margin-right:12px;"></i> Upload prescription to proceed</div>`;
+        billHtml += `<div style="background:var(--error-bg); border:1.5px solid #FECACA; color:var(--error); padding:16px; border-radius:18px; font-size:11px; font-weight:600; margin-bottom:20px; display:flex; align-items:center; box-shadow:0 4px 10px rgba(255,94,94,0.1);"><i class="fa-solid fa-file-prescription" style="font-size:16px; margin-right:12px;"></i> Upload prescription to proceed</div>`;
     } else if (hasRx && window.rxVerified) {
         billHtml += `
             <div class="pharmacist-check">
                 <i class="fa-solid fa-user-check"></i>
                 <div>
                     <span style="display:block;">Prescription Verified</span>
-                    <span style="font-size:10px; font-weight:500; opacity:0.8;">Approved by Registered Pharmacist (Reg No. HP-45892)</span>
+                    <span style="font-size:9px; font-weight:500; opacity:0.8;">Approved by Registered Pharmacist (Reg No. HP-45892)</span>
                 </div>
             </div>`;
     }
@@ -2148,7 +2211,7 @@ function updateCartUI() {
     if (container) container.innerHTML = billHtml;
 
     if (document.getElementById('sticky-total')) {
-        document.getElementById('sticky-total').innerHTML = `₹${grandTotal} <span style="font-size:14px; font-weight:600; opacity:0.8; margin-left:8px;">(${totalItems} item${totalItems > 1 ? 's' : ''})</span>`;
+        document.getElementById('sticky-total').innerHTML = `₹${grandTotal} <span style="font-size:12px; font-weight:600; opacity:0.8; margin-left:8px;">(${totalItems} item${totalItems > 1 ? 's' : ''})</span>`;
     }
 
     const actionBtn = document.getElementById('sticky-btn-action');
@@ -2383,9 +2446,9 @@ async function fetchOrderHistory() {
         } else {
             container.innerHTML = `
                 <div style="text-align:center; padding:40px 20px;">
-                    <div class="icon-orb orb-2" style="width:60px; height:60px; font-size:24px; margin:0 auto 15px;"><i class="fa-solid fa-box-open"></i></div>
-                    <h3 style="font-size:16px;">No Orders Yet</h3>
-                    <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Your past purchases will appear here.</p>
+                    <div class="icon-orb orb-2" style="width:60px; height:60px; font-size:20px; margin:0 auto 15px;"><i class="fa-solid fa-box-open"></i></div>
+                    <h3 style="font-size:13px;">No Orders Yet</h3>
+                    <p style="margin-top:8px; font-size:11px; color:var(--gray-text); font-weight:500;">Your past purchases will appear here.</p>
                 </div>`;
         }
     }
@@ -2404,17 +2467,17 @@ function renderHistoryUI(orders, container) {
             <div class="order-history-card">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
                     <div>
-                        <b style="font-size:14px; color:#111827;">${order.orderId}</b>
-                        <div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${order.date ? new Date(order.date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
+                        <b style="font-size:12px; color:#111827;">${order.orderId}</b>
+                        <div style="font-size:10px; color:var(--gray-text); margin-top:2px;">${order.date ? new Date(order.date).toLocaleDateString() : new Date().toLocaleDateString()}</div>
                     </div>
                     <span class="status-badge ${statusClass}">${order.status}</span>
                 </div>
-                <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 12px; line-height:1.4;">${itemsSummary}</p>
+                <p style="font-size:11px; color:#4B5563; font-weight:500; margin:0 0 12px; line-height:1.4;">${itemsSummary}</p>
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #E5E7EB; padding-top:12px;">
-                    <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Order Total</span>
+                    <span style="font-size:10px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Order Total</span>
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <button style="background:#FEF3C7; border:none; border-radius:10px; color:#D97706; font-size:12px; font-weight:700; padding:7px 12px; cursor:pointer;" onclick="requestRefund('${order.orderId}', ${order.totalAmount})">Refund</button>
-                        <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
+                        <button style="background:#FEF3C7; border:none; border-radius:10px; color:#D97706; font-size:10px; font-weight:700; padding:7px 12px; cursor:pointer;" onclick="requestRefund('${order.orderId}', ${order.totalAmount})">Refund</button>
+                        <span style="font-size:12px; font-weight:800; color:var(--c4);">₹${order.totalAmount}</span>
                     </div>
                 </div>
             </div>
@@ -2463,9 +2526,9 @@ function renderWishlistTab() {
     if (list.length === 0) {
         c.innerHTML = `
             <div style="text-align:center; padding:40px 20px;">
-                <div class="icon-orb" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px; background:#FEE2E2; color:#EF4444;"><i class="fa-regular fa-heart"></i></div>
-                <h3 style="font-size:16px;">Your Wishlist is Empty</h3>
-                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Heart any medicine to save it here.</p>
+                <div class="icon-orb" style="width:64px; height:64px; font-size:21px; margin:0 auto 16px; background:#FEE2E2; color:#EF4444;"><i class="fa-regular fa-heart"></i></div>
+                <h3 style="font-size:13px;">Your Wishlist is Empty</h3>
+                <p style="margin:8px 0 0; font-size:11px; color:var(--gray-text); font-weight:500;">Heart any medicine to save it here.</p>
             </div>`; return;
     }
     let html = '';
@@ -2475,16 +2538,16 @@ function renderWishlistTab() {
         html += `
             <div class="glass-card wide" style="margin-bottom:10px; flex-direction:column; align-items:flex-start; min-height:auto; padding:16px;">
                 <div style="display:flex; align-items:center; width:100%; gap:12px; margin-bottom:10px;">
-                    <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0;"><i class="fa-solid ${item.icon}"></i></div>
+                    <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:14px; flex-shrink:0; margin:0;"><i class="fa-solid ${item.icon}"></i></div>
                     <div style="flex:1; min-width:0; cursor:pointer;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
-                        <b style="font-size:14px; color:#111827; display:block;">${item.name}</b>
-                        <span style="font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</span>
+                        <b style="font-size:12px; color:#111827; display:block;">${item.name}</b>
+                        <span style="font-size:10px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</span>
                     </div>
-                    <span style="font-size:15px; font-weight:800; color:var(--c4); white-space:nowrap;">₹${item.price}</span>
+                    <span style="font-size:12px; font-weight:800; color:var(--c4); white-space:nowrap;">₹${item.price}</span>
                 </div>
                 <div style="display:flex; gap:8px; width:100%;">
                     <button class="add-btn" style="flex:1; margin:0; padding:10px;" onclick="addToCart(${JSON.stringify(item.name)})">ADD TO CART</button>
-                    <button class="wish-btn" onclick="toggleWishlist(${JSON.stringify(item.name)})" style="width:44px; height:44px; background:#FEF2F2; border:none; border-radius:12px; color:#EF4444; font-size:16px; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="wish-btn" onclick="toggleWishlist(${JSON.stringify(item.name)})" style="width:44px; height:44px; background:#FEF2F2; border:none; border-radius:12px; color:#EF4444; font-size:13px; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </div>`;
     });
@@ -2504,9 +2567,9 @@ function renderRefundsTab() {
     if (refunds.length === 0) {
         c.innerHTML = `
             <div style="text-align:center; padding:40px 20px;">
-                <div class="icon-orb orb-2" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-solid fa-rotate-left"></i></div>
-                <h3 style="font-size:16px;">No Refund Requests</h3>
-                <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
+                <div class="icon-orb orb-2" style="width:64px; height:64px; font-size:21px; margin:0 auto 16px;"><i class="fa-solid fa-rotate-left"></i></div>
+                <h3 style="font-size:13px;">No Refund Requests</h3>
+                <p style="margin:8px 0 0; font-size:11px; color:var(--gray-text); font-weight:500;">Refund requests from your orders will appear here.</p>
             </div>`; return;
     }
     let html = '';
@@ -2516,13 +2579,13 @@ function renderRefundsTab() {
         html += `
             <div class="order-history-card" style="margin-bottom:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-                    <div><b style="font-size:14px; color:#111827;">${r.orderId}</b><div style="font-size:11px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
-                    <span style="font-size:11px; font-weight:800; padding:4px 10px; border-radius:8px; background:${bg}; color:${fg};">${r.status}</span>
+                    <div><b style="font-size:12px; color:#111827;">${r.orderId}</b><div style="font-size:10px; color:var(--gray-text); margin-top:2px;">${r.date}</div></div>
+                    <span style="font-size:10px; font-weight:800; padding:4px 10px; border-radius:8px; background:${bg}; color:${fg};">${r.status}</span>
                 </div>
-                <p style="font-size:13px; color:#4B5563; font-weight:500; margin:0 0 8px;">${r.reason}</p>
+                <p style="font-size:11px; color:#4B5563; font-weight:500; margin:0 0 8px;">${r.reason}</p>
                 <div style="display:flex; justify-content:space-between; border-top:1px dashed #E5E7EB; padding-top:10px;">
-                    <span style="font-size:12px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Refund Amount</span>
-                    <span style="font-size:15px; font-weight:800; color:var(--c4);">₹${r.amount}</span>
+                    <span style="font-size:10px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">Refund Amount</span>
+                    <span style="font-size:12px; font-weight:800; color:var(--c4);">₹${r.amount}</span>
                 </div>
             </div>`;
     });
@@ -2568,20 +2631,20 @@ function renderPaymentsTab() {
     let html = '';
     if (methods.length === 0) {
         html = `<div style="text-align:center; padding:30px 20px;">
-            <div class="icon-orb orb-3" style="width:64px; height:64px; font-size:26px; margin:0 auto 16px;"><i class="fa-regular fa-credit-card"></i></div>
-            <h3 style="font-size:16px;">No Saved Methods</h3>
-            <p style="margin:8px 0 0; font-size:13px; color:var(--gray-text); font-weight:500;">Add a card or UPI ID for faster checkout.</p>
+            <div class="icon-orb orb-3" style="width:64px; height:64px; font-size:21px; margin:0 auto 16px;"><i class="fa-regular fa-credit-card"></i></div>
+            <h3 style="font-size:13px;">No Saved Methods</h3>
+            <p style="margin:8px 0 0; font-size:11px; color:var(--gray-text); font-weight:500;">Add a card or UPI ID for faster checkout.</p>
         </div>`;
     } else {
         methods.forEach((m, i) => {
             html += `
             <div class="glass-card wide" style="margin-bottom:10px; min-height:auto; padding:16px;">
-                <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:18px; flex-shrink:0; margin:0 14px 0 0;"><i class="fa-solid ${typeIcon[m.type] || 'fa-credit-card'}"></i></div>
+                <div class="icon-orb orb-1" style="width:44px; height:44px; font-size:14px; flex-shrink:0; margin:0 14px 0 0;"><i class="fa-solid ${typeIcon[m.type] || 'fa-credit-card'}"></i></div>
                 <div style="flex:1;">
-                    <b style="font-size:14px; color:#111827; display:block;">${m.label}</b>
-                    <span style="font-size:11px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">${m.type}</span>
+                    <b style="font-size:12px; color:#111827; display:block;">${m.label}</b>
+                    <span style="font-size:10px; color:var(--gray-text); font-weight:700; text-transform:uppercase;">${m.type}</span>
                 </div>
-                <button style="background:#FEE2E2; border:none; border-radius:10px; color:#DC2626; font-size:12px; font-weight:700; padding:8px 12px; cursor:pointer;" onclick="removePaymentMethod(${i})">Remove</button>
+                <button style="background:#FEE2E2; border:none; border-radius:10px; color:#DC2626; font-size:10px; font-weight:700; padding:8px 12px; cursor:pointer;" onclick="removePaymentMethod(${i})">Remove</button>
             </div>`;
         });
     }
@@ -2589,9 +2652,9 @@ function renderPaymentsTab() {
         <div style="margin-top:20px;">
             <p class="profile-section-label" style="margin-bottom:12px;">Add Payment Method</p>
             <div style="display:flex; gap:8px; margin-bottom:14px;">
-                <div class="select-chip active pay-type-chip" onclick="selPayType(this,'card')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">💳 Card</div>
-                <div class="select-chip pay-type-chip" onclick="selPayType(this,'upi')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">📱 UPI</div>
-                <div class="select-chip pay-type-chip" onclick="selPayType(this,'netbanking')" style="flex:1; padding:12px 6px; font-size:12px; text-align:center;">🏦 Bank</div>
+                <div class="select-chip active pay-type-chip" onclick="selPayType(this,'card')" style="flex:1; padding:12px 6px; font-size:10px; text-align:center;">💳 Card</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'upi')" style="flex:1; padding:12px 6px; font-size:10px; text-align:center;">📱 UPI</div>
+                <div class="select-chip pay-type-chip" onclick="selPayType(this,'netbanking')" style="flex:1; padding:12px 6px; font-size:10px; text-align:center;">🏦 Bank</div>
             </div>
             <div class="input-group" style="margin-bottom:12px;">
                 <input type="text" id="pay-input" placeholder="Card no. / UPI ID / Bank name" style="height:50px;">
@@ -2643,10 +2706,10 @@ function renderSuggestedProducts() {
     picks.forEach(item => {
         html += `
             <div class="glass-card" style="min-width:140px; flex-shrink:0; padding:15px; min-height:165px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
-                <div class="icon-orb orb-2" style="width:40px; height:40px; font-size:17px; margin-bottom:10px;"><i class="fa-solid ${item.icon}"></i></div>
-                <h3 style="margin:0; font-size:13px; line-height:1.3; flex:1;">${item.name}</h3>
-                <p style="margin:4px 0 8px; font-size:14px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin:0; padding:8px; font-size:11px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+                <div class="icon-orb orb-2" style="width:40px; height:40px; font-size:14px; margin-bottom:10px;"><i class="fa-solid ${item.icon}"></i></div>
+                <h3 style="margin:0; font-size:11px; line-height:1.3; flex:1;">${item.name}</h3>
+                <p style="margin:4px 0 8px; font-size:12px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin:0; padding:8px; font-size:10px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>`;
     });
     el.innerHTML = html;
@@ -2702,12 +2765,12 @@ function renderItemCard(item) {
     return `
         <div class="glass-card" style="position:relative;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
             ${item.isRx ? '<span class="rx-badge">Rx</span>' : ''}
-            <button data-wish="${item.name}" class="wish-btn" onclick='event.stopPropagation(); toggleWishlist(${JSON.stringify(item.name)})' style="position:absolute; top:10px; ${item.isRx ? 'right:52px' : 'right:10px'}; background:none; border:none; cursor:pointer; font-size:18px; color:${inW ? '#EF4444' : '#D1D5DB'}; padding:4px; z-index:2; line-height:1;" aria-label="${inW ? 'Remove from wishlist' : 'Add to wishlist'}"><i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i></button>
+            <button data-wish="${item.name}" class="wish-btn" onclick='event.stopPropagation(); toggleWishlist(${JSON.stringify(item.name)})' style="position:absolute; top:10px; ${item.isRx ? 'right:52px' : 'right:10px'}; background:none; border:none; cursor:pointer; font-size:14px; color:${inW ? '#EF4444' : '#D1D5DB'}; padding:4px; z-index:2; line-height:1;" aria-label="${inW ? 'Remove from wishlist' : 'Add to wishlist'}"><i class="fa-${inW ? 'solid' : 'regular'} fa-heart"></i></button>
             ${imgHtml}
             <div>
-                <h3 style="margin:0; font-size:15px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:12px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</p>
-                <p style="margin:6px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <h3 style="margin:0; font-size:12px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:10px; color:var(--gray-text); font-weight:600;">${_catDisplayName(item.category)}</p>
+                <p style="margin:6px 0 0; font-size:13px; font-weight:800; color:var(--c4);">₹${item.price}</p>
             </div>
             <button class="add-btn" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
         </div>
@@ -2722,22 +2785,22 @@ function renderPopularMeds() {
     popular.forEach(item => {
         const imgTag = item.image
             ? `<img src="${item.image}" alt="${item.name}" style="width:56px; height:56px; border-radius:14px; object-fit:cover; margin-bottom:12px; flex-shrink:0;" onerror="this.style.display='none';">`
-            : `<div class="icon-orb orb-1" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
+            : `<div class="icon-orb orb-1" style="width:45px; height:45px; font-size:16px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
         html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
                 ${imgTag}
-                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.category}</p>
-                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+                <h3 style="margin:0; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:10px; color:var(--gray-text); font-weight:600;">${item.category}</p>
+                <p style="margin:8px 0 0; font-size:13px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:10px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>
         `;
     });
     html += `
         <div class="glass-card" style="min-width:140px; flex-shrink:0; background:linear-gradient(135deg, var(--c5), var(--c4)); border:none; align-items:center; justify-content:center; text-align:center; min-height:190px;" onclick="switchTab(document.querySelectorAll('.nav-dock .nav-item')[1], 'tab-category')">
             <div class="icon-orb" style="background:rgba(255,255,255,0.2); color:white; margin:0 0 15px;"><i class="fa-solid fa-arrow-right"></i></div>
-            <h4 style="color:white; margin:0; font-size:15px; font-weight:800;">See All<br>Medicines</h4>
+            <h4 style="color:white; margin:0; font-size:12px; font-weight:800;">See All<br>Medicines</h4>
         </div>
     `;
     slider.innerHTML = html;
@@ -2779,15 +2842,15 @@ function _renderDailyNeedsMeds(catName) {
     items.forEach(item => {
         const imgTag = item.image
             ? `<img src="${item.image}" alt="${item.name}" style="width:56px; height:56px; border-radius:14px; object-fit:cover; margin-bottom:12px; flex-shrink:0;" onerror="this.style.display='none';">`
-            : `<div class="icon-orb orb-2" style="width:45px; height:45px; font-size:20px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
+            : `<div class="icon-orb orb-2" style="width:45px; height:45px; font-size:16px; margin-bottom:12px;"><i class="fa-solid ${item.icon}"></i></div>`;
         html += `
             <div class="glass-card" style="min-width:150px; flex-shrink:0; padding:18px; min-height:190px;" onclick='openMedicineDetail(${JSON.stringify(item.name)})'>
                 ${item.isRx ? '<span class="rx-badge" style="top:10px; right:10px; font-size:9px;">Rx</span>' : ''}
                 ${imgTag}
-                <h3 style="margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
-                <p style="margin:4px 0 0; font-size:11px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
-                <p style="margin:8px 0 0; font-size:16px; font-weight:800; color:var(--c4);">₹${item.price}</p>
-                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:12px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
+                <h3 style="margin:0; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.name}</h3>
+                <p style="margin:4px 0 0; font-size:10px; color:var(--gray-text); font-weight:600;">${item.company || item.category}</p>
+                <p style="margin:8px 0 0; font-size:13px; font-weight:800; color:var(--c4);">₹${item.price}</p>
+                <button class="add-btn" style="margin-top:12px; padding:10px; font-size:10px;" onclick='event.stopPropagation(); addToCart(${JSON.stringify(item.name)})'>ADD +</button>
             </div>
         `;
     });
@@ -2871,7 +2934,7 @@ function openMedicineDetail(itemName) {
         if (item.sideEffects && item.sideEffects.length > 0) {
             seDiv.innerHTML = item.sideEffects.map(se => `<span class="med-side-effect-chip">${se}</span>`).join('');
         } else {
-            seDiv.innerHTML = '<span style="font-size:13px;color:var(--gray-text);font-weight:500;">No known side effects listed.</span>';
+            seDiv.innerHTML = '<span style="font-size:11px;color:var(--gray-text);font-weight:500;">No known side effects listed.</span>';
         }
     }
 
@@ -2887,15 +2950,15 @@ function openMedicineDetail(itemName) {
             altSection.style.display = '';
             altDiv.innerHTML = alts.map(alt => `
                 <div class="med-alt-card" onclick='openMedicineDetail(${JSON.stringify(alt.name)})'>
-                    <div class="icon-orb orb-1" style="width:44px;height:44px;font-size:18px;margin:0 14px 0 0;flex-shrink:0;"><i class="fa-solid ${alt.icon}"></i></div>
+                    <div class="icon-orb orb-1" style="width:44px;height:44px;font-size:14px;margin:0 14px 0 0;flex-shrink:0;"><i class="fa-solid ${alt.icon}"></i></div>
                     <div style="flex:1;min-width:0;">
-                        <div style="font-weight:800;font-size:14px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${alt.name}</div>
-                        <div style="font-size:12px;color:var(--gray-text);font-weight:500;margin-top:2px;">${alt.company || alt.category}</div>
-                        <div style="font-size:11px;font-weight:700;color:var(--c4);margin-top:3px; background:var(--c1); display:inline-block; padding:2px 8px; border-radius:6px;">${alt.strength}</div>
+                        <div style="font-weight:800;font-size:12px;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${alt.name}</div>
+                        <div style="font-size:10px;color:var(--gray-text);font-weight:500;margin-top:2px;">${alt.company || alt.category}</div>
+                        <div style="font-size:10px;font-weight:700;color:var(--c4);margin-top:3px; background:var(--c1); display:inline-block; padding:2px 8px; border-radius:6px;">${alt.strength}</div>
                     </div>
                     <div style="text-align:right;flex-shrink:0;">
-                        <div style="font-size:17px;font-weight:800;color:var(--c4);">₹${alt.price}</div>
-                        <button class="add-btn" style="margin-top:6px;padding:7px 14px;font-size:12px;width:auto;" onclick='event.stopPropagation();addToCart(${JSON.stringify(alt.name)})'>ADD</button>
+                        <div style="font-size:14px;font-weight:800;color:var(--c4);">₹${alt.price}</div>
+                        <button class="add-btn" style="margin-top:6px;padding:7px 14px;font-size:10px;width:auto;" onclick='event.stopPropagation();addToCart(${JSON.stringify(alt.name)})'>ADD</button>
                     </div>
                 </div>`).join('');
         } else {
@@ -3130,9 +3193,9 @@ function renderRemindersList() {
     if (!reminders.length) {
         container.innerHTML = `
             <div class="glass-card wide" style="text-align:center; flex-direction:column; padding:40px 20px;">
-                <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:30px; margin:0 auto 15px;"><i class="fa-solid fa-bell-slash"></i></div>
+                <div class="icon-orb orb-3" style="width:70px; height:70px; font-size:24px; margin:0 auto 15px;"><i class="fa-solid fa-bell-slash"></i></div>
                 <h3>No Reminders Set</h3>
-                <p style="margin-top:8px; font-size:13px; color:var(--gray-text); font-weight:500;">Open a medicine and tap "Set Reminder" to get started.</p>
+                <p style="margin-top:8px; font-size:11px; color:var(--gray-text); font-weight:500;">Open a medicine and tap "Set Reminder" to get started.</p>
             </div>`;
         return;
     }
@@ -3140,24 +3203,24 @@ function renderRemindersList() {
     container.innerHTML = reminders.map(rem => `
         <div class="rem-card ${rem.active ? '' : 'rem-card-inactive'}">
             <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
-                <div class="icon-orb orb-1" style="width:48px; height:48px; font-size:20px; flex-shrink:0; margin:0;"><i class="fa-solid ${rem.medicineIcon}"></i></div>
+                <div class="icon-orb orb-1" style="width:48px; height:48px; font-size:16px; flex-shrink:0; margin:0;"><i class="fa-solid ${rem.medicineIcon}"></i></div>
                 <div style="flex:1; min-width:0;">
-                    <div style="font-weight:800; font-size:15px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${rem.medicineName}</div>
-                    <div style="font-size:12px; color:var(--gray-text); font-weight:500; margin-top:2px;">${rem.salt || ''}</div>
+                    <div style="font-weight:800; font-size:12px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${rem.medicineName}</div>
+                    <div style="font-size:10px; color:var(--gray-text); font-weight:500; margin-top:2px;">${rem.salt || ''}</div>
                 </div>
                 <div style="display:flex; gap:8px; flex-shrink:0; align-items:center;">
                     <div class="rem-toggle ${rem.active ? 'active' : ''}" onclick="toggleReminder('${rem.id}')"><div class="rem-toggle-knob"></div></div>
-                    <div onclick="deleteReminder('${rem.id}')" style="width:34px; height:34px; background:#FEE2E2; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; font-size:14px; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
+                    <div onclick="deleteReminder('${rem.id}')" style="width:34px; height:34px; background:#FEE2E2; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#DC2626; font-size:12px; transition:0.2s;"><i class="fa-solid fa-trash-can"></i></div>
                 </div>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
-                ${rem.times.map(t => `<span class="rem-time-badge"><i class="fa-solid fa-clock" style="margin-right:4px; font-size:10px;"></i>${timeLabels[t] || t}</span>`).join('')}
+                ${rem.times.map(t => `<span class="rem-time-badge"><i class="fa-solid fa-clock" style="margin-right:4px; font-size:9px;"></i>${timeLabels[t] || t}</span>`).join('')}
             </div>
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray-text); font-weight:600; border-top:1px dashed #E5E7EB; padding-top:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--gray-text); font-weight:600; border-top:1px dashed #E5E7EB; padding-top:10px;">
                 <span><i class="fa-solid fa-pills" style="margin-right:5px; color:var(--c4);"></i>${rem.dosage}</span>
                 <span><i class="fa-solid fa-calendar-days" style="margin-right:5px; color:var(--c4);"></i>${rem.duration === 0 ? 'Ongoing' : rem.duration + ' days'} · from ${rem.startDate}</span>
             </div>
-            ${rem.notes ? `<div style="margin-top:10px; padding:10px 12px; background:#F9FAFB; border-radius:12px; font-size:12px; color:#4B5563; font-weight:500;"><i class="fa-solid fa-note-sticky" style="margin-right:6px; color:var(--c4);"></i>${rem.notes}</div>` : ''}
+            ${rem.notes ? `<div style="margin-top:10px; padding:10px 12px; background:#F9FAFB; border-radius:12px; font-size:10px; color:#4B5563; font-weight:500;"><i class="fa-solid fa-note-sticky" style="margin-right:6px; color:var(--c4);"></i>${rem.notes}</div>` : ''}
         </div>`).join('');
 }
 
@@ -3278,11 +3341,11 @@ function _catMiniCard(cat, idx, icon) {
     const iconClass = icon || (example ? example.icon : 'fa-capsules');
     const imgTag = example && example.image
         ? `<img src="${example.image}" alt="${cat}" style="width:50px; height:50px; border-radius:14px; object-fit:cover; margin-bottom:10px;" onerror="this.style.display='none';">`
-        : `<div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:22px;"><i class="fa-solid ${iconClass}"></i></div>`;
+        : `<div class="icon-orb ${colors[idx % colors.length]}" style="margin:0 0 10px; width:50px; height:50px; font-size:18px;"><i class="fa-solid ${iconClass}"></i></div>`;
     return `
         <div class="glass-card cat-mini-card" onclick='openCategoryView(${JSON.stringify(cat)})'>
             ${imgTag}
-            <h3 style="margin:0; font-size:13px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
+            <h3 style="margin:0; font-size:11px; text-align:center; line-height:1.3;">${_catDisplayName(cat)}</h3>
         </div>`;
 }
 
@@ -3296,27 +3359,27 @@ function _renderCatSectionContent(sectionKey, el) {
         html += `<div class="cat-section-label"><i class="fa-solid fa-venus-double" style="color:#BE185D; margin-right:6px;"></i>Woman Care</div>`;
         html += `<div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
-                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
-                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
-                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
+                <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
+                <h3 style="margin:0; font-size:16px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
+                <p style="margin:6px 0 12px; font-size:10px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
                 <div style="display:inline-flex; gap:8px;">
-                    ${WOMAN_CARE_SUBCATEGORIES.map(s => `<span onclick="event.stopPropagation(); openWomanSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:11px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
+                    ${WOMAN_CARE_SUBCATEGORIES.map(s => `<span onclick="event.stopPropagation(); openWomanSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:10px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
                 </div>
             </div>
-            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
+            <div style="font-size:49px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
         </div>`;
 
         html += `<div class="cat-section-label" style="margin-top:8px;"><i class="fa-solid fa-child-reaching" style="color:var(--c4); margin-right:6px;"></i>Child &amp; Pediatrics Care</div>`;
         html += `<div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
-                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
-                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
-                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
+                <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
+                <h3 style="margin:0; font-size:16px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
+                <p style="margin:6px 0 12px; font-size:10px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
                 <div style="display:inline-flex; gap:8px; flex-wrap:wrap;">
-                    ${CHILD_CARE_SUBCATEGORIES.slice(0,3).map(s => `<span onclick="event.stopPropagation(); openChildSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:11px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
+                    ${CHILD_CARE_SUBCATEGORIES.slice(0,3).map(s => `<span onclick="event.stopPropagation(); openChildSubCategory(${JSON.stringify(s.name)})" style="background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:10px; padding:5px 10px; font-size:10px; font-weight:700; color:white; cursor:pointer; backdrop-filter:blur(6px);">${s.name}</span>`).join('')}
                 </div>
             </div>
-            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
+            <div style="font-size:49px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
         </div>`;
 
         const acuteCats = ACUTE_CATS.filter(c => MEDICINE_DB.some(m => m.category === c));
@@ -3358,17 +3421,17 @@ function _renderCatSectionContent(sectionKey, el) {
     } else if (sectionKey === 'womancare') {
         html += `<div class="woman-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Woman Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
-                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
-                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
-                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
+                <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
+                <h3 style="margin:0; font-size:16px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
+                <p style="margin:6px 0 12px; font-size:10px; color:rgba(255,255,255,0.82); font-weight:500;">Personal hygiene &amp; menstrual care</p>
             </div>
-            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
+            <div style="font-size:49px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🌺</div>
         </div>`;
         WOMAN_CARE_SUBCATEGORIES.forEach(s => {
             html += `<div class="woman-subcat-card ${s.name === 'Personal Hygiene' ? 'hygiene' : 'menstrual'}" onclick="openWomanSubCategory(${JSON.stringify(s.name)})">
-                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:23px;"><i class="fa-solid ${s.icon}"></i></div>
-                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
-                <p style="margin:6px 0 0; font-size:11px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
+                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:19px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:11px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
+                <p style="margin:6px 0 0; font-size:10px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
             </div>`;
         });
         const womanMeds = MEDICINE_DB.filter(m => m.category === 'Woman Care' || m.category === "Women's Health").slice(0, 6);
@@ -3380,17 +3443,17 @@ function _renderCatSectionContent(sectionKey, el) {
     } else if (sectionKey === 'childcare') {
         html += `<div class="child-care-banner" style="grid-column:span 2;" onclick="openCategoryView('Child &amp; Pediatrics Care')">
             <div style="flex:1; min-width:0; position:relative; z-index:1;">
-                <p style="margin:0 0 4px; font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
-                <h3 style="margin:0; font-size:20px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
-                <p style="margin:6px 0 12px; font-size:12px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
+                <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
+                <h3 style="margin:0; font-size:16px; font-weight:800; color:white; line-height:1.25;">Healthy Kids,<br>Happy Life</h3>
+                <p style="margin:6px 0 12px; font-size:10px; color:rgba(255,255,255,0.82); font-weight:500;">Infant care, nutrition &amp; child wellness</p>
             </div>
-            <div style="font-size:60px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
+            <div style="font-size:49px; opacity:0.28; margin-left:10px; flex-shrink:0; line-height:1;">🧸</div>
         </div>`;
         CHILD_CARE_SUBCATEGORIES.forEach((s, i) => {
             html += `<div class="child-subcat-card" onclick="openChildSubCategory(${JSON.stringify(s.name)})" style="background:white; border-radius:22px; padding:20px 16px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border:1.5px solid rgba(219,234,254,0.8); box-shadow:0 4px 16px rgba(29,78,216,0.07); transition:transform 0.25s; min-height:120px; position:relative; overflow:hidden;">
                 <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:22px 22px 0 0; background:${i%2===0 ? 'linear-gradient(90deg,#0EA5E9,#38BDF8)' : 'linear-gradient(90deg,#6366F1,#818CF8)'};"></div>
-                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid ${s.icon}"></i></div>
-                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
+                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:16px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:11px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
             </div>`;
         });
         const childMeds = MEDICINE_DB.filter(m => m.category === 'Child Care').slice(0, 6);
@@ -3458,9 +3521,9 @@ function _renderCatSectionContent(sectionKey, el) {
         }
         if (!cats.length && !featuredMeds.length) {
             html += `<div style="grid-column:span 2; text-align:center; padding:40px 20px;">
-                <div style="font-size:48px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
-                <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-                <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">This section will be available shortly.</p>
+                <div style="font-size:39px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
+                <h3 style="margin:0 0 8px; font-size:13px; color:#111827; font-weight:700;">Coming Soon</h3>
+                <p style="margin:0; font-size:11px; color:var(--gray-text); font-weight:500;">This section will be available shortly.</p>
             </div>`;
         }
     }
@@ -3471,13 +3534,13 @@ function _renderCatSectionContent(sectionKey, el) {
 function _medGridCard(item) {
     const imgTag = item.image
         ? `<img src="${item.image}" alt="${item.name}" style="width:50px; height:50px; border-radius:12px; object-fit:cover; margin:0 0 10px; flex-shrink:0;" onerror="this.style.display='none';">`
-        : `<div class="icon-orb orb-1" style="margin:0 0 10px; width:50px; height:50px; font-size:20px;"><i class="fa-solid ${item.icon}"></i></div>`;
+        : `<div class="icon-orb orb-1" style="margin:0 0 10px; width:50px; height:50px; font-size:16px;"><i class="fa-solid ${item.icon}"></i></div>`;
     return `
         <div class="glass-card cat-mini-card" onclick='openMedicineDetail(${JSON.stringify(item.name)})' style="min-height:150px;">
             ${item.isRx ? '<span class="rx-badge" style="top:8px; right:8px; font-size:9px;">Rx</span>' : ''}
             ${imgTag}
-            <h3 style="margin:0; font-size:12px; text-align:center; line-height:1.3; white-space:normal;">${item.name}</h3>
-            <p style="margin:4px 0 0; font-size:12px; font-weight:800; color:var(--c4); text-align:center;">₹${item.price}</p>
+            <h3 style="margin:0; font-size:10px; text-align:center; line-height:1.3; white-space:normal;">${item.name}</h3>
+            <p style="margin:4px 0 0; font-size:10px; font-weight:800; color:var(--c4); text-align:center;">₹${item.price}</p>
         </div>`;
 }
 
@@ -3513,13 +3576,13 @@ function openCategoryView(catName) {
         const grid = document.getElementById('cat-items-grid');
         grid.innerHTML = `
             <div style="grid-column:span 2; padding:4px 0 16px;">
-                <p style="margin:0 0 16px; font-size:13px; color:var(--gray-text); font-weight:500;">Choose a sub-category to explore products tailored for women's wellness.</p>
+                <p style="margin:0 0 16px; font-size:11px; color:var(--gray-text); font-weight:500;">Choose a sub-category to explore products tailored for women's wellness.</p>
             </div>
             ${WOMAN_CARE_SUBCATEGORIES.map(s => `
             <div class="woman-subcat-card ${s.name === 'Personal Hygiene' ? 'hygiene' : 'menstrual'}" onclick="openWomanSubCategory(${JSON.stringify(s.name)})">
-                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:23px;"><i class="fa-solid ${s.icon}"></i></div>
-                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
-                <p style="margin:6px 0 0; font-size:11px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
+                <div class="icon-orb ${s.orbClass}" style="margin:0 0 10px; width:52px; height:52px; font-size:19px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:11px; font-weight:800; color:#111827; text-align:center; line-height:1.35;">${s.name}</p>
+                <p style="margin:6px 0 0; font-size:10px; color:var(--gray-text); font-weight:500; text-align:center; line-height:1.4; padding:0 4px;">${s.desc}</p>
             </div>`).join('')}`;
         showScreen('screen-cat-items');
         return;
@@ -3531,13 +3594,13 @@ function openCategoryView(catName) {
         const grid = document.getElementById('cat-items-grid');
         grid.innerHTML = `
             <div style="grid-column:span 2; padding:4px 0 16px;">
-                <p style="margin:0 0 16px; font-size:13px; color:var(--gray-text); font-weight:500;">Browse child-safe products and pediatric care essentials.</p>
+                <p style="margin:0 0 16px; font-size:11px; color:var(--gray-text); font-weight:500;">Browse child-safe products and pediatric care essentials.</p>
             </div>
             ${CHILD_CARE_SUBCATEGORIES.map((s, i) => `
             <div class="child-subcat-card" onclick="openChildSubCategory(${JSON.stringify(s.name)})" style="background:white; border-radius:22px; padding:20px 16px; cursor:pointer; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border:1.5px solid rgba(219,234,254,0.8); box-shadow:0 4px 16px rgba(29,78,216,0.07); transition:transform 0.25s; min-height:120px; position:relative; overflow:hidden;">
                 <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:22px 22px 0 0; background:${i%2===0 ? 'linear-gradient(90deg,#0EA5E9,#38BDF8)' : 'linear-gradient(90deg,#6366F1,#818CF8)'};"></div>
-                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:20px;"><i class="fa-solid ${s.icon}"></i></div>
-                <p style="margin:0; font-size:13px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
+                <div class="icon-orb ${s.orbClass}" style="margin:0; width:46px; height:46px; font-size:16px;"><i class="fa-solid ${s.icon}"></i></div>
+                <p style="margin:0; font-size:11px; font-weight:800; color:#111827; line-height:1.3;">${s.name}</p>
             </div>`).join('')}`;
         showScreen('screen-cat-items');
         return;
@@ -3551,9 +3614,9 @@ function openCategoryView(catName) {
     } else {
         grid.innerHTML = `
             <div style="grid-column: span 2; text-align:center; padding:40px 20px;">
-                <div style="font-size:48px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
-                <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-                <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Medicines for this category will be available shortly.</p>
+                <div style="font-size:39px; margin-bottom:16px; opacity:0.4;"><i class="fa-solid fa-capsules"></i></div>
+                <h3 style="margin:0 0 8px; font-size:13px; color:#111827; font-weight:700;">Coming Soon</h3>
+                <p style="margin:0; font-size:11px; color:var(--gray-text); font-weight:500;">Medicines for this category will be available shortly.</p>
             </div>`;
     }
     showScreen('screen-cat-items');
@@ -3575,8 +3638,8 @@ function openWomanSubCategory(subCatName) {
     const headerHtml = `
         <div style="grid-column:span 2; padding:4px 0 16px;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                <div class="icon-orb ${sub ? sub.orbClass : 'orb-woman'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
-                <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
+                <div class="icon-orb ${sub ? sub.orbClass : 'orb-woman'}" style="margin:0; width:46px; height:46px; font-size:16px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
+                <p style="margin:0; font-size:11px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
             </div>
         </div>`;
 
@@ -3585,9 +3648,9 @@ function openWomanSubCategory(subCatName) {
     } else {
         grid.innerHTML = headerHtml + `
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(252,231,243,0.5),rgba(245,243,255,0.5)); border-radius:24px; border:1.5px solid rgba(251,207,232,0.5);">
-            <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
-            <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
+            <div style="font-size:36px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-venus'}"></i></div>
+            <h3 style="margin:0 0 8px; font-size:13px; color:#111827; font-weight:700;">Coming Soon</h3>
+            <p style="margin:0; font-size:11px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
     }
     showScreen('screen-cat-items');
@@ -3611,8 +3674,8 @@ function openChildSubCategory(subCatName) {
     const headerHtml = `
         <div style="grid-column:span 2; padding:4px 0 16px;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                <div class="icon-orb ${sub ? sub.orbClass : 'orb-child-1'}" style="margin:0; width:46px; height:46px; font-size:20px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
-                <p style="margin:0; font-size:13px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
+                <div class="icon-orb ${sub ? sub.orbClass : 'orb-child-1'}" style="margin:0; width:46px; height:46px; font-size:16px; flex-shrink:0;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
+                <p style="margin:0; font-size:11px; color:#4B5563; font-weight:500; line-height:1.5;">${sub ? sub.desc : ''}</p>
             </div>
         </div>`;
 
@@ -3621,9 +3684,9 @@ function openChildSubCategory(subCatName) {
     } else {
         grid.innerHTML = headerHtml + `
         <div style="grid-column:span 2; text-align:center; padding:30px 20px; background:linear-gradient(135deg,rgba(219,234,254,0.5),rgba(224,242,254,0.5)); border-radius:24px; border:1.5px solid rgba(191,219,254,0.5);">
-            <div style="font-size:44px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
-            <h3 style="margin:0 0 8px; font-size:16px; color:#111827; font-weight:700;">Coming Soon</h3>
-            <p style="margin:0; font-size:13px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
+            <div style="font-size:36px; margin-bottom:14px; opacity:0.5;"><i class="fa-solid ${sub ? sub.icon : 'fa-child-reaching'}"></i></div>
+            <h3 style="margin:0 0 8px; font-size:13px; color:#111827; font-weight:700;">Coming Soon</h3>
+            <p style="margin:0; font-size:11px; color:var(--gray-text); font-weight:500;">Products for ${subCatName} will be available shortly.</p>
         </div>`;
     }
     showScreen('screen-cat-items');
@@ -4348,24 +4411,24 @@ function _placeTrackerMarkers() {
     // 🎨 BRAND EDIT: change pharmacy emoji or font-size in pharmEl.textContent / style
     const pharmEl = document.createElement('div');
     pharmEl.title = 'MediFlow Partner Pharmacy';
-    pharmEl.style.cssText = 'font-size:30px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
+    pharmEl.style.cssText = 'font-size:24px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
     pharmEl.textContent = '🏥';
     trackerPharmacyMarker = new mapboxgl.Marker({ element: pharmEl })
         .setLngLat([pharmacyLng, pharmacyLat])
         .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
-            .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">MediFlow Partner Pharmacy</div>'))
+            .setHTML('<div style="font-size:11px;font-weight:700;color:#111827;">MediFlow Partner Pharmacy</div>'))
         .addTo(trackerMap);
 
     // ── User delivery location marker (📍) ──
     if (userLat && userLng) {
         const userEl = document.createElement('div');
         userEl.title = 'Your delivery location';
-        userEl.style.cssText = 'font-size:30px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
+        userEl.style.cssText = 'font-size:24px; cursor:default; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.3)); line-height:1;';
         userEl.textContent = '📍';
         trackerUserMarker = new mapboxgl.Marker({ element: userEl })
             .setLngLat([userLng, userLat])
             .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
-                .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">Your Location</div>'))
+                .setHTML('<div style="font-size:11px;font-weight:700;color:#111827;">Your Location</div>'))
             .addTo(trackerMap);
     }
 
@@ -4380,13 +4443,13 @@ function _placeTrackerMarkers() {
         box-shadow:0 0 0 0 rgba(0,151,167,0.5);
         animation: trackerRiderPulse 2s ease-out infinite;
         display:flex; align-items:center; justify-content:center;
-        font-size:20px; cursor:default;
+        font-size:16px; cursor:default;
     `;
     riderEl.textContent = '🛵';
     trackerRiderMarker = new mapboxgl.Marker({ element: riderEl, anchor: 'center' })
         .setLngLat([pharmacyLng, pharmacyLat]) // Initially at pharmacy
         .setPopup(new mapboxgl.Popup({ offset: 28, closeButton: false })
-            .setHTML('<div style="font-size:13px;font-weight:700;color:#111827;">Delivery Rider</div>'))
+            .setHTML('<div style="font-size:11px;font-weight:700;color:#111827;">Delivery Rider</div>'))
         .addTo(trackerMap);
 
     // Fit map to show all markers with generous padding
@@ -4632,8 +4695,8 @@ function _renderDiseaseList() {
 
     if (filtered.length === 0) {
         listEl.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--gray-text);">
-            <i class="fa-solid fa-magnifying-glass" style="font-size:28px; margin-bottom:12px; display:block;"></i>
-            <p style="font-size:14px; font-weight:600;">No results found</p>
+            <i class="fa-solid fa-magnifying-glass" style="font-size:23px; margin-bottom:12px; display:block;"></i>
+            <p style="font-size:12px; font-weight:600;">No results found</p>
         </div>`;
         return;
     }
@@ -4673,23 +4736,23 @@ function openDiseaseDetail(id) {
     listEl.innerHTML = `
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px; cursor:pointer;" onclick="renderHealthTab(); _renderDiseaseList();">
             <div style="width:36px; height:36px; background:white; border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); flex-shrink:0;">
-                <i class="fa-solid fa-arrow-left" style="color:#111827; font-size:14px;"></i>
+                <i class="fa-solid fa-arrow-left" style="color:#111827; font-size:12px;"></i>
             </div>
-            <span style="font-size:14px; font-weight:700; color:var(--gray-text);">All Conditions</span>
+            <span style="font-size:12px; font-weight:700; color:var(--gray-text);">All Conditions</span>
         </div>
 
         <div class="disease-detail-sheet">
             <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
                 <div class="disease-card-icon" style="background:${d.iconBg}; color:${d.iconColor}; width:52px; height:52px; border-radius:18px;">
-                    <i class="fa-solid ${d.icon}" style="font-size:22px;"></i>
+                    <i class="fa-solid ${d.icon}" style="font-size:18px;"></i>
                 </div>
                 <div>
-                    <div style="font-size:20px; font-weight:800; color:#111827;">${d.name}</div>
-                    <div style="font-size:12px; font-weight:700; color:var(--c3); text-transform:uppercase; letter-spacing:0.4px; margin-top:2px;">${d.category}</div>
+                    <div style="font-size:16px; font-weight:800; color:#111827;">${d.name}</div>
+                    <div style="font-size:10px; font-weight:700; color:var(--c3); text-transform:uppercase; letter-spacing:0.4px; margin-top:2px;">${d.category}</div>
                 </div>
             </div>
 
-            <p style="font-size:14px; color:#374151; font-weight:500; line-height:1.7; margin:0;">${d.summary}</p>
+            <p style="font-size:12px; color:#374151; font-weight:500; line-height:1.7; margin:0;">${d.summary}</p>
 
             <div class="disease-detail-section-title">What Causes It?</div>
             <ul class="disease-detail-list">${d.causes.map(c => `<li>${c}</li>`).join('')}</ul>
@@ -4704,10 +4767,10 @@ function openDiseaseDetail(id) {
             <ul class="disease-detail-list">${d.avoid.map(x => `<li>${x}</li>`).join('')}</ul>
 
             <div style="background:#FEF9C3; border:1.5px solid #FDE047; border-radius:16px; padding:14px 16px; margin-top:16px; display:flex; align-items:flex-start; gap:10px;">
-                <i class="fa-solid fa-triangle-exclamation" style="color:#CA8A04; font-size:16px; margin-top:1px; flex-shrink:0;"></i>
+                <i class="fa-solid fa-triangle-exclamation" style="color:#CA8A04; font-size:13px; margin-top:1px; flex-shrink:0;"></i>
                 <div>
-                    <div style="font-size:12px; font-weight:800; color:#92400E; margin-bottom:4px;">SEE A DOCTOR IF</div>
-                    <p style="font-size:13px; color:#78350F; font-weight:500; margin:0; line-height:1.6;">${d.whenToSee}</p>
+                    <div style="font-size:10px; font-weight:800; color:#92400E; margin-bottom:4px;">SEE A DOCTOR IF</div>
+                    <p style="font-size:11px; color:#78350F; font-weight:500; margin:0; line-height:1.6;">${d.whenToSee}</p>
                 </div>
             </div>
         </div>
