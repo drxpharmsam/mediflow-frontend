@@ -185,15 +185,16 @@
                     </div>
                     <div style="margin-top: 35px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;">
                         <h3 style="margin:0; font-size:14px; color:#111827; font-weight:800;">Popular Medicines</h3>
+                        <span onclick="openPharmacySection('all')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
                     </div>
                     <div class="category-slider" id="popular-meds-slider"></div>
 
                     <!-- WOMAN CARE FEATURED SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="margin:0; font-size:14px; color:#111827; font-weight:800;">Woman Care</h3>
-                        <span onclick="openCategoryView('Woman Care')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
+                        <span onclick="openPharmacySection('womancare')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
                     </div>
-                    <div class="woman-care-banner" onclick="openCategoryView('Woman Care')" style="display:flex; align-items:center;">
+                    <div class="woman-care-banner" onclick="openPharmacySection('womancare')" style="display:flex; align-items:center;">
                         <div style="flex:1; min-width:0; position:relative; z-index:1;">
                             <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🌸 Essential Care</p>
                             <h3 style="margin:0; font-size:16px; font-weight:800; color:white; line-height:1.25;">Wellness for Women</h3>
@@ -209,9 +210,9 @@
                     <!-- CHILD & PEDIATRICS CARE FEATURED SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="margin:0; font-size:14px; color:#111827; font-weight:800;">Child &amp; Pediatrics Care</h3>
-                        <span onclick="openCategoryView('Child &amp; Pediatrics Care')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
+                        <span onclick="openPharmacySection('childcare')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
                     </div>
-                    <div class="child-care-banner" onclick="openCategoryView('Child &amp; Pediatrics Care')" style="display:flex; align-items:center;">
+                    <div class="child-care-banner" onclick="openPharmacySection('childcare')" style="display:flex; align-items:center;">
                         <div style="flex:1; min-width:0; position:relative; z-index:1;">
                             <p style="margin:0 0 4px; font-size:9px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px;">🧒 Pediatric Care</p>
                             <h3 style="margin:0; font-size:14px; font-weight:800; color:white; line-height:1.25;">Healthy Kids, Happy Life</h3>
@@ -227,13 +228,14 @@
                     <!-- SUGGESTED FOR YOU SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="margin:0; font-size:14px; color:#111827; font-weight:800;">Suggested for You</h3>
+                        <span onclick="openPharmacySection('all')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
                     </div>
                     <div class="category-slider" id="suggested-products-slider" style="margin-bottom:6px;"></div>
 
                     <!-- DAILY NEEDS SECTION -->
                     <div style="margin-top:35px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="margin:0; font-size:14px; color:#111827; font-weight:800;">Daily Needs</h3>
-                        <span style="font-size:10px; color:var(--c4); font-weight:700;">By Category</span>
+                        <span onclick="openPharmacySection(MEDICINE_CATEGORY_TO_SECTION[_dailyNeedsActiveCat]||'all')" style="font-size:10px; color:var(--c4); font-weight:700; cursor:pointer;">See All</span>
                     </div>
                     <!-- Scrollable therapeutic category tab pills -->
                     <div class="daily-needs-tabs category-slider" id="daily-needs-tabs"></div>

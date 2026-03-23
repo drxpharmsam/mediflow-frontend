@@ -2027,15 +2027,62 @@ function _showRelatedProducts(itemName) {
 
     if (catEl) catEl.textContent = item.category;
 
-    // skipRelated=true prevents reopening the panel when adding from within it
-    list.innerHTML = related.map(m => `
-        <div class="related-prod-card" onclick="addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">
-            <div class="icon-orb orb-1" style="width:36px; height:36px; font-size:14px; margin-bottom:8px;"><i class="fa-solid ${m.icon}"></i></div>
-            <div class="related-prod-name">${m.name}</div>
-            <div class="related-prod-price">₹${m.price}</div>
-            <button class="related-prod-add" onclick="event.stopPropagation(); addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">ADD +</button>
-        </div>
-    `).join('');
+    // Safely build DOM nodes instead of using innerHTML with backend-provided strings
+    list.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+    const DEFAULT_MEDICINE_ICON = 'fa-pills';
+
+    related.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'related-prod-card';
+        card.addEventListener('click', () => {
+            addToCart(m.name, true);
+            closeRelatedPanel();
+        });
+
+        const iconOrb = document.createElement('div');
+        iconOrb.className = 'icon-orb orb-1';
+        iconOrb.style.width = '36px';
+        iconOrb.style.height = '36px';
+        iconOrb.style.fontSize = '14px';
+        iconOrb.style.marginBottom = '8px';
+
+        const iconEl = document.createElement('i');
+        iconEl.classList.add('fa-solid');
+        const iconClass = (typeof m.icon === 'string' && /^fa-[a-z0-9-]+$/i.test(m.icon))
+            ? m.icon
+            : DEFAULT_MEDICINE_ICON;
+        iconEl.classList.add(iconClass);
+        iconOrb.appendChild(iconEl);
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'related-prod-name';
+        nameEl.textContent = m.name;
+
+        const priceEl = document.createElement('div');
+        priceEl.className = 'related-prod-price';
+        const priceVal = parseFloat(m.price);
+        priceEl.textContent = '₹' + (isNaN(priceVal) ? '—' : priceVal);
+
+        const buttonEl = document.createElement('button');
+        buttonEl.className = 'related-prod-add';
+        buttonEl.textContent = 'ADD +';
+        buttonEl.addEventListener('click', (event) => {
+            event.stopPropagation();
+            addToCart(m.name, true);
+            closeRelatedPanel();
+        });
+
+        card.appendChild(iconOrb);
+        card.appendChild(nameEl);
+        card.appendChild(priceEl);
+        card.appendChild(buttonEl);
+
+        fragment.appendChild(card);
+    });
+
+    list.appendChild(fragment);
 
     panel.classList.remove('rp-gone');
     if (overlay) overlay.classList.remove('rp-gone');
@@ -3311,6 +3358,19 @@ const CHRONIC_CATS = ["Diabetes", "Blood Pressure", "Cholesterol", "Stomach Gas"
 const SPECIAL_CATS = ["Vitamins & Supplements"];
 const FIRSTAID_CATS = ["Home First Aid"];
 
+// Maps MEDICINE_DB .category values to the matching CAT_SECTIONS key on the pharmacy tab
+const MEDICINE_CATEGORY_TO_SECTION = (() => {
+    const map = {};
+    ACUTE_CATS.forEach(c => { map[c] = 'everyday'; });
+    CHRONIC_CATS.forEach(c => { map[c] = 'chronic'; });
+    SPECIAL_CATS.forEach(c => { map[c] = 'vitamins'; });
+    FIRSTAID_CATS.forEach(c => { map[c] = 'firstaid'; });
+    map['Woman Care'] = 'womancare';
+    map["Women's Health"] = 'womancare';
+    map['Child Care'] = 'childcare';
+    return map;
+})();
+
 function renderCategoriesTab() {
     const tabsEl = document.getElementById('cat-section-tabs');
     const contentEl = document.getElementById('cat-section-content');
@@ -3333,6 +3393,19 @@ function switchCategorySection(sectionKey, el) {
     if (el) el.classList.add('active');
     const contentEl = document.getElementById('cat-section-content');
     if (contentEl) _renderCatSectionContent(sectionKey, contentEl);
+}
+
+// Navigate to the pharmacy/category tab and pre-select the given section pill
+function openPharmacySection(sectionKey) {
+    const validKey = CAT_SECTIONS.some(s => s.key === sectionKey) ? sectionKey : 'all';
+    const navItem = document.querySelector('.nav-dock [onclick*="tab-category"]');
+    switchTab(navItem, 'tab-category');
+    renderCategoriesTab();
+    const idx = CAT_SECTIONS.findIndex(s => s.key === validKey);
+    if (idx !== -1) {
+        const tabEl = document.querySelectorAll('#cat-section-tabs .daily-needs-tab')[idx];
+        switchCategorySection(validKey, tabEl || null);
+    }
 }
 
 function _catMiniCard(cat, idx, icon) {
