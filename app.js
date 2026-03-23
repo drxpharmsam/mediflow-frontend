@@ -2027,15 +2027,62 @@ function _showRelatedProducts(itemName) {
 
     if (catEl) catEl.textContent = item.category;
 
-    // skipRelated=true prevents reopening the panel when adding from within it
-    list.innerHTML = related.map(m => `
-        <div class="related-prod-card" onclick="addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">
-            <div class="icon-orb orb-1" style="width:36px; height:36px; font-size:14px; margin-bottom:8px;"><i class="fa-solid ${m.icon}"></i></div>
-            <div class="related-prod-name">${m.name}</div>
-            <div class="related-prod-price">₹${m.price}</div>
-            <button class="related-prod-add" onclick="event.stopPropagation(); addToCart(${JSON.stringify(m.name)}, true); closeRelatedPanel();">ADD +</button>
-        </div>
-    `).join('');
+    // Safely build DOM nodes instead of using innerHTML with backend-provided strings
+    list.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+    const DEFAULT_MEDICINE_ICON = 'fa-pills';
+
+    related.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'related-prod-card';
+        card.addEventListener('click', () => {
+            addToCart(m.name, true);
+            closeRelatedPanel();
+        });
+
+        const iconOrb = document.createElement('div');
+        iconOrb.className = 'icon-orb orb-1';
+        iconOrb.style.width = '36px';
+        iconOrb.style.height = '36px';
+        iconOrb.style.fontSize = '14px';
+        iconOrb.style.marginBottom = '8px';
+
+        const iconEl = document.createElement('i');
+        iconEl.classList.add('fa-solid');
+        const iconClass = (typeof m.icon === 'string' && /^fa-[a-z0-9-]+$/i.test(m.icon))
+            ? m.icon
+            : DEFAULT_MEDICINE_ICON;
+        iconEl.classList.add(iconClass);
+        iconOrb.appendChild(iconEl);
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'related-prod-name';
+        nameEl.textContent = m.name;
+
+        const priceEl = document.createElement('div');
+        priceEl.className = 'related-prod-price';
+        const priceVal = parseFloat(m.price);
+        priceEl.textContent = '₹' + (isNaN(priceVal) ? '—' : priceVal);
+
+        const buttonEl = document.createElement('button');
+        buttonEl.className = 'related-prod-add';
+        buttonEl.textContent = 'ADD +';
+        buttonEl.addEventListener('click', (event) => {
+            event.stopPropagation();
+            addToCart(m.name, true);
+            closeRelatedPanel();
+        });
+
+        card.appendChild(iconOrb);
+        card.appendChild(nameEl);
+        card.appendChild(priceEl);
+        card.appendChild(buttonEl);
+
+        fragment.appendChild(card);
+    });
+
+    list.appendChild(fragment);
 
     panel.classList.remove('rp-gone');
     if (overlay) overlay.classList.remove('rp-gone');
