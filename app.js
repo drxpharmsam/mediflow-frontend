@@ -2758,7 +2758,7 @@ function renderDailyNeeds() {
     let tabHtml = '';
     categories.forEach((cat, i) => {
         const example = MEDICINE_DB.find(m => m.category === cat);
-        tabHtml += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" onclick="switchDailyNeedsTab(${JSON.stringify(cat)}, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
+        tabHtml += `<div class="daily-needs-tab${i === 0 ? ' active' : ''}" data-cat="${cat.replace(/"/g, '&quot;')}" onclick="switchDailyNeedsTab(this.dataset.cat, this)"><i class="fa-solid ${example.icon}"></i> <span>${_catDisplayName(cat)}</span></div>`;
     });
     tabsEl.innerHTML = tabHtml;
     _renderDailyNeedsMeds(_dailyNeedsActiveCat);
